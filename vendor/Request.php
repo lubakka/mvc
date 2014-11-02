@@ -44,11 +44,14 @@ class Request
      * Headers (taken from the $_SERVER)
      */
     public $headers;
+    
+    public $scriptName;
 
     private function __construct()
     {
         $this->setRequest($_SERVER['REQUEST_URI']);
         $this->setUserAgent($_SERVER['HTTP_USER_AGENT']);
+        $this->setScriptName($_SERVER['SCRIPT_NAME']);
         $this->setServer(Helpers::toObject($_SERVER));
         $this->setCookies(Helpers::toObject($_COOKIE));
         $this->setHeaders(Helpers::toObject(apache_request_headers()));
@@ -184,4 +187,15 @@ class Request
     {
         return $this->server;
     }
+    
+    function getScriptName() {
+        return $this->scriptName;
+    }
+
+    function setScriptName($scriptName) {
+        $this->scriptName = $scriptName;
+        return $this;
+    }
+
+
 } 

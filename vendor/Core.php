@@ -8,10 +8,8 @@
 
 namespace Vendor;
 
-use Vendor\Controllers;
-
 class Core
-{
+{    
     public function __construct(){
         new FrontControoler();
     }

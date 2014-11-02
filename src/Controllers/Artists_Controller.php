@@ -16,4 +16,12 @@ class Artists_Controller extends Master_Controller {
     public function __construct(){
         echo 'Artists in the House';
     }
+    
+    public function indexAction(){
+        echo 'Artists in the House In INDEX';
+    }
+    
+    public function viewAction() {
+        echo 'Artists in the House In VIEW';
+    }
 } 

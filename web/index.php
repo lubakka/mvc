@@ -20,4 +20,4 @@ define('DIR_CONTROLLERS', FILE_DIR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECT
 require_once '../lib/Bootstrap.php';
 
 new Bootstrap();
-$core = new Core();
+new Core();

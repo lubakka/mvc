@@ -12,13 +12,9 @@ namespace src\Controllers;
 use Vendor\Controllers\Master_Controller;
 
 class Artists_Controller extends Master_Controller {
-
-    public function __construct(){
-        echo 'Artists in the House';
-    }
     
-    public function indexAction(){
-        echo 'Artists in the House In INDEX';
+    public function indexAction($id, $t){
+        echo 'Artists in the House In INDEX : ' . $id;
     }
     
     public function viewAction() {

@@ -10,9 +10,6 @@ namespace Vendor\Controllers;
 
 
 class Master_Controller {
-    public function __construct(){
-        echo 'Master';
-    }
 
     public function index(){
         echo "Defaults";

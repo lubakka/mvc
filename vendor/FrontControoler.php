@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Lboikov
@@ -10,7 +11,6 @@ namespace Vendor;
 
 use Vendor\Core;
 
-
 class FrontControoler extends Core {
 
     private $controller = 'master';
@@ -19,7 +19,7 @@ class FrontControoler extends Core {
     private $request;
     protected $router;
 
-    public function __construct(){
+    public function __construct() {
         $this->router = Router::getInstance()->getRouters();
         $this->request = Request::init();
         $request = $this->request->getServer()->REQUEST_URI;
@@ -34,30 +34,40 @@ class FrontControoler extends Core {
             throw new \Exception("Request is empty");
         }
         $components = explode('/', $request, 3);
-        
         $scriptName = explode('/', substr($scriptName, 1, -10));
-        foreach ($scriptName as $key => $value) {
-            if (in_array($value, $components)){
-                unset($components[$key]);
-                array_keys($components);
+        
+        if (count($scriptName) > 0) {
+            foreach ($scriptName as $key => $value) {
+                if (in_array($value, $components)) {
+                    unset($components[$key]);
+                }
             }
         }
-        $components = explode('/', $components[2], 3);
-        if ( 1 < count($components) ){
+        
+        $components = array_values($components);
+        
+        if (count($components) == 1) {
+            $components = explode('/', $components[0]);
+        }
+        
+        if (1 < count($components)) {
             $this->controller = ucfirst($components[0]);
             $this->method = $components[1];
 
-            if ( isset($components[2]) ){
+            if (isset($components[2])) {
                 $this->param = explode('/', $components[2]);
-            }
-            $file = FILE_DIR .  '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . $this->controller . '_Controller.php';
+            }         
             $controller_class = 'src\Controllers\\' . $this->controller . '_Controller';
+            $method = $this->method . 'Action';
         } else {
-            $file = FILE_DIR .  '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . ucfirst($this->controller) . '_Controller.php';
             $controller_class = 'Vendor\Controllers\\' . ucfirst($this->controller) . '_Controller';
+            $method = $this->method;
         }
 
-        require_once $file;
-        $instanc = new $controller_class();
+        $instance = new $controller_class();
+        if (method_exists($instance, $method)){
+            call_user_func_array(array($instance, $method), $this->param);
+        }
     }
-} 
+
+}

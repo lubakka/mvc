@@ -8,6 +8,7 @@
 
 namespace Vendor\Controllers;
 
+use Vendor\ParameterBag;
 use Vendor\View\View;
 
 class Master_Controller {
@@ -16,8 +17,23 @@ class Master_Controller {
         echo "Defaults";            
     }
     
-    public function render($view, $params = null, $response = 200){
+    public function render($view, array $params = array(), $response = 200){
+        if ('@' !== $view[0]) {
+            throw new \Exception(sprintf('A resource name must start with @ ("%s" given).', $view));
+        }
+        
         $views = new View();
-        $views->render($view, $params, $response);
+        
+        $bundle = substr($view, 1);
+        
+        $path = '';
+        if (false !== strpos($bundle, '/')) {
+            list($bundle, $name) = explode('/', $bundle, 2);
+        }
+        if (false !== strpos($bundle, ':')) {
+            list($bundle, $path) = explode(':', $bundle);
+        }
+        
+        $views->render($bundle, $path, $name, $params, $response);
     }
 } 

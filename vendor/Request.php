@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Lboikov
@@ -8,11 +9,9 @@
 
 namespace Vendor;
 
-class Request
-{
+class Request {
 
     private static $instance = null;
-
     public $user_agent;
 
     /**
@@ -44,12 +43,12 @@ class Request
      * Headers (taken from the $_SERVER)
      */
     public $headers;
-    
     public $scriptName;
+    public $requestAll;
 
-    private function __construct()
-    {
+    private function __construct() {
         $this->setRequest($_SERVER['REQUEST_URI']);
+        $this->setRequestAll($_REQUEST);
         $this->setUserAgent($_SERVER['HTTP_USER_AGENT']);
         $this->setScriptName($_SERVER['SCRIPT_NAME']);
         $this->setServer(Helpers::toObject($_SERVER));
@@ -60,16 +59,14 @@ class Request
     /**
      * @return $_SERVER['REQUEST_URI']
      */
-    public function getRequest()
-    {
+    public function getRequest() {
         return $this->request;
     }
 
     /**
      * @param mixed $request
      */
-    public function setRequest($request)
-    {
+    public function setRequest($request) {
         $this->request = $request;
         return $this;
     }
@@ -77,8 +74,7 @@ class Request
     /**
      * @param mixed $user_agent
      */
-    public function setUserAgent($user_agent)
-    {
+    public function setUserAgent($user_agent) {
         $this->user_agent = $user_agent;
         return $this;
     }
@@ -86,13 +82,11 @@ class Request
     /**
      * @return $_SERVER['HTTP_USER_AGENT']
      */
-    public function getUserAgent()
-    {
+    public function getUserAgent() {
         return $this->user_agent;
     }
 
-    public static function init()
-    {
+    public static function init() {
         if (self::$instance == null) {
             $instance = new Request();
         }
@@ -102,8 +96,7 @@ class Request
     /**
      * @param mixed $cookies
      */
-    public function setCookies($cookies)
-    {
+    public function setCookies($cookies) {
         $this->cookies = $cookies;
         return $this;
     }
@@ -111,16 +104,14 @@ class Request
     /**
      * @return mixed
      */
-    public function getCookies()
-    {
+    public function getCookies() {
         return $this->cookies;
     }
 
     /**
      * @param mixed $files
      */
-    public function setFiles($files)
-    {
+    public function setFiles($files) {
         $this->files = $files;
         return $this;
     }
@@ -128,16 +119,14 @@ class Request
     /**
      * @return mixed
      */
-    public function getFiles()
-    {
+    public function getFiles() {
         return $this->files;
     }
 
     /**
      * @param mixed $headers
      */
-    public function setHeaders($headers)
-    {
+    public function setHeaders($headers) {
         $this->headers = $headers;
         return $this;
     }
@@ -145,16 +134,14 @@ class Request
     /**
      * @return mixed
      */
-    public function getHeaders()
-    {
+    public function getHeaders() {
         return $this->headers;
     }
 
     /**
      * @param mixed $query
      */
-    public function setQuery($query)
-    {
+    public function setQuery($query) {
         $this->query = $query;
         return $this;
     }
@@ -162,8 +149,7 @@ class Request
     /**
      * @return mixed
      */
-    public function getQuery()
-    {
+    public function getQuery() {
         foreach ($_GET as $key => $value) {
             echo 'Key = ' . $key . '<br />';
             echo 'Value= ' . $value;
@@ -174,8 +160,7 @@ class Request
     /**
      * @param mixed $server
      */
-    public function setServer($server)
-    {
+    public function setServer($server) {
         $this->server = $server;
         return $this;
     }
@@ -183,11 +168,10 @@ class Request
     /**
      * @return mixed
      */
-    public function getServer()
-    {
+    public function getServer() {
         return $this->server;
     }
-    
+
     function getScriptName() {
         return $this->scriptName;
     }
@@ -197,5 +181,11 @@ class Request
         return $this;
     }
 
+    function getRequestAll() {
+        return $this->requestAll;
+    }
 
-} 
+    function setRequestAll($requestAll) {
+        $this->requestAll = $requestAll;
+    }
+}

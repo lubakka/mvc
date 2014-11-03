@@ -6,6 +6,6 @@ namespace Vendor\VendorInterface;
  * @author lubakka
  */
 interface IView {
-    public function render($view, $params, $response);
+    public function render($bundle, $path, $name, $params, $response);
     
 }

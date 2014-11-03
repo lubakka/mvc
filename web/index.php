@@ -14,9 +14,7 @@ use Vendor\Core;
 
 define('FILE_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 define('FILE_PATH', basename(FILE_DIR));
-define('DIR_CONTROLLERS', FILE_DIR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Controllers'. DIRECTORY_SEPARATOR);
 
-//var_dump(FILE_DIR, FILE_PATH, $_SERVER);
 require_once '../lib/Bootstrap.php';
 
 new Bootstrap();

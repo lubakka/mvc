@@ -15,7 +15,7 @@ class FrontControoler extends Core {
 
     private $controller = 'master';
     private $method = 'index';
-    private $param = array();
+    private $param = array('');
     private $request;
     protected $router;
 

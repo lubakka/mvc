@@ -23,6 +23,10 @@ class Bootstrap {
             $path .= $value . DIRECTORY_SEPARATOR;
         }
         
-        require_once '..' . DIRECTORY_SEPARATOR . substr($path, 0, strlen($path) -1 ) . '.php';
+        try {
+            require_once '..' . DIRECTORY_SEPARATOR . substr($path, 0, strlen($path) -1 ) . '.php';
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
     }
 }

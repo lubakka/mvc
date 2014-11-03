@@ -14,12 +14,10 @@ use Vendor\Controllers\Master_Controller;
 class Artists_Controller extends Master_Controller {
     
     public function indexAction($id){
-//        echo 'Artists in the House In INDEX : ' . $id;
-        $this->render('Artists:index');
+        $this->render('@Artists:Artists/index', array('d' => $id));
     }
     
-    public function viewAction() {
-//        echo 'Artists in the House In VIEW';
-        $this->render('Artists:view', 'da');
+    public function viewAction($id) {
+        $this->render('@Artists:Artists/view', array('d' => $id, 'requests' => 'l'));
     }
 } 

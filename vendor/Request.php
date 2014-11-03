@@ -25,11 +25,6 @@ class Request {
     public $query;
 
     /**
-     * Server and execution environment parameters ($_SERVER)
-     */
-    public $server;
-
-    /**
      * Uploaded files ($_FILES)
      */
     public $files;
@@ -51,7 +46,6 @@ class Request {
         $this->setRequestAll($_REQUEST);
         $this->setUserAgent($_SERVER['HTTP_USER_AGENT']);
         $this->setScriptName($_SERVER['SCRIPT_NAME']);
-        $this->setServer(Helpers::toObject($_SERVER));
         $this->setCookies(Helpers::toObject($_COOKIE));
         $this->setHeaders(Helpers::toObject(apache_request_headers()));
     }
@@ -156,22 +150,7 @@ class Request {
         }
         return $this->query;
     }
-
-    /**
-     * @param mixed $server
-     */
-    public function setServer($server) {
-        $this->server = $server;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getServer() {
-        return $this->server;
-    }
-
+    
     function getScriptName() {
         return $this->scriptName;
     }

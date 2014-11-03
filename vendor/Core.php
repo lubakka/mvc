@@ -12,5 +12,6 @@ class Core
 {    
     public function __construct(){
         new FrontControoler();
+        $session = Session::getInstance();
     }
 } 

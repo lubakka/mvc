@@ -22,8 +22,8 @@ class FrontControoler extends Core {
     public function __construct() {
         $this->router = Router::getInstance()->getRouters();
         $this->request = Request::init();
-        $request = $this->request->getServer()->REQUEST_URI;
-        $scriptName = $this->request->getServer()->SCRIPT_NAME;
+        $request = $this->request->getRequest();
+        $scriptName = $this->request->getScriptName();
         if (!empty($request)) {
             if (0 === strpos($request, FILE_PATH)) {
                 $request = substr($request, strlen(FILE_PATH));

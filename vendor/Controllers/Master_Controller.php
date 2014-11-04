@@ -9,6 +9,7 @@
 namespace Vendor\Controllers;
 
 use Vendor\ParameterBag;
+use Vendor\Session;
 use Vendor\View\View;
 
 class Master_Controller {
@@ -36,4 +37,16 @@ class Master_Controller {
         
         $views->render($bundle, $path, $name, $params, $response);
     }
+
+	public function getSession(){
+		return Session::getInstance()->getSession();
+	}
+
+	public function getUser(){
+
+	}
+
+	public function get($id){
+
+	}
 } 

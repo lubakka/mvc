@@ -38,7 +38,7 @@ class View implements IView {
 
         $viewBag = Helpers::toObject(ParameterBag::getAll());
 
-        require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . $bundle . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . $name . '.php';
+        require_once '..' . DS . 'src' . DS . 'View' . DS . $bundle . DS . $path . DS . $name . '.php';
     }
 
 }

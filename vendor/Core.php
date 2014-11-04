@@ -11,7 +11,9 @@ namespace Vendor;
 class Core
 {    
     public function __construct(){
-        new FrontControoler();
-        $session = Session::getInstance();
+//		header('Content-Type: text/html; charset="utf-8"');
+//		header('Content-Type: text/html; charset=utf-8');
+        new FrontController();
+        Session::getInstance();
     }
 } 

@@ -18,6 +18,6 @@ class Artists_Controller extends Master_Controller {
     }
     
     public function viewAction($id) {
-        $this->render('@Artists:Artists/view', array('d' => $id, 'requests' => 'l'));
+        $this->render('@Artists:Artists/view', array('d' => $id, 'requests' => 'да става'));
     }
 } 

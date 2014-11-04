@@ -20,7 +20,7 @@ class Session {
             session_start();
         }
         $_SESSION['sid'] = $this->getSessionId();
-        session_set_cookie_params(3600, '/', '', false, TRUE);
+        session_set_cookie_params(1800, '/', '', false, TRUE);
     }
 
     public static function getInstance() {

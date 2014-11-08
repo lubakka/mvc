@@ -68,6 +68,8 @@ class FrontController extends Core
 	{
 		$request    = $this->getRequest ();
 		$components = $this->getCleanComponents ( $request );
+                $controller_class = '';
+                $method = $this->method;
 
 		if ( $this->isMasterController ( $components ) ) {
 			$this->method     = ( isset( $components[ 1 ] ) ? $components[ 1 ] : $this->method );
@@ -117,12 +119,16 @@ class FrontController extends Core
 		if ( empty( $controller_class ) ) {
 			throw new \Exception( "This route is not in router.php config" );
 		} else {
+                    try{
 			$instance = new $controller_class();
-			if ( method_exists ( $instance, $method ) ) {
-				call_user_func_array ( array ( $instance, $method ), $this->param );
-			} else {
-				call_user_func_array ( array ( $instance, 'index' ), array ( '' ) );
-			}
+                                if ( method_exists ( $instance, $method ) ) {
+                                        call_user_func_array ( array ( $instance, $method ), $this->param );
+                                } else {
+                                        call_user_func_array ( array ( $instance, 'index' ), array ( '' ) );
+                                }
+                        } catch (\Exception $e) {
+                            echo $e->getMessage();
+                        }
 		}
 	}
 

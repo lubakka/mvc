@@ -27,10 +27,12 @@ class Bootstrap
 			$path .= $value . DS;
 		}
 
-		try {
-			require_once '..' . DS . substr ( $path, 0, strlen ( $path ) - 1 ) . '.php';
-		} catch ( Exception $exc ) {
-			echo $exc->getTraceAsString ();
-		}
+                $file = '..' . DS . substr ( $path, 0, strlen ( $path ) - 1 ) . '.php';
+                
+                if (is_file($file)){
+                    require_once $file;
+                } else {
+                    throw new \Exception("File not exist " . $file);
+                }
 	}
 }

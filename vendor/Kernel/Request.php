@@ -7,7 +7,7 @@
  * Time: 21:10
  */
 
-namespace Vendor;
+namespace Kernel;
 
 class Request {
 

@@ -5,7 +5,7 @@
  * @author lubakka
  */
 
-namespace Vendor\VendorInterface;
+namespace Kernel\VendorInterface;
 
 interface IRouter {
 

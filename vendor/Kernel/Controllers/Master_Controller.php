@@ -6,11 +6,11 @@
  * Time: 23:09
  */
 
-namespace Vendor\Controllers;
+namespace Kernel\Controllers;
 
-use Vendor\ParameterBag;
-use Vendor\Session;
-use Vendor\View\View;
+use Kernel\View\View;
+use Kernel\ParameterBag;
+use Kernel\Session;
 
 class Master_Controller {
 

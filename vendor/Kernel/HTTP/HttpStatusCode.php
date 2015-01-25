@@ -6,7 +6,7 @@
  * Time: 7:27 PM
  */
 
-namespace Vendor\HTTP;
+namespace Kernel\HTTP;
 
 
 class HttpStatusCode {

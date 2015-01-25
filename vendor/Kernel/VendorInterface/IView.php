@@ -1,6 +1,5 @@
 <?php
-
-namespace Vendor\VendorInterface;
+namespace Kernel\VendorInterface;
 /**
  *
  * @author lubakka

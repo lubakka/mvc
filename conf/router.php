@@ -7,12 +7,14 @@ return array(
                 'artists_index' => array(
                     'controller' => 'Artists',
                     'action' => 'index',
-                    'route' => '/artists'
+                    'route' => '/artists',
+                    'parameters' => '[{id}]'
                 ),
                 'artists_view' => array(
                     'controller' => 'Artists',
                     'action' => 'view',
-                    'route' => '/artists/view'
+                    'route' => '/artists/view',
+                    'parameters' => '[{id}]'
                 )
             )
         )

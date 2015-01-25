@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendor;
+namespace Kernel;
 
 /**
  * Description of Session

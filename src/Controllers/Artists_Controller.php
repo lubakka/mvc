@@ -8,13 +8,13 @@
 
 namespace src\Controllers;
 
-
-use Vendor\Controllers\Master_Controller;
+use Kernel\Controllers\Master_Controller;
 
 class Artists_Controller extends Master_Controller {
     
     public function indexAction($id){
-        $this->render('@Artists:Artists/index', array('d' => $id));
+        var_dump($id);
+        $this->render('@Artists:Artists/index', array('d' => 'test'));
     }
     
     public function viewAction($id) {

@@ -6,7 +6,7 @@
  * Time: 7:25 PM
  */
 
-namespace Vendor;
+namespace Kernel\HTTP;
 
 
 class Response {

@@ -357,7 +357,7 @@ class Twig_Extension_Core extends Twig_Extension
      */
     public function getName()
     {
-        return 'core';
+        return 'Kernel';
     }
 }
 
@@ -454,7 +454,7 @@ function twig_random(Twig_Environment $env, $values = null)
 function twig_date_format_filter(Twig_Environment $env, $date, $format = null, $timezone = null)
 {
     if (null === $format) {
-        $formats = $env->getExtension('core')->getDateFormat();
+        $formats = $env->getExtension('Kernel')->getDateFormat();
         $format = $date instanceof DateInterval ? $formats[1] : $formats[0];
     }
 
@@ -509,7 +509,7 @@ function twig_date_converter(Twig_Environment $env, $date = null, $timezone = nu
     // determine the timezone
     if (false !== $timezone) {
         if (null === $timezone) {
-            $timezone = $env->getExtension('core')->getTimezone();
+            $timezone = $env->getExtension('Kernel')->getTimezone();
         } elseif (!$timezone instanceof DateTimeZone) {
             $timezone = new DateTimeZone($timezone);
         }
@@ -534,7 +534,7 @@ function twig_date_converter(Twig_Environment $env, $date = null, $timezone = nu
         $date = '@'.$date;
     }
 
-    $date = new DateTime($date, $env->getExtension('core')->getTimezone());
+    $date = new DateTime($date, $env->getExtension('Kernel')->getTimezone());
     if (false !== $timezone) {
         $date->setTimezone($timezone);
     }
@@ -581,7 +581,7 @@ function twig_round($value, $precision = 0, $method = 'common')
  */
 function twig_number_format_filter(Twig_Environment $env, $number, $decimal = null, $decimalPoint = null, $thousandSep = null)
 {
-    $defaults = $env->getExtension('core')->getNumberFormat();
+    $defaults = $env->getExtension('Kernel')->getNumberFormat();
     if (null === $decimal) {
         $decimal = $defaults[0];
     }
@@ -1085,7 +1085,7 @@ function twig_escape_filter(Twig_Environment $env, $string, $strategy = 'html', 
             static $escapers;
 
             if (null === $escapers) {
-                $escapers = $env->getExtension('core')->getEscapers();
+                $escapers = $env->getExtension('Kernel')->getEscapers();
             }
 
             if (isset($escapers[$strategy])) {

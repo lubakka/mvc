@@ -6,8 +6,7 @@
  * Time: 22:48
  */
 
-namespace Vendor;
-
+namespace Kernel;
 
 class Helpers {
 

@@ -1,13 +1,14 @@
 <?php
 
-namespace Vendor\View;
+namespace Kernel\View;
 
-use Vendor\VendorInterface\IView;
-use Vendor\ParameterBag;
-use Vendor\Helpers;
+
+use Kernel\VendorInterface\IView;
+use Kernel\ParameterBag;
+use Kernel\Helpers;
 use Exception;
-use Vendor\Request;
-use Vendor\Session;
+use Kernel\Request;
+use Kernel\Session;
 
 /**
  * Description of View
@@ -18,8 +19,8 @@ class View implements IView
 {
 
     private $view = "../src/View/";
-    private $layouts = "../layout/";
-    protected $layoutsFile = "base.layout.php";
+    private $layouts = "../layout/main/";
+    protected $layoutsFile = "base.layout.html.twig";
     private $cache = "../conf/cache/";
 
     public function render($bundle, $path = '', $name, $params, $response)
@@ -49,23 +50,20 @@ class View implements IView
         return $this->layout;
     }
 
-    public function layout()
+    public function layout($bundle, $path = '', $name, $params, $response)
     {
+        $this->checkParams($params);
+
+        $viewBag = Helpers::toObject(ParameterBag::getAll());
+
         \Twig_Autoloader::register();
         $loader = new \Twig_Loader_Filesystem(realpath($this->layouts));
+        $loader->addPath(realpath($this->layouts . '..' . DS . $bundle . DS. $path . DS ));
         $twig = new \Twig_Environment($loader, array(
             'cache' => $this->cache
         ));
-
-        echo $twig->render($this->layoutsFile, array('name' => 'Fabien'));
-    }
-
-    /**
-     * @param string $layout
-     */
-    public function setLayout($layout) {
-
-        return $this;
+        $layout = $twig->loadTemplate($this->layoutsFile);
+        echo $twig->display('index.html.twig', array('layout' => $layout, 'app' => $viewBag, 'params' => $params));
     }
 
     private function checkParams(array $params) {

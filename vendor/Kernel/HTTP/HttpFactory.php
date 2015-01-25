@@ -6,7 +6,7 @@
  * Time: 21:49
  */
 
-namespace Vendor;
+namespace Kernel\HTTP;
 
 
 class HttpFactory {

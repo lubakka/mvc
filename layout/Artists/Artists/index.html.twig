@@ -1,0 +1,10 @@
+{% extends "base.layout.html.twig" %}
+
+{% block title %}Index - {{ parent() }}{% endblock %}
+
+{% block body %}
+    {% for ses in app.session %}
+    {{ ses }}
+        {% endfor %}
+    {{ params.d }}
+{% endblock %}

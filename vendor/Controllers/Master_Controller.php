@@ -35,7 +35,7 @@ class Master_Controller {
             list($bundle, $path) = explode(':', $bundle);
         }
         
-        $views->render($bundle, $path, $name, $params, $response);
+        $views->layout($bundle, $path, $name, $params, $response);
     }
 
 	public function getSession(){

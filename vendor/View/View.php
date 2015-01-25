@@ -14,10 +14,61 @@ use Vendor\Session;
  *
  * @author lubakka
  */
-class View implements IView {
+class View implements IView
+{
 
-    public function render($bundle, $path = '', $name, $params, $response) {
+    private $view = "../src/View/";
+    private $layouts = "../layout/";
+    protected $layoutsFile = "base.layout.php";
+    private $cache = "../conf/cache/";
 
+    public function render($bundle, $path = '', $name, $params, $response)
+    {
+        $this->checkParams($params);
+        $viewBag = Helpers::toObject(ParameterBag::getAll());
+
+        $src = str_replace('/', DS, $this->view);
+        if (!is_dir($src)) {
+            throw new Exception('Dir not exist');
+        }
+
+        $path = realpath($src . $bundle . DS . $path . DS . $name . '.php');
+
+        if (!is_file($path)) {
+            throw new Exception('File not exist');
+        }
+
+        require_once $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLayout()
+    {
+        return $this->layout;
+    }
+
+    public function layout()
+    {
+        \Twig_Autoloader::register();
+        $loader = new \Twig_Loader_Filesystem(realpath($this->layouts));
+        $twig = new \Twig_Environment($loader, array(
+            'cache' => $this->cache
+        ));
+
+        echo $twig->render($this->layoutsFile, array('name' => 'Fabien'));
+    }
+
+    /**
+     * @param string $layout
+     */
+    public function setLayout($layout) {
+
+        return $this;
+    }
+
+    private function checkParams(array $params) {
         foreach ($params as $key => $value) {
             switch ($key) {
                 case 'request':
@@ -35,10 +86,6 @@ class View implements IView {
         ParameterBag::set('cookie', Request::init()->getCookies());
         ParameterBag::set('allRequest', Request::init()->getRequestAll());
         ParameterBag::set('session', Session::getInstance()->getSession());
-
-        $viewBag = Helpers::toObject(ParameterBag::getAll());
-
-        require_once '..' . DS . 'src' . DS . 'View' . DS . $bundle . DS . $path . DS . $name . '.php';
     }
 
 }

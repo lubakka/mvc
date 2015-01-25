@@ -20,6 +20,7 @@ define( 'CONF_PATH', FILE_DIR . '..' . DS . 'conf' . DS );
 define( 'ROOT_URL', 'http://' . $_SERVER[ 'HTTP_HOST' ] . '/' );
 
 require_once '../lib/Bootstrap.php';
+require_once '../vendor/autoload.php';
 
 new Bootstrap();
 new Core();

@@ -55,7 +55,9 @@ class FrontController extends Core
      */
     public function __construct()
     {
-        $this->path = Router::getInstance()->getRouterPath();
+        $router = Router::getInstance();
+        $this->path = $router->getRouterPath();
+        $this->router = $router->getRouterConfig();
         $this->request = Request::init();
         $this->init();
     }
@@ -75,7 +77,19 @@ class FrontController extends Core
             $controller_class = 'Kernel\Controllers\\' . ucfirst($this->controller) . '_Controller';
             $method = $this->method;
         } else {
-            $realpath = '/' . $components[0] . (isset($components[1]) ? '/' . $components[1] : '');
+            if (!array_key_exists($components[0], $this->router)){
+                throw new \Exception('Not match route');
+            }
+            $rout = array();
+            foreach($this->router as $key){
+                foreach($key as $rout){
+                    $rout = $rout;
+                }
+            }
+
+            $uri = '';
+
+            $realpath = '/' . $components[0] . (isset($components[1]) ? '/' . (is_numeric($components[1]) ? 'index' : $components[1] ) : '');
             $clear = false;
             if (false !== strpos($realpath, '?')) {
                 $realpath = explode('/?', $realpath)[0];
@@ -98,6 +112,25 @@ class FrontController extends Core
                     $controller_class = 'src\Controllers\\' . $this->controller . '_Controller';
                     $method = $this->method . 'Action';
                     break;
+                } else {
+                    if (preg_match('/' . $rout['parameters'] . '$/i', $path)){
+                        if (count($components) == 1) {
+                            $components = explode('/', $components[0]);
+                        }
+                        $this->controller = trim(ucfirst($components[0]));
+                        $this->method = (isset($components[1]) ? (is_numeric(trim($components[1])) ? 'index' : $components[1] ) : $this->method);
+                        if (isset($components[2])) {
+                            $this->param = explode('/', $components[2]);
+                        }
+                        if (isset($components[1])) {
+                            if (is_numeric($components[1])) {
+                                $this->param = explode('/', trim($components[1]));
+                            }
+                        }
+                        $controller_class = 'src\Controllers\\' . $this->controller . '_Controller';
+                        $method = $this->method . 'Action';
+                        break;
+                    }
                 }
             }
         }
@@ -229,5 +262,7 @@ class FrontController extends Core
     {
         return $this->controller;
     }
+
+
 
 }

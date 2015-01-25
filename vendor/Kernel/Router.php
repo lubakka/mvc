@@ -48,11 +48,17 @@ class Router implements IRouter
         foreach ($this->getRouters() as $name) {
             foreach ($name as $key => $value) {
                     $this->path[$key] = $value['route'];
-
             }
         }
 
         return Helpers::toObject($this->path);
+    }
+
+    public function getRouterConfig()
+    {
+        $helper =  Helpers::toObject($this->routers);
+
+        return $helper->routers['router'];
     }
 
     private function fetchArray($file)

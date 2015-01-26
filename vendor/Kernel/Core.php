@@ -8,14 +8,42 @@
 
 namespace Kernel;
 
-use Kernel\Debug\Debug;
+use Kernel\Exception\FrontControllerException;
 
 class Core
 {
-    public function __construct()
+    private $request;
+
+    public function __construct($request = null)
+    {
+//        $this->setRequest($request);
+    }
+
+    public function run()
     {
         @ini_set ( 'default_charset', 'UTF-8' );
-        new FrontController();
-        Session::getInstance();
+        try {
+            new FrontController($this->getRequest());
+        } catch (FrontControllerException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+
+        return $this;
     }
 } 

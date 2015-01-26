@@ -6,8 +6,10 @@
  * Time: 20:08
  */
 
+use Kernel\Core;
+use Kernel\Debug\Debug;
+use Kernel\HTTP\Request;
 use Lib\Bootstrap;
-use \Kernel\Core;
 
 define('ROOT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/');
 define('ENVIRONMENT', 'dev');
@@ -21,5 +23,15 @@ define('CONF_PATH', FILE_DIR . '..' . DS . 'conf' . DS);
 require_once '../lib/Bootstrap.php';
 require_once '../vendor/autoload.php';
 
-new Bootstrap();
-new Core();
+try {
+    new Bootstrap();
+    if (ENVIRONMENT == 'dev') {
+        $debug = Debug::getInstance();
+        $debug->clear();
+    }
+    $kernel = new Core();
+    $kernel->setRequest(Request::createFromGolobal());
+    $kernel->run();
+} catch (\Kernel\Exception\BootstrapExeption $e) {
+    var_dump($e);
+}

@@ -1,5 +1,5 @@
 <?php
 
-echo 'view да ' . $viewBag->d;
+echo 'view да ';
+var_dump($app);
 echo '<br />';
-var_dump($viewBag);

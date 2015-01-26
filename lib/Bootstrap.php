@@ -11,7 +11,11 @@ class Bootstrap
 {
     public function __construct()
     {
-        spl_autoload_register(array($this, 'loader'));
+        if (version_compare(phpversion(), '5.3.0', '>=')) {
+            spl_autoload_register(array($this, 'loader'), true);
+        } else {
+            spl_autoload_register(array($this, 'loader'));
+        }
     }
 
     private function loader($className)
@@ -36,9 +40,16 @@ class Bootstrap
         }
 
         if (is_file($file)) {
-            require_once $file;
+            $this->includeFile($file);
+            return true;
         } else {
             throw new \Exception("File not exist " . $file);
         }
+        return false;
+    }
+
+    private function includeFile($file)
+    {
+        require $file;
     }
 }

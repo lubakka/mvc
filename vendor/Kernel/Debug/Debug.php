@@ -12,16 +12,13 @@ use Kernel\FileSystem\FileSystem;
 
 class Debug {
 
-    private $cacheDir = 'cache/';
+    public static $cacheDir = 'cache/';
 
     protected function __construct(){
         @ini_set ( 'error_reporting', E_ALL );
         @ini_set ( 'display_errors', 'On' );
+        FileSystem::mkdir(CONF_PATH . self::$cacheDir);
     }
-
-    private function __clone(){}
-
-    private function __wakeup(){}
 
     public static function getInstance() {
         static $instance = null;
@@ -34,6 +31,14 @@ class Debug {
 
     public function clear(){
         $file = new FileSystem();
-        $file->deleteDir(CONF_PATH . $this->cacheDir);
+        $file->deleteDir(CONF_PATH . self::$cacheDir);
+    }
+
+    private function __clone()
+    {
+    }
+
+    private function __wakeup()
+    {
     }
 }

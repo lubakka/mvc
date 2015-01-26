@@ -8,10 +8,9 @@
 
 namespace Kernel\Controllers;
 
-use Kernel\Debug\Debug;
-use Kernel\View\View;
 use Kernel\ParameterBag;
 use Kernel\Session;
+use Kernel\View\View;
 
 class Master_Controller
 {
@@ -58,10 +57,6 @@ class Master_Controller
         }
         if (false !== strpos($bundle, ':')) {
             list($bundle, $path) = explode(':', $bundle);
-        }
-        if (ENVIRONMENT == 'dev') {
-            $debug = Debug::getInstance();
-            $debug->clear();
         }
 
         $views->layout($bundle, $path, $name, $params, $response);

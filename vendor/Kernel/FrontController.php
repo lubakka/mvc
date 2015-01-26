@@ -7,58 +7,56 @@ namespace Kernel;
  * Date: 14-10-1
  * Time: 0:08
  */
+use Kernel\Exception\FrontControllerException;
+use Kernel\HTTP\Request;
 
 /**
  * Class FrontController
  *
  * @package Vendor
  */
-class FrontController extends Core
+class FrontController extends FrontControllerException
 {
 
+    /**
+     * @var
+     */
+    protected $router;
+    /**
+     * @var array
+     */
+    protected $path = array();
     /**
      * Defaults value
      *
      * @var string
      */
     private $controller = 'Master';
-
     /**
      * Defaults value
      *
      * @var string
      */
     private $method = 'index';
-
     /**
      * @var array
      */
     private $param = array('');
-
     /**
      * @var Request
      */
     private $request;
 
     /**
-     * @var
-     */
-    protected $router;
-
-    /**
-     * @var array
-     */
-    protected $path = array();
-
-    /**
      * Constructor for FrontController
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
+        Session::getInstance();
         $router = Router::getInstance();
         $this->path = $router->getRouterPath();
         $this->router = $router->getRouterConfig();
-        $this->request = Request::init();
+        $this->request = $request;
         $this->init();
     }
 
@@ -68,6 +66,8 @@ class FrontController extends Core
     private function init()
     {
         $request = $this->getRequest();
+//        var_dump($request->getServer());
+//        exit;
         $components = $this->getCleanComponents($request);
         $controller_class = '';
         $method = $this->method;
@@ -78,7 +78,7 @@ class FrontController extends Core
             $method = $this->method;
         } else {
             if (!array_key_exists($components[0], $this->router)){
-                throw new \Exception('Not match route');
+                throw new FrontControllerException('Not match route');
             }
             $rout = array();
             foreach($this->router as $key){
@@ -86,8 +86,6 @@ class FrontController extends Core
                     $rout = $rout;
                 }
             }
-
-            $uri = '';
 
             $realpath = '/' . $components[0] . (isset($components[1]) ? '/' . (is_numeric($components[1]) ? 'index' : $components[1] ) : '');
             $clear = false;
@@ -138,57 +136,19 @@ class FrontController extends Core
         $this->run($controller_class, $method);
     }
 
-    /**
-     * Include Class and Method if exist
-     *
-     * @param $controller_class
-     * @param $method
-     *
-     * @throws \Exception
-     */
-    private function run($controller_class, $method)
-    {
-        if (empty($controller_class)) {
-            throw new \Exception("This route is not in router.php config");
-        } else {
-            try {
-                $instance = new $controller_class();
-                if (method_exists($instance, $method)) {
-                    call_user_func_array(array($instance, $method), $this->param);
-                } else {
-                    call_user_func_array(array($instance, 'index'), array(''));
-                }
-            } catch (\Exception $e) {
-                echo $e->getMessage();
-            }
-        }
-    }
-
-    /**
-     * @return string
-     * @throws \Exception
-     */
     private function getRequest()
     {
+        $uri = $this->request->getServer()->get('REQUEST_URI');
         if (!$this->isEmptyRequest()) {
-            if (0 === strpos($this->request->getRequest(), FILE_PATH)) {
-                $request = substr($this->request->getRequest(), strlen(FILE_PATH));
+            if (0 === strpos($uri, FILE_PATH)) {
+                $request = substr($uri, strlen(FILE_PATH));
             } else {
-                $request = substr($this->request->getRequest(), 1);
+                $request = substr($uri, 1);
             }
         } else {
             throw new \Exception("Request is empty");
         }
-
         return $request;
-    }
-
-    /**
-     * @return array
-     */
-    private function getScriptName()
-    {
-        return explode('/', substr($this->request->getScriptName(), 1, -10));
     }
 
     /**
@@ -196,7 +156,7 @@ class FrontController extends Core
      */
     private function isEmptyRequest()
     {
-        if (empty($this->request->getRequest())) {
+        if (empty($this->request)) {
             return true;
         } else {
             return false;
@@ -229,17 +189,13 @@ class FrontController extends Core
     }
 
     /**
-     * @param $components
-     *
-     * @return bool
+     * @return array
      */
-    private function isMasterController($components)
+    private function getScriptName()
     {
-        if ($components[0] === '' || false !== strpos($components[0], '?')) {
-            return true;
-        } else {
-            return false;
-        }
+        $subs = substr($this->request->getServer()->get('SCRIPT_NAME'), 1, -10);
+        $scName = explode('/', $subs);
+        return $scName;
     }
 
     private function clean($elem)
@@ -256,13 +212,51 @@ class FrontController extends Core
     }
 
     /**
+     * @param $components
+     *
+     * @return bool
+     */
+    private function isMasterController($components)
+    {
+        if ($components[0] === '' || false !== strpos($components[0], '?')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Include Class and Method if exist
+     *
+     * @param $controller_class
+     * @param $method
+     *
+     * @throws \Exception
+     */
+    private function run($controller_class, $method)
+    {
+        if (empty($controller_class)) {
+            throw new \Exception("This route is not in router.php config");
+        } else {
+            try {
+                $instance = new $controller_class();
+                if (method_exists($instance, $method)) {
+                    call_user_func_array(array($instance, $method), $this->param);
+                } else {
+                    call_user_func_array(array($instance, 'index'), array(''));
+                }
+            } catch (\Exception $e) {
+                echo $e->getMessage();
+            }
+        }
+    }
+
+    /**
      * @return string
      */
     public function getController()
     {
         return $this->controller;
     }
-
-
 
 }

@@ -13,7 +13,6 @@ use Kernel\Controllers\Master_Controller;
 class Artists_Controller extends Master_Controller {
     
     public function indexAction($id){
-        //var_dump($id);
         $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id));
     }
     

@@ -11,7 +11,6 @@ class Bootstrap
 {
     public function __construct($prepend = false)
     {
-        spl_autoload_extensions(".class.php");
         if (version_compare(phpversion(), '5.3.0', '>=')) {
             spl_autoload_register(array($this, 'loader'), true, $prepend);
         } else {

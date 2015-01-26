@@ -8,6 +8,7 @@
 
 use Kernel\Core;
 use Kernel\Debug\Debug;
+use Kernel\Exception\BootstrapException;
 use Kernel\HTTP\Request;
 use Lib\Bootstrap;
 
@@ -18,7 +19,6 @@ define('DS', DIRECTORY_SEPARATOR);
 define('FILE_DIR', dirname(__FILE__) . DS);
 define('FILE_PATH', basename(FILE_DIR));
 define('CONF_PATH', FILE_DIR . '..' . DS . 'conf' . DS);
-
 
 require_once '../lib/Bootstrap.php';
 require_once '../vendor/autoload.php';
@@ -32,6 +32,6 @@ try {
     $kernel = new Core();
     $kernel->setRequest(Request::createFromGolobal());
     $kernel->run();
-} catch (\Kernel\Exception\BootstrapExeption $e) {
+} catch (BootstrapException $e) {
     var_dump($e);
 }

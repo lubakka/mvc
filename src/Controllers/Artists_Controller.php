@@ -13,10 +13,10 @@ use Kernel\Controllers\Master_Controller;
 class Artists_Controller extends Master_Controller {
     
     public function indexAction($id){
-        $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id));
+        return $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id));
     }
     
     public function viewAction($id) {
-        $this->render('@Artists:Artists/view', array('d' => $id, 'requests' => 'да става', 'ses' => $this->getSession()));
+        return $this->render('@Artists:Artists/view', array('d' => $id, 'requests' => 'да става', 'ses' => $this->getSession()));
     }
 } 

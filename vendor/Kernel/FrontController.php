@@ -1,13 +1,16 @@
 <?php
 
 namespace Kernel;
+
 /**
  * Created by PhpStorm.
  * User: Lboikov
  * Date: 14-10-1
  * Time: 0:08
  */
+use Kernel\Controllers\Master_Controller;
 use Kernel\Exception\FrontControllerException;
+use Kernel\Exception\MasterControllerException;
 use Kernel\HTTP\Request;
 
 /**
@@ -77,17 +80,17 @@ class FrontController extends FrontControllerException
             $controller_class = 'Kernel\Controllers\\' . ucfirst($this->controller) . '_Controller';
             $method = $this->method;
         } else {
-            if (!array_key_exists($components[0], $this->router)){
+            if (!array_key_exists($components[0], $this->router)) {
                 throw new FrontControllerException('Not match route');
             }
             $rout = array();
-            foreach($this->router as $key){
-                foreach($key as $rout){
+            foreach ($this->router as $key) {
+                foreach ($key as $rout) {
                     $rout = $rout;
                 }
             }
 
-            $realpath = '/' . $components[0] . (isset($components[1]) ? '/' . (is_numeric($components[1]) ? 'index' : $components[1] ) : '');
+            $realpath = '/' . $components[0] . (isset($components[1]) ? '/' . (is_numeric($components[1]) ? 'index' : $components[1]) : '');
             $clear = false;
             if (false !== strpos($realpath, '?')) {
                 $realpath = explode('/?', $realpath)[0];
@@ -111,12 +114,12 @@ class FrontController extends FrontControllerException
                     $method = $this->method . 'Action';
                     break;
                 } else {
-                    if (preg_match('/' . $rout['parameters'] . '$/i', $path)){
+                    if (preg_match('/' . $rout['parameters'] . '$/i', $path)) {
                         if (count($components) == 1) {
                             $components = explode('/', $components[0]);
                         }
                         $this->controller = trim(ucfirst($components[0]));
-                        $this->method = (isset($components[1]) ? (is_numeric(trim($components[1])) ? 'index' : $components[1] ) : $this->method);
+                        $this->method = (isset($components[1]) ? (is_numeric(trim($components[1])) ? 'index' : $components[1]) : $this->method);
                         if (isset($components[2])) {
                             $this->param = explode('/', $components[2]);
                         }
@@ -240,10 +243,19 @@ class FrontController extends FrontControllerException
         } else {
             try {
                 $instance = new $controller_class();
+                if (!$instance instanceof Master_Controller) {
+                    throw new MasterControllerException("Controller is not instance of 'Master_Controller'");
+                }
                 if (method_exists($instance, $method)) {
-                    call_user_func_array(array($instance, $method), $this->param);
+                    $class = call_user_func_array(array($instance, $method), $this->param);
+                    if (null == $class || !is_object($class)) {
+                        throw new \Exception(sprintf("Controller %s must returnet value", $instance));
+                    }
                 } else {
-                    call_user_func_array(array($instance, 'index'), array(''));
+                    $class = call_user_func_array(array($instance, 'index'), array(''));
+                    if (null == $class || !is_object($class) || !$class instanceof Master_Controller) {
+                        throw new \Exception(sprintf("Controller %s must returnet value", $instance));
+                    }
                 }
             } catch (\Exception $e) {
                 echo $e->getMessage();

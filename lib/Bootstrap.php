@@ -9,10 +9,11 @@ namespace Lib;
 
 class Bootstrap
 {
-    public function __construct()
+    public function __construct($prepend = false)
     {
+        spl_autoload_extensions(".class.php");
         if (version_compare(phpversion(), '5.3.0', '>=')) {
-            spl_autoload_register(array($this, 'loader'), true);
+            spl_autoload_register(array($this, 'loader'), true, $prepend);
         } else {
             spl_autoload_register(array($this, 'loader'));
         }
@@ -39,11 +40,11 @@ class Bootstrap
             $file = '../vendor' . DS . substr($path, 0, strlen($path) - 1) . '.php';
         }
 
-        if (is_file($file)) {
+        if (is_file($file) && is_readable($file)) {
             $this->includeFile($file);
             return true;
         } else {
-            throw new \Exception("File not exist " . $file);
+            throw new \Exception("File not exist or not readable " . $file);
         }
         return false;
     }

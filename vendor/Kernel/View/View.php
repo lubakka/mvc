@@ -4,6 +4,7 @@ namespace Kernel\View;
 
 
 use Exception;
+use Kernel\Exception\ViewException;
 use Kernel\HTTP\ParameterBag;
 use Kernel\VendorInterface\IView;
 
@@ -47,15 +48,20 @@ class View implements IView
 
     public function layout($bundle, $path = '', $name, $params, $response)
     {
-        \Twig_Autoloader::register();
-        $loader = new \Twig_Loader_Filesystem(realpath($this->layouts));
-        $loader->addPath(realpath($this->layouts . '..' . DS . $bundle . DS. $path . DS ));
+        try {
+            \Twig_Autoloader::register();
+            $loader = new \Twig_Loader_Filesystem(realpath($this->layouts));
+            $loader->addPath(realpath($this->layouts . '..' . DS . $bundle . DS . $path . DS));
 
-        $twig = new \Twig_Environment($loader, array(
-            'cache' => $this->cache
-        ));
-        $layout = $twig->loadTemplate($this->layoutsFile);
-        echo $twig->display('index.html.twig', array('layout' => $layout, 'params' => $params));
+            $twig = new \Twig_Environment($loader, array(
+                'cache' => $this->cache
+            ));
+            $layout = $twig->loadTemplate($this->layoutsFile);
+            echo $twig->display('index.html.twig', array('layout' => $layout, 'params' => $params));
+            return true;
+        } catch (Exception $e) {
+            throw new ViewException("Some problem");
+        }
     }
 
 }

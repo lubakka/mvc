@@ -8,6 +8,7 @@
 
 namespace Kernel\Controllers;
 
+use Kernel\Exception\MasterControllerException;
 use Kernel\ParameterBag;
 use Kernel\Session;
 use Kernel\View\View;
@@ -17,7 +18,8 @@ class Master_Controller
 
     public function index()
     {
-        echo "Defaults";
+        echo "Default";
+        return $this;
     }
 
     public function render($view, array $params = array(), $response = 200)
@@ -59,7 +61,12 @@ class Master_Controller
             list($bundle, $path) = explode(':', $bundle);
         }
 
-        $views->layout($bundle, $path, $name, $params, $response);
+        try {
+            $views->layout($bundle, $path, $name, $params, $response);
+            return $this;
+        } catch (MasterControllerException $e) {
+            throw new MasterControllerException("Problem");
+        }
     }
 
     public function getSession()
@@ -69,11 +76,18 @@ class Master_Controller
 
     public function getUser()
     {
-
+        return null === '' ? '' : 'Anonymous';
     }
 
     public function get($id)
     {
 
     }
+
+    function __toString()
+    {
+        $class = get_called_class();
+        return $class;
+    }
+
 } 

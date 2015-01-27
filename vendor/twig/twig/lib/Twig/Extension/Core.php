@@ -95,9 +95,9 @@ class Twig_Extension_Core extends Twig_Extension
     /**
      * Sets the default format to be used by the number_format filter.
      *
-     * @param int     $decimal      The number of decimal places to use.
-     * @param string  $decimalPoint The character(s) to use for the decimal point.
-     * @param string  $thousandSep  The character(s) to use for the thousands separator.
+     * @param int $decimal The number of decimal places to use.
+     * @param string $decimalPoint The character(s) to use for the decimal point.
+     * @param string $thousandSep The character(s) to use for the thousands separator.
      */
     public function setNumberFormat($decimal, $decimalPoint, $thousandSep)
     {
@@ -357,7 +357,7 @@ class Twig_Extension_Core extends Twig_Extension
      */
     public function getName()
     {
-        return 'Kernel';
+        return 'core';
     }
 }
 
@@ -454,7 +454,7 @@ function twig_random(Twig_Environment $env, $values = null)
 function twig_date_format_filter(Twig_Environment $env, $date, $format = null, $timezone = null)
 {
     if (null === $format) {
-        $formats = $env->getExtension('Kernel')->getDateFormat();
+        $formats = $env->getExtension('core')->getDateFormat();
         $format = $date instanceof DateInterval ? $formats[1] : $formats[0];
     }
 
@@ -509,7 +509,7 @@ function twig_date_converter(Twig_Environment $env, $date = null, $timezone = nu
     // determine the timezone
     if (false !== $timezone) {
         if (null === $timezone) {
-            $timezone = $env->getExtension('Kernel')->getTimezone();
+            $timezone = $env->getExtension('core')->getTimezone();
         } elseif (!$timezone instanceof DateTimeZone) {
             $timezone = new DateTimeZone($timezone);
         }
@@ -534,7 +534,7 @@ function twig_date_converter(Twig_Environment $env, $date = null, $timezone = nu
         $date = '@'.$date;
     }
 
-    $date = new DateTime($date, $env->getExtension('Kernel')->getTimezone());
+    $date = new DateTime($date, $env->getExtension('core')->getTimezone());
     if (false !== $timezone) {
         $date->setTimezone($timezone);
     }
@@ -581,7 +581,7 @@ function twig_round($value, $precision = 0, $method = 'common')
  */
 function twig_number_format_filter(Twig_Environment $env, $number, $decimal = null, $decimalPoint = null, $thousandSep = null)
 {
-    $defaults = $env->getExtension('Kernel')->getNumberFormat();
+    $defaults = $env->getExtension('core')->getNumberFormat();
     if (null === $decimal) {
         $decimal = $defaults[0];
     }
@@ -621,8 +621,8 @@ if (version_compare(PHP_VERSION, '5.3.0', '<')) {
     /**
      * JSON encodes a variable.
      *
-     * @param mixed   $value   The value to encode.
-     * @param int     $options Not used on PHP 5.2.x
+     * @param mixed $value The value to encode.
+     * @param int $options Not used on PHP 5.2.x
      *
      * @return mixed The JSON encoded value
      */
@@ -640,8 +640,8 @@ if (version_compare(PHP_VERSION, '5.3.0', '<')) {
     /**
      * JSON encodes a variable.
      *
-     * @param mixed   $value   The value to encode.
-     * @param int     $options Bitmask consisting of JSON_HEX_QUOT, JSON_HEX_TAG, JSON_HEX_AMP, JSON_HEX_APOS, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT, JSON_UNESCAPED_SLASHES, JSON_FORCE_OBJECT
+     * @param mixed $value The value to encode.
+     * @param int $options Bitmask consisting of JSON_HEX_QUOT, JSON_HEX_TAG, JSON_HEX_AMP, JSON_HEX_APOS, JSON_NUMERIC_CHECK, JSON_PRETTY_PRINT, JSON_UNESCAPED_SLASHES, JSON_FORCE_OBJECT
      *
      * @return mixed The JSON encoded value
      */
@@ -1085,7 +1085,7 @@ function twig_escape_filter(Twig_Environment $env, $string, $strategy = 'html', 
             static $escapers;
 
             if (null === $escapers) {
-                $escapers = $env->getExtension('Kernel')->getEscapers();
+                $escapers = $env->getExtension('core')->getEscapers();
             }
 
             if (isset($escapers[$strategy])) {
@@ -1216,7 +1216,6 @@ function _twig_escape_html_attr_callback($matches)
      * Per OWASP recommendations, we'll use hex entities for any other
      * characters where a named entity does not exist.
      */
-
     return sprintf('&#x%s;', $hex);
 }
 
@@ -1228,7 +1227,7 @@ if (function_exists('mb_get_info')) {
      * @param Twig_Environment $env   A Twig_Environment instance
      * @param mixed            $thing A variable
      *
-     * @return int     The length of the value
+     * @return int The length of the value
      */
     function twig_length_filter(Twig_Environment $env, $thing)
     {
@@ -1312,7 +1311,7 @@ else {
      * @param Twig_Environment $env   A Twig_Environment instance
      * @param mixed            $thing A variable
      *
-     * @return int     The length of the value
+     * @return int The length of the value
      */
     function twig_length_filter(Twig_Environment $env, $thing)
     {

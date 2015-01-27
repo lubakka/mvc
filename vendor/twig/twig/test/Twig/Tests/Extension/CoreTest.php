@@ -118,7 +118,7 @@ class Twig_Tests_Extension_CoreTest extends PHPUnit_Framework_TestCase
     public function testCustomEscaper()
     {
         $twig = new Twig_Environment();
-        $twig->getExtension('Kernel')->setEscaper('foo', 'foo_escaper_for_test');
+        $twig->getExtension('core')->setEscaper('foo', 'foo_escaper_for_test');
 
         $this->assertEquals('fooUTF-8', twig_escape_filter($twig, 'foo', 'foo'));
     }

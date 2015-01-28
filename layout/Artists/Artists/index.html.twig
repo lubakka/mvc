@@ -3,9 +3,9 @@
 {% block title %}Index - {{ parent() }}{% endblock %}
 
 {% block body %}
-    {% for ses in app.session %}
-    {{ ses }}
-        {% endfor %}
-    {{ params.d }}
-    {{ params.id }}
+
+    {{ view.artists.id }}
+
+    {{ view.d }}
+    {{ view.id }}
 {% endblock %}

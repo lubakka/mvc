@@ -9,15 +9,14 @@
 namespace src\Controllers;
 
 use Kernel\Controllers\Master_Controller;
-use Kernel\Doctrine\EntityManager;
 use src\Entities\Artists;
 
 class Artists_Controller extends Master_Controller {
 
     public function indexAction($id){
-        $em = EntityManager::getEntityManager();
-        $e = $em->getEm();
 
+        $em = $this->get('doctrine');
+        $e = $em->getEm();
 
         $artists = new Artists\Artists();
         $artists->setName('lyusho');
@@ -25,8 +24,8 @@ class Artists_Controller extends Master_Controller {
         $e->persist($artists);
         $e->flush();
 
-        echo "Created Artists with ID " . $artists->getId() . "\n";
-        return $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id));
+        //echo "Created Artists with ID " . $artists->getId() . "\n";
+        return $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artists));
     }
     
     public function viewAction($id) {

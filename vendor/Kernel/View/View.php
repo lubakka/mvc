@@ -57,7 +57,7 @@ class View implements IView
                 'cache' => $this->cache
             ));
             $layout = $twig->loadTemplate($this->layoutsFile);
-            echo $twig->display('index.html.twig', array('layout' => $layout, 'params' => $params));
+            echo $twig->display('index.html.twig', array('layout' => $layout, 'view' => $params));
             return true;
         } catch (Exception $e) {
             throw new ViewException("Some problem");

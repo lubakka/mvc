@@ -20,6 +20,15 @@ class Router implements IRouter
         $this->routers = $this->fetchArray('router');
     }
 
+    private function fetchArray($file)
+    {
+        if (!empty($file)) {
+            return include ROOT_DIR . DS . '..' . DS . 'conf' . DS . $file . '.php';
+        }
+
+        return false;
+    }
+
     public static function getInstance()
     {
         static $instance = null;
@@ -28,6 +37,17 @@ class Router implements IRouter
         }
 
         return $instance;
+    }
+
+    public function getRouterPath()
+    {
+        foreach ($this->getRouters() as $name) {
+            foreach ($name as $key => $value) {
+                    $this->path[$key] = $value['route'];
+            }
+        }
+
+        return Helpers::toObject($this->path);
     }
 
     public function getRouters()
@@ -43,33 +63,6 @@ class Router implements IRouter
         return Helpers::toObject($this->router);
     }
 
-    public function getRouterPath()
-    {
-        foreach ($this->getRouters() as $name) {
-            foreach ($name as $key => $value) {
-                    $this->path[$key] = $value['route'];
-            }
-        }
-
-        return Helpers::toObject($this->path);
-    }
-
-    public function getRouterConfig()
-    {
-        $helper =  Helpers::toObject($this->routers);
-
-        return $helper->routers['router'];
-    }
-
-    private function fetchArray($file)
-    {
-        if (!empty($file)) {
-            return include FILE_DIR . DS . '..' . DS . 'conf' . DS . $file . '.php';
-        }
-
-        return false;
-    }
-
     /**
      * Set Router from other file
      *
@@ -80,6 +73,13 @@ class Router implements IRouter
         $this->router = $this->fetchArray($file);
 
         return $this;
+    }
+
+    public function getRouterConfig()
+    {
+        $helper = Helpers::toObject($this->routers);
+
+        return $helper->routers['router'];
     }
 
     public function isRouters()

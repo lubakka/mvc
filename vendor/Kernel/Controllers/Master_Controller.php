@@ -10,11 +10,21 @@ namespace Kernel\Controllers;
 
 use Kernel\Exception\MasterControllerException;
 use Kernel\ParameterBag;
+use Kernel\Service\Container;
 use Kernel\Session;
 use Kernel\View\View;
 
 class Master_Controller
 {
+
+    protected $container;
+    protected $get;
+
+    function __construct()
+    {
+        $this->container = Container::getContainer();
+    }
+
 
     public function index()
     {
@@ -81,7 +91,12 @@ class Master_Controller
 
     public function get($id)
     {
+        return $this->getContainer($id);
+    }
 
+    public function getContainer($id)
+    {
+        return $this->container->getServices($id);
     }
 
     function __toString()

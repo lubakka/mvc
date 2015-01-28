@@ -10,10 +10,13 @@ namespace Kernel\Doctrine;
 
 use Doctrine\ORM\EntityManager as Entity;
 use Doctrine\ORM\Tools\Setup;
+use Kernel\Service\Container;
 
 
 class EntityManager
 {
+
+    static $instance = null;
 
     private $isDevMode;
 
@@ -25,20 +28,11 @@ class EntityManager
 
     private $em;
 
-    private function __construct()
+    public function __construct()
     {
         $this->isDevMode = false;
         $this->setConn();
         $this->init();
-    }
-
-    public static function getEntityManager()
-    {
-        static $instance = null;
-        if (null == $instance) {
-            $instance = new static();
-        }
-        return $instance;
     }
 
     public function init()
@@ -72,24 +66,6 @@ class EntityManager
     /**
      * @return array
      */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * @param array $config
-     */
-    public function setConfig($config)
-    {
-        $this->config = $config;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
     public function getConn()
     {
         return $this->conn;
@@ -103,12 +79,40 @@ class EntityManager
         $default = array(
             'driver' => $this->getDriver(),
             'user' => 'root',
-            'password' => 'test',
-            'dbname' => 'mvc',
+            'password' => '',
+            'dbname' => '',
+            'host' => 'localhost'
         );
+        $conn = Container::getContainer()->getParameters();
         $result = array_merge($default, $conn);
 
         $this->conn = $result;
+
+        return $this;
+    }
+
+    public static function getEntityManager()
+    {
+        if (null == self::$instance) {
+            $instance = new static();
+        }
+        return $instance;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * @param array $config
+     */
+    public function setConfig($config)
+    {
+        $this->config = $config;
 
         return $this;
     }

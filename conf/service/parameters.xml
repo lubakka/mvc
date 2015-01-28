@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+    <sql name="mysql" driver="pdo_mysql">
+        <host>localhost</host>
+        <user>root</user>
+        <password>test</password>
+        <dbname>mvc</dbname>
+        //TODO
+        <port>3306</port>
+        <charset>UTF-8</charset>
+    </sql>
+    <!--<sql name="mssql" driver="pdo_sqlsrv">-->
+    <!--<host>localhost</host>-->
+    <!--<user>root</user>-->
+    <!--<password>test</password>-->
+    <!--</sql>-->
+    <!--<sql name="pgsql" driver="pdo_pgsql">-->
+    <!--<host>localhost</host>-->
+    <!--<user>root</user>-->
+    <!--<password>test</password>-->
+    <!--</sql>-->
+    <!--<sql name="sqlite" driver="pdo_sqlite">-->
+    <!--<path>localhost</path>-->
+    <!--<user>root</user>-->
+    <!--<password>test</password>-->
+    <!--<memory>false</memory>-->
+    <!--</sql>-->
+</parameters>

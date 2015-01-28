@@ -16,9 +16,9 @@ define('ROOT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/');
 define('ENVIRONMENT', 'dev');
 
 define('DS', DIRECTORY_SEPARATOR);
-define('FILE_DIR', dirname(__FILE__) . DS);
-define('FILE_PATH', basename(FILE_DIR));
-define('CONF_PATH', FILE_DIR . '..' . DS . 'conf' . DS);
+define('ROOT_DIR', dirname(__FILE__) . DS);
+define('FILE_PATH', basename(ROOT_DIR));
+define('CONF_PATH', ROOT_DIR . '..' . DS . 'conf' . DS);
 
 require_once '../lib/Bootstrap.php';
 require_once '../vendor/autoload.php';

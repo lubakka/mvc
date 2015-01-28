@@ -24,6 +24,7 @@ class Core
         @ini_set ( 'default_charset', 'UTF-8' );
         try {
             new FrontController($this->getRequest());
+            //Container::getContainer();
         } catch (FrontControllerException $e) {
             var_dump($e->getMessage());
         }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service-container>
+    <services>
+        <service id="service">
+            <set id="doctrine" name="entity_manager"></set>
+        </service>
+    </services>
+</service-container>

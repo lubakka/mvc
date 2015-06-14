@@ -104,11 +104,11 @@ class Kernel
         return $this->rootDir;
     }
 
-    public function run()
+    public function run($kernel)
     {
         @ini_set ( 'default_charset', 'UTF-8' );
         try {
-            new FrontController($this->getRequest());
+            new FrontController($this->getRequest(), $kernel);
             //Container::getContainer();
         } catch (FrontControllerException $e) {
             var_dump($e->getMessage());
@@ -131,5 +131,9 @@ class Kernel
         $this->request = $request;
 
         return $this;
+    }
+
+    public function registerModules(){
+
     }
 } 

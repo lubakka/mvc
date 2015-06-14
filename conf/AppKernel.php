@@ -7,14 +7,16 @@
  */
 
 
-use Blog\BlogModule;
+use Modules\Blog\BlogModule;
 use Lubakka\Kernel;
 
-class AppKernel extends Kernel {
+class AppKernel extends Kernel
+{
 
-    public function registerModules(){
+    public function registerModules()
+    {
         $modules = [
-          'Blog' => new BlogModule()
+            new BlogModule()
         ];
 
         return $modules;

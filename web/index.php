@@ -29,7 +29,7 @@ try {
 
     $kernel = new AppKernel('dev', true);
     $kernel->setRequest(Request::createFromGolobal());
-    $kernel->run();
+    $kernel->run($kernel);
 } catch (BootstrapException $e) {
     var_dump($e);
 }

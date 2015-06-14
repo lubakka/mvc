@@ -6,10 +6,11 @@
  * Time: 0:17
  */
 
-namespace src\Controllers;
+namespace Modules\Blog\Controllers;
 
 use Doctrine\ORM\EntityManager;
 use Lubakka\Controllers\MasterController;
+use Lubakka\View\View;
 use src\Entities\Artists\Artists;
 
 class ArtistsController extends MasterController {
@@ -28,8 +29,9 @@ class ArtistsController extends MasterController {
 //        $e->persist($artists);
 //        $e->flush();
 
-        //echo "Created Artists with ID " . $artists->getId() . "\n";
-        return $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artists));
+        //return View::layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artists));
+        $return = $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artists));
+        return $return;
     }
     
     public function viewAction($id) {
@@ -40,6 +42,6 @@ class ArtistsController extends MasterController {
 
         $artist = $e->getRepository('src\Entities\Artists\Artists')->find($id);
 
-        return $this->render('@Artists:Artists/view', array('artist' => $artist));
+        return $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artist));
     }
 } 

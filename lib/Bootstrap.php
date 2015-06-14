@@ -37,9 +37,9 @@ class Bootstrap
             $file = '..' . DS . substr($path, 0, strlen($path) - 1) . '.php';
         }
 
-//        if ($split[0] === 'Lubakka'){
-//            $file = '../vendor' . DS . substr($path, 0, strlen($path) - 1) . '.php';
-//        }
+        if ($split[0] === 'Modules'){
+            $file = '..' . DS . 'src' . DS . substr($path, 0, strlen($path) - 1) . '.php';
+        }
 
         if (is_file($file) && is_readable($file)) {
             $this->includeFile($file);

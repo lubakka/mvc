@@ -12,17 +12,27 @@ use Lubakka\Exception\MasterControllerException;
 use Lubakka\ParameterBag;
 use Lubakka\Service\Container;
 use Lubakka\Session;
+use Lubakka\VendorInterface\Controllers\IController;
 use Lubakka\View\View;
 
-class MasterController
+class MasterController implements IController
 {
 
     protected $container;
     protected $get;
+    protected $view;
 
     function __construct()
     {
         $this->container = Container::getContainer();
+    }
+
+    /**
+     * @return View
+     */
+    public function getView()
+    {
+        return $this->view;
     }
 
 
@@ -50,7 +60,7 @@ class MasterController
             list($bundle, $path) = explode(':', $bundle);
         }
 
-        $views->render($bundle, $path, $name, $params, $response);
+        return $views->render($bundle, $path, $name, $params, $response);
     }
 
     public function layout($view, array $params = array(), $response = 200)
@@ -72,8 +82,7 @@ class MasterController
         }
 
         try {
-            $views->layout($bundle, $path, $name, $params, $response);
-            return $this;
+            return View::layout($bundle, $path, $name, $params, $response);
         } catch (MasterControllerException $e) {
             throw new MasterControllerException("Problem");
         }
@@ -105,4 +114,8 @@ class MasterController
         return $class;
     }
 
-} 
+    public function redirect()
+    {
+        // TODO: Implement redirect() method.
+    }
+}

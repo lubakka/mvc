@@ -12,6 +12,8 @@ use Lubakka\Controllers\MasterController;
 use Lubakka\Exception\FrontControllerException;
 use Lubakka\Exception\MasterControllerException;
 use Lubakka\HTTP\Request;
+use Lubakka\VendorInterface\Controllers\IController;
+use Lubakka\View\View;
 
 /**
  * Class FrontController
@@ -51,15 +53,21 @@ class FrontController extends FrontControllerException
     private $request;
 
     /**
+     * @var Kernel
+     */
+    private $kernel;
+
+    /**
      * Constructor for FrontController
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, $kernel)
     {
         Session::getInstance();
         $router = Router::getInstance();
         $this->path = $router->getRouterPath();
         $this->router = $router->getRouterConfig();
         $this->request = $request;
+        $this->kernel = $kernel;
         $this->init();
     }
 
@@ -83,8 +91,8 @@ class FrontController extends FrontControllerException
             }
             $rout = array();
             foreach ($this->router as $key) {
-                foreach ($key as $rout) {
-                    $rout = $rout;
+                foreach ($key as $router) {
+                    $rout = $router;
                 }
             }
 
@@ -249,21 +257,24 @@ class FrontController extends FrontControllerException
         if (empty($controller_class)) {
             throw new \Exception("This route is not in router.php config");
         } else {
+
+            $modules = $this->getModules();
+            var_dump($modules[0]->getNameSpace());
+//exit;
             try {
                 $instance = new $controller_class();
                 if (!$instance instanceof MasterController) {
                     throw new MasterControllerException("Controller is not instance of 'MasterController'");
                 }
-                if (method_exists($instance, $method)) {
-                    $class = call_user_func_array(array($instance, $method), $this->param);
-                    if (null == $class || !is_object($class)) {
-                        // TODO
-                        //throw new \Exception(sprintf("Controller %s must returnet value", $instance));
-                    }
 
+                if (method_exists($instance, $method)) {
+                    call_user_func_array(array($instance, $method), $this->param);
+                    if (!$instance instanceof MasterController){
+                        throw new \Exception(sprintf("Controller %s must returnet value", $instance));
+                    }
                 } else {
-                    $class = call_user_func_array(array($instance, 'index'), array(''));
-                    if (null == $class || !is_object($class) || !$class instanceof MasterController) {
+                    call_user_func_array(array($instance, 'index'), array(''));
+                    if (!$instance instanceof MasterController){
                         throw new \Exception(sprintf("Controller %s must returnet value", $instance));
                     }
                 }
@@ -271,6 +282,10 @@ class FrontController extends FrontControllerException
                 echo $e->getMessage();
             }
         }
+    }
+
+    private function getModules(){
+        return $this->kernel->registerModules();
     }
 
     /**

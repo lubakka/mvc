@@ -6,11 +6,9 @@
  * Time: 20:08
  */
 
-use Kernel\Core;
-use Kernel\Debug\Debug;
-use Kernel\Exception\BootstrapException;
-use Kernel\HTTP\Request;
-use Lib\Bootstrap;
+use Lubakka\Debug\Debug;
+use Lubakka\Exception\BootstrapException;
+use Lubakka\HTTP\Request;
 
 define('ROOT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/');
 define('ENVIRONMENT', 'dev');
@@ -20,16 +18,16 @@ define('ROOT_DIR', dirname(__FILE__) . DS);
 define('FILE_PATH', basename(ROOT_DIR));
 define('CONF_PATH', ROOT_DIR . '..' . DS . 'conf' . DS);
 
-require_once '../lib/Bootstrap.php';
-require_once '../vendor/autoload.php';
+$loader = require_once '../vendor/autoload.php';
 
 try {
-    new Bootstrap();
+    require_once "../lib/Bootstrap.php";
+    new \Lib\Bootstrap();
     if (ENVIRONMENT == 'dev') {
-        $debug = Debug::getInstance();
-        $debug->clear();
+        Debug::enable();
     }
-    $kernel = new Core();
+
+    $kernel = new AppKernel('dev', true);
     $kernel->setRequest(Request::createFromGolobal());
     $kernel->run();
 } catch (BootstrapException $e) {

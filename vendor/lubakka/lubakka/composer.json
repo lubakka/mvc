@@ -1,0 +1,24 @@
+{
+  "name": "lubakka/lubakka",
+  "description": "Framework",
+  "type": "package",
+  "keywords": [
+    "lubakka",
+    "framework"
+  ],
+  "authors": [
+    {
+      "name": "Lyubomir Boykov",
+      "email": "lboikov02@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.4.0",
+    "twig/twig": "~1.0",
+    "doctrine/orm": "2.4.*"
+  },
+  "psr-0": {
+    "Lubakka": "lubakka/src"
+  }
+}

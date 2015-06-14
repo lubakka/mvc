@@ -1,0 +1,54 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: lboykov
+ * Date: 15-1-25
+ * Time: 17:50
+ */
+
+namespace Lubakka\Debug;
+
+use Lubakka\FileSystem\FileSystem;
+
+class Debug
+{
+
+    public static $cacheDir = 'cache/';
+
+    public static function enable()
+    {
+        self::getInstance()->clear();
+    }
+
+    protected function __construct()
+    {
+        @ini_set('error_reporting', E_ALL);
+        @ini_set('display_errors', 'On');
+        @ini_set('display_startup_errors', 1);
+        FileSystem::mkdir(CONF_PATH . self::$cacheDir);
+    }
+
+    public static function getInstance()
+    {
+        static $instance = null;
+        if (null === $instance) {
+            $instance = new static();
+        }
+
+        return $instance;
+    }
+
+    public function clear()
+    {
+        $file = new FileSystem();
+        $file->deleteDir(CONF_PATH . self::$cacheDir);
+    }
+
+    private function __clone()
+    {
+    }
+
+    private function __wakeup()
+    {
+    }
+}

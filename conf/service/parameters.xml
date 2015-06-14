@@ -2,8 +2,8 @@
 <parameters>
     <sql name="mysql" driver="pdo_mysql">
         <host>localhost</host>
-        <user>root</user>
-        <password>test</password>
+        <user>mvc</user>
+        <password>mvc</password>
         <dbname>mvc</dbname>
         //TODO
         <port>3306</port>

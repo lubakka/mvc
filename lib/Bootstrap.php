@@ -20,11 +20,13 @@ class Bootstrap
 
     private function loader($className)
     {
+        $file = "";
         $split = explode("\\", $className);
         $path = '';
 
-        if (in_array('Kernel', $split)) {
-            $split[0] = ucfirst($split[0]);
+        if($className === "AppKernel"){
+            require_once __DIR__ . "/../conf/" . "AppKernel.php";
+            return true;
         }
 
         foreach ($split as $value) {
@@ -35,16 +37,15 @@ class Bootstrap
             $file = '..' . DS . substr($path, 0, strlen($path) - 1) . '.php';
         }
 
-        if ($split[0] === 'Kernel'){
-            $file = '../vendor' . DS . substr($path, 0, strlen($path) - 1) . '.php';
-        }
+//        if ($split[0] === 'Lubakka'){
+//            $file = '../vendor' . DS . substr($path, 0, strlen($path) - 1) . '.php';
+//        }
 
         if (is_file($file) && is_readable($file)) {
             $this->includeFile($file);
             return true;
-        } else {
-            throw new \Exception("File not exist or not readable " . $file);
         }
+
         return false;
     }
 

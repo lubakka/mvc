@@ -1,5 +1,6 @@
 <?php
 
 echo 'view да ';
-var_dump($app);
+//echo $view->artist;
+var_dump($app->artist);
 echo '<br />';

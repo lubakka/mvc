@@ -6,12 +6,12 @@
  * Time: 0:17
  */
 
-namespace Modules\Blog\Controllers;
+namespace Modules\PDF\Controllers;
 
 use Doctrine\ORM\EntityManager;
 use Lubakka\Controllers\MasterController;
 use Lubakka\View\View;
-use Modules\Blog\Entities\Artists\Artists;
+use Modules\PDF\Entities\Artists\Artists;
 
 class ArtistsController extends MasterController {
 
@@ -24,7 +24,7 @@ class ArtistsController extends MasterController {
 
         //$artists = $e->getRepository('src\Entities\Artists\Artists')->find($id);
         $artists = new Artists();
-        $artists->setName('lyusho');
+        $artists->setName('lyushoPDF');
 //
 //        $e->persist($artists);
 //        $e->flush();

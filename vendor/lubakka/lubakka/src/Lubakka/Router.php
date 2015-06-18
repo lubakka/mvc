@@ -17,10 +17,10 @@ class Router implements IRouter
 
     protected function __construct()
     {
-        $this->routers = $this->fetchArray('router');
+        $this->routers = $this->fetchFileArray('router');
     }
 
-    private function fetchArray($file)
+    private function fetchFileArray($file)
     {
         if (!empty($file)) {
             return include ROOT_DIR . DS . '..' . DS . 'conf' . DS . $file . '.php';
@@ -70,7 +70,7 @@ class Router implements IRouter
      */
     public function setRouters($file)
     {
-        $this->router = $this->fetchArray($file);
+        $this->router = $this->fetchFileArray($file);
 
         return $this;
     }
@@ -89,9 +89,10 @@ class Router implements IRouter
 
     public function getRoute()
     {
-        var_dump($this->getRoutes());
-
-        return;
+        return $this;
     }
 
+    /*public function fetch(){
+
+    }*/
 }

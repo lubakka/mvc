@@ -6,7 +6,7 @@
  * Time: 19:30
  */
 
-namespace Modules\Blog\Entities\Artists;
+namespace Modules\PDF\Entities\Artists;
 
 
 class Artists

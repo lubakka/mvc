@@ -22,6 +22,20 @@ return array(
                     'route' => '/artists/view',
                     'parameters' => '{id}'
                 )
+            ),
+            'pdfs' => array(
+                'artists_index' => array(
+                    'controller' => '@PDFModule\Artists',
+                    'action' => 'index',
+                    'route' => '/artists/{id}',
+                    'parameters' => '{id'
+                ),
+                'artists_view' => array(
+                    'controller' => '@PDFModule\Artists',
+                    'action' => 'view',
+                    'route' => '/artists/view',
+                    'parameters' => '{id}'
+                )
             )
         )
     )

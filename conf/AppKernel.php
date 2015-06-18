@@ -9,6 +9,7 @@
 
 use Modules\Blog\BlogModule;
 use Lubakka\Kernel;
+use Modules\PDF\PDFModule;
 
 class AppKernel extends Kernel
 {
@@ -16,7 +17,8 @@ class AppKernel extends Kernel
     public function registerModules()
     {
         $modules = [
-            new BlogModule()
+            'Blog' => new BlogModule(),
+            'PDF' => new PDFModule(),
         ];
 
         return $modules;

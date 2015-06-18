@@ -8,6 +8,7 @@ namespace Lubakka;
  * Date: 14-10-1
  * Time: 0:08
  */
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Lubakka\Controllers\MasterController;
 use Lubakka\Exception\FrontControllerException;
 use Lubakka\Exception\MasterControllerException;
@@ -257,36 +258,81 @@ class FrontController extends FrontControllerException
         if (empty($controller_class)) {
             throw new \Exception("This route is not in router.php config");
         } else {
+            foreach ($this->router as $key => $path){
+                if (strtolower($this->controller) === $key){
+                    $router = $this->router[$key];
+                    foreach ($router as $routKey => $routeValue){
+                        if (true == strpos($routKey, $this->method)){
+                            if (isset($routeValue['controller'])){
+                                $controllerString = $routeValue['controller'];
+                                if ('@' !== $controllerString[0]) {
+                                    throw new \Exception(sprintf('A resource name must start with @ ("%s" given).', $view));
+                                }
 
-            $modules = $this->getModules();
-            var_dump($modules[0]->getClassName());
+                                $module = '';
+                                $className = '';
+                                if (false !== strpos($controllerString, "\\")) {
+                                    $controllerString = mb_substr($controllerString, 1);
+                                    list($module, $className) = explode("\\", $controllerString, 2);
+                                }
 
-            foreach($modules as $module){
-                if ($module){
+                                if (false !== strpos($controllerString, ':')) {
+                                    list($module, $className) = explode(':', $controllerString);
+                                }
 
+                                $namespace = $this->getModules()[mb_substr($module, 0, strpos($module, 'Module'))]->getNameSpace();
+                                $allClass = $namespace.'\\Controllers\\'.$className.'Controller';
+                                $methodName = $method;
+
+                                $instance = new $allClass();
+                                call_user_func_array(array($instance, $methodName), $this->param);
+                            } else {
+                                throw new \Exception(sprintf('Not match router %s', $routKey));
+                            }
+                        }
+                    }
                 }
             }
+
+
+//            foreach($modules as $module){
+//                if (true == strpos($module->getClassName(), "\\")){
+//                    $class = explode("\\", $module->getClassName());
+//
+//
+//                    if (is_array($class)){
+//                        $className = strtolower($class[1]);
+//                    }
+//
+//
+//                    //var_dump($module->getClassName(), $class, $className);
+//                } else {
+//                    throw new InvalidArgumentException("Not found in route '\\'");
+//                }
+//            }
+
 //exit;
-            try {
-                $instance = new $controller_class();
-                if (!$instance instanceof MasterController) {
-                    throw new MasterControllerException("Controller is not instance of 'MasterController'");
-                }
 
-                if (method_exists($instance, $method)) {
-                    call_user_func_array(array($instance, $method), $this->param);
-                    if (!$instance instanceof MasterController){
-                        throw new \Exception(sprintf("Controller %s must returnet value", $instance));
-                    }
-                } else {
-                    call_user_func_array(array($instance, 'index'), array(''));
-                    if (!$instance instanceof MasterController){
-                        throw new \Exception(sprintf("Controller %s must returnet value", $instance));
-                    }
-                }
-            } catch (\Exception $e) {
-                echo $e->getMessage();
-            }
+//            try {
+//                $instance = new $controller_class();
+//                if (!$instance instanceof MasterController) {
+//                    throw new MasterControllerException("Controller is not instance of 'MasterController'");
+//                }
+//
+//                if (method_exists($instance, $method)) {
+//                    call_user_func_array(array($instance, $method), $this->param);
+//                    if (!$instance instanceof MasterController){
+//                        throw new \Exception(sprintf("Controller %s must returnet value", $instance));
+//                    }
+//                } else {
+//                    call_user_func_array(array($instance, 'index'), array(''));
+//                    if (!$instance instanceof MasterController){
+//                        throw new \Exception(sprintf("Controller %s must returnet value", $instance));
+//                    }
+//                }
+//            } catch (\Exception $e) {
+//                echo $e->getMessage();
+//            }
         }
     }
 

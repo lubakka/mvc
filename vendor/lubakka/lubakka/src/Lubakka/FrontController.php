@@ -259,7 +259,13 @@ class FrontController extends FrontControllerException
         } else {
 
             $modules = $this->getModules();
-            var_dump($modules[0]->getNameSpace());
+            var_dump($modules[0]->getClassName());
+
+            foreach($modules as $module){
+                if ($module){
+
+                }
+            }
 //exit;
             try {
                 $instance = new $controller_class();

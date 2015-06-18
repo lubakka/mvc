@@ -11,13 +11,13 @@ return array(
         'router' => array(
             'artists' => array(
                 'artists_index' => array(
-                    'controller' => 'Artists',
+                    'controller' => '@BlogModule\Artists',
                     'action' => 'index',
                     'route' => '/artists/{id}',
                     'parameters' => '{id'
                 ),
                 'artists_view' => array(
-                    'controller' => 'Artists',
+                    'controller' => '@BlogModule\Artists',
                     'action' => 'view',
                     'route' => '/artists/view',
                     'parameters' => '{id}'

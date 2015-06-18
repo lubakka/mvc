@@ -12,4 +12,8 @@ class BlogModule {
     public function getNameSpace(){
         return __NAMESPACE__;
     }
+
+    public function getClassName(){
+        return __CLASS__;
+    }
 }

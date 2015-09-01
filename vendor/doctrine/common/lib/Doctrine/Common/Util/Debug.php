@@ -45,13 +45,20 @@ final class Debug
      *
      * @link http://xdebug.org/
      *
-     * @param mixed $var The variable to dump.
-     * @param integer $maxDepth The maximum nesting level for object properties.
+     * @param mixed   $var       The variable to dump.
+     * @param integer $maxDepth  The maximum nesting level for object properties.
      * @param boolean $stripTags Whether output should strip HTML tags.
+     * @param boolean $echo      Send the dumped value to the output buffer
+     *
+     * @return string
      */
-    public static function dump($var, $maxDepth = 2, $stripTags = true)
+    public static function dump($var, $maxDepth = 2, $stripTags = true, $echo = true)
     {
-        ini_set('html_errors', 'On');
+        $html = ini_get('html_errors');
+
+        if ($html !== true) {
+            ini_set('html_errors', true);
+        }
 
         if (extension_loaded('xdebug')) {
             ini_set('xdebug.var_display_max_depth', $maxDepth);
@@ -61,17 +68,25 @@ final class Debug
 
         ob_start();
         var_dump($var);
+
         $dump = ob_get_contents();
+
         ob_end_clean();
 
-        echo($stripTags ? strip_tags(html_entity_decode($dump)) : $dump);
+        $dumpText = ($stripTags ? strip_tags(html_entity_decode($dump)) : $dump);
 
-        ini_set('html_errors', 'Off');
+        ini_set('html_errors', $html);
+        
+        if ($echo) {
+            echo $dumpText;
+        }
+        
+        return $dumpText;
     }
 
     /**
      * @param mixed $var
-     * @param int $maxDepth
+     * @param int   $maxDepth
      *
      * @return mixed
      */
@@ -111,7 +126,7 @@ final class Debug
                     }
 
                     foreach ($reflClass->getProperties() as $reflProperty) {
-                        $name = $reflProperty->getName();
+                        $name  = $reflProperty->getName();
 
                         $reflProperty->setAccessible(true);
                         $return->$name = self::export($reflProperty->getValue($var), $maxDepth - 1);
@@ -137,6 +152,6 @@ final class Debug
      */
     public static function toString($obj)
     {
-        return method_exists($obj, '__toString') ? (string)$obj : get_class($obj) . '@' . spl_object_hash($obj);
+        return method_exists($obj, '__toString') ? (string) $obj : get_class($obj) . '@' . spl_object_hash($obj);
     }
 }

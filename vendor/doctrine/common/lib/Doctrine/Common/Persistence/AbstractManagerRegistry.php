@@ -64,8 +64,8 @@ abstract class AbstractManagerRegistry implements ManagerRegistry
      * Constructor.
      *
      * @param string $name
-     * @param array $connections
-     * @param array $managers
+     * @param array  $connections
+     * @param array  $managers
      * @param string $defaultConnection
      * @param string $defaultManager
      * @param string $proxyInterfaceName
@@ -190,7 +190,7 @@ abstract class AbstractManagerRegistry implements ManagerRegistry
     {
         // Check for namespace alias
         if (strpos($class, ':') !== false) {
-            list($namespaceAlias, $simpleClassName) = explode(':', $class);
+            list($namespaceAlias, $simpleClassName) = explode(':', $class, 2);
             $class = $this->getAliasNamespace($namespaceAlias) . '\\' . $simpleClassName;
         }
 

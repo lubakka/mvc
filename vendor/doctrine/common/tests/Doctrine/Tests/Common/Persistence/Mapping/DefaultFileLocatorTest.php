@@ -2,8 +2,8 @@
 
 namespace Doctrine\Tests\Common\Persistence\Mapping;
 
-use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Tests\DoctrineTestCase;
+use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
 
 class DefaultFileLocatorTest extends DoctrineTestCase
 {

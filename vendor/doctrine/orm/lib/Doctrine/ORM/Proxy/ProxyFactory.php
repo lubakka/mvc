@@ -21,13 +21,14 @@ namespace Doctrine\ORM\Proxy;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Proxy\AbstractProxyFactory;
-use Doctrine\Common\Proxy\Proxy as BaseProxy;
 use Doctrine\Common\Proxy\ProxyDefinition;
-use Doctrine\Common\Proxy\ProxyGenerator;
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Proxy\Proxy as BaseProxy;
+use Doctrine\Common\Proxy\ProxyGenerator;
+use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\ORM\Persisters\BasicEntityPersister;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
-use Doctrine\ORM\Persisters\BasicEntityPersister;
 
 /**
  * This factory is used to create proxy objects for entities at runtime.
@@ -58,10 +59,10 @@ class ProxyFactory extends AbstractProxyFactory
      * Initializes a new instance of the <tt>ProxyFactory</tt> class that is
      * connected to the given <tt>EntityManager</tt>.
      *
-     * @param \Doctrine\ORM\EntityManager $em The EntityManager the new factory works for.
-     * @param string $proxyDir The directory to use for the proxy classes. It must exist.
-     * @param string $proxyNs The namespace to use for the proxy classes.
-     * @param boolean $autoGenerate Whether to automatically generate proxy classes.
+     * @param \Doctrine\ORM\EntityManager $em           The EntityManager the new factory works for.
+     * @param string                      $proxyDir     The directory to use for the proxy classes. It must exist.
+     * @param string                      $proxyNs      The namespace to use for the proxy classes.
+     * @param boolean                     $autoGenerate Whether to automatically generate proxy classes.
      */
     public function __construct(EntityManager $em, $proxyDir, $proxyNs, $autoGenerate = false)
     {
@@ -70,8 +71,8 @@ class ProxyFactory extends AbstractProxyFactory
         $proxyGenerator->setPlaceholder('baseProxyInterface', 'Doctrine\ORM\Proxy\Proxy');
         parent::__construct($proxyGenerator, $em->getMetadataFactory(), $autoGenerate);
 
-        $this->em = $em;
-        $this->uow = $em->getUnitOfWork();
+        $this->em      = $em;
+        $this->uow     = $em->getUnitOfWork();
         $this->proxyNs = $proxyNs;
 
     }
@@ -90,7 +91,7 @@ class ProxyFactory extends AbstractProxyFactory
      */
     protected function createProxyDefinition($className)
     {
-        $classMetadata = $this->em->getClassMetadata($className);
+        $classMetadata   = $this->em->getClassMetadata($className);
         $entityPersister = $this->uow->getEntityPersister($className);
 
         return new ProxyDefinition(
@@ -106,7 +107,7 @@ class ProxyFactory extends AbstractProxyFactory
      * Creates a closure capable of initializing a proxy
      *
      * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $classMetadata
-     * @param \Doctrine\ORM\Persisters\BasicEntityPersister $entityPersister
+     * @param \Doctrine\ORM\Persisters\BasicEntityPersister      $entityPersister
      *
      * @return \Closure
      *
@@ -117,7 +118,7 @@ class ProxyFactory extends AbstractProxyFactory
         if ($classMetadata->getReflectionClass()->hasMethod('__wakeup')) {
             return function (BaseProxy $proxy) use ($entityPersister, $classMetadata) {
                 $initializer = $proxy->__getInitializer();
-                $cloner = $proxy->__getCloner();
+                $cloner      = $proxy->__getCloner();
 
                 $proxy->__setInitializer(null);
                 $proxy->__setCloner(null);
@@ -149,7 +150,7 @@ class ProxyFactory extends AbstractProxyFactory
 
         return function (BaseProxy $proxy) use ($entityPersister, $classMetadata) {
             $initializer = $proxy->__getInitializer();
-            $cloner = $proxy->__getCloner();
+            $cloner      = $proxy->__getCloner();
 
             $proxy->__setInitializer(null);
             $proxy->__setCloner(null);
@@ -182,7 +183,7 @@ class ProxyFactory extends AbstractProxyFactory
      * Creates a closure capable of finalizing state a cloned proxy
      *
      * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $classMetadata
-     * @param \Doctrine\ORM\Persisters\BasicEntityPersister $entityPersister
+     * @param \Doctrine\ORM\Persisters\BasicEntityPersister      $entityPersister
      *
      * @return \Closure
      *

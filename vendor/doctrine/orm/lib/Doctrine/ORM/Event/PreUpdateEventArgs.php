@@ -19,6 +19,7 @@
 
 namespace Doctrine\ORM\Event;
 
+use Doctrine\Common\EventArgs;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -39,9 +40,9 @@ class PreUpdateEventArgs extends LifecycleEventArgs
     /**
      * Constructor.
      *
-     * @param object $entity
+     * @param object        $entity
      * @param EntityManager $em
-     * @param array $changeSet
+     * @param array         $changeSet
      */
     public function __construct($entity, EntityManager $em, array &$changeSet)
     {
@@ -104,7 +105,7 @@ class PreUpdateEventArgs extends LifecycleEventArgs
      * Sets the new value of this field.
      *
      * @param string $field
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return void
      */
@@ -126,7 +127,7 @@ class PreUpdateEventArgs extends LifecycleEventArgs
      */
     private function assertValidField($field)
     {
-        if (!isset($this->entityChangeSet[$field])) {
+        if ( ! isset($this->entityChangeSet[$field])) {
             throw new \InvalidArgumentException(sprintf(
                 'Field "%s" is not a valid field of the entity "%s" in PreUpdateEventArgs.',
                 $field,

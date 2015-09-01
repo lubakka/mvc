@@ -19,8 +19,8 @@
 
 namespace Doctrine\ORM\Persisters;
 
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * Persister for entities that participate in a hierarchy mapped with the
@@ -43,7 +43,7 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritdoc} 
      */
     protected function getSelectColumnsSQL()
     {
@@ -53,12 +53,12 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
 
         $columnList[] = parent::getSelectColumnsSQL();
 
-        $rootClass = $this->em->getClassMetadata($this->class->rootEntityName);
+        $rootClass  = $this->em->getClassMetadata($this->class->rootEntityName);
         $tableAlias = $this->getSQLTableAlias($rootClass->name);
 
-        // Append discriminator column
-        $discrColumn = $this->class->discriminatorColumn['name'];
-        $columnList[] = $tableAlias . '.' . $discrColumn;
+         // Append discriminator column
+        $discrColumn    = $this->class->discriminatorColumn['name'];
+        $columnList[]   = $tableAlias . '.' . $discrColumn;
 
         $resultColumnName = $this->platform->getSQLResultCasing($discrColumn);
 
@@ -80,16 +80,15 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
 
             // Foreign key columns
             foreach ($subClass->associationMappings as $assoc) {
-                if (!$assoc['isOwningSide']
-                    || !($assoc['type'] & ClassMetadata::TO_ONE)
-                    || isset($assoc['inherited'])
-                ) {
+                if ( ! $assoc['isOwningSide'] 
+                        || ! ($assoc['type'] & ClassMetadata::TO_ONE)
+                        || isset($assoc['inherited'])) {
                     continue;
                 }
 
                 foreach ($assoc['targetToSourceKeyColumns'] as $srcColumn) {
-                    $className = isset($assoc['inherited']) ? $assoc['inherited'] : $this->class->name;
-                    $columnList[] = $this->getSelectJoinColumnSQL($tableAlias, $srcColumn, $className);
+                    $className      = isset($assoc['inherited']) ? $assoc['inherited'] : $this->class->name;
+                    $columnList[]   = $this->getSelectJoinColumnSQL($tableAlias, $srcColumn, $className);
                 }
             }
         }
@@ -165,7 +164,7 @@ class SingleTablePersister extends AbstractEntityInheritancePersister
             $values[] = $this->conn->quote($discrValues[$subclassName]);
         }
 
-        $values = implode(', ', $values);
+        $values     = implode(', ', $values);
         $discColumn = $this->class->discriminatorColumn['name'];
         $tableAlias = $this->getSQLTableAlias($this->class->name);
 

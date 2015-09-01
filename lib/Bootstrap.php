@@ -34,11 +34,11 @@ class Bootstrap
         }
 
         if ($split[0] === 'src'){
-            $file = '..' . DS . substr($path, 0, strlen($path) - 1) . '.php';
+            $file = __DIR__ . DS .'..' . DS . substr($path, 0, strlen($path) - 1) . '.php';
         }
 
-        if ($split[0] === 'Modules'){
-            $file = '..' . DS . 'src' . DS . substr($path, 0, strlen($path) - 1) . '.php';
+        if ($split[0] === 'Modules' || $split[0] === 'Entities'){
+            $file = __DIR__ . DS .'..' . DS . 'src' . DS . substr($path, 0, strlen($path) - 1) . '.php';
         }
 
         if (is_file($file) && is_readable($file)) {

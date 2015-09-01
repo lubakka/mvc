@@ -59,7 +59,7 @@ class SQLite3Cache extends CacheProvider
     /**
      * Constructor.
      *
-     * Calling the constructor will ensure that the database file and table
+     * Calling the constructor will ensure that the database file and table 
      * exist and will create both if they don't.
      *
      * @param SQLite3 $sqlite
@@ -68,7 +68,7 @@ class SQLite3Cache extends CacheProvider
     public function __construct(SQLite3 $sqlite, $table)
     {
         $this->sqlite = $sqlite;
-        $this->table = (string)$table;
+        $this->table  = (string) $table;
 
         list($id, $data, $exp) = $this->getFields();
 
@@ -98,7 +98,7 @@ class SQLite3Cache extends CacheProvider
      */
     protected function doContains($id)
     {
-        return (boolean)$this->findById($id, false);
+        return (boolean) $this->findById($id, false);
     }
 
     /**
@@ -113,7 +113,7 @@ class SQLite3Cache extends CacheProvider
         ));
 
         $statement->bindValue(':id', $id);
-        $statement->bindValue(':data', serialize($data));
+        $statement->bindValue(':data', serialize($data), SQLITE3_BLOB);
         $statement->bindValue(':expire', $lifeTime > 0 ? time() + $lifeTime : null);
 
         return $statement->execute() instanceof SQLite3Result;
@@ -179,7 +179,7 @@ class SQLite3Cache extends CacheProvider
 
         $statement->bindValue(':id', $id, SQLITE3_TEXT);
 
-        $item = $statement->execute()->fetchArray();
+        $item = $statement->execute()->fetchArray(SQLITE3_ASSOC);
 
         if ($item === false) {
             return null;
@@ -213,7 +213,7 @@ class SQLite3Cache extends CacheProvider
     private function isExpired(array $item)
     {
         return isset($item[static::EXPIRATION_FIELD]) &&
-        $item[self::EXPIRATION_FIELD] !== null &&
-        $item[self::EXPIRATION_FIELD] < time();
+            $item[self::EXPIRATION_FIELD] !== null &&
+            $item[self::EXPIRATION_FIELD] < time();
     }
 }

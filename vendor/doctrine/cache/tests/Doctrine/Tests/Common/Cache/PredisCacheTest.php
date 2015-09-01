@@ -2,6 +2,7 @@
 
 namespace Doctrine\Tests\Common\Cache;
 
+use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\PredisCache;
 use Predis\Client;
 use Predis\Connection\ConnectionException;
@@ -12,13 +13,26 @@ class PredisCacheTest extends CacheTest
 
     public function setUp()
     {
+        if (!class_exists('Predis\Client')) {
+            $this->markTestSkipped('Predis\Client is missing. Make sure to "composer install" to have all dev dependencies.');
+        }
+
         $this->client = new Client();
 
         try {
             $this->client->connect();
         } catch (ConnectionException $e) {
-            $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of redis');
+            $this->markTestSkipped('The ' . __CLASS__ .' requires the use of redis');
         }
+    }
+
+    public function testHitMissesStatsAreProvided()
+    {
+        $cache = $this->_getCacheDriver();
+        $stats = $cache->getStats();
+
+        $this->assertNotNull($stats[Cache::STATS_HITS]);
+        $this->assertNotNull($stats[Cache::STATS_MISSES]);
     }
 
     /**
@@ -27,5 +41,22 @@ class PredisCacheTest extends CacheTest
     protected function _getCacheDriver()
     {
         return new PredisCache($this->client);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @dataProvider falseCastedValuesProvider
+     */
+    public function testFalseCastedValues($value)
+    {
+        if (array() === $value) {
+            $this->markTestIncomplete(
+                'Predis currently doesn\'t support saving empty array values. '
+                . 'See https://github.com/nrk/predis/issues/241'
+            );
+        }
+
+        parent::testFalseCastedValues($value);
     }
 }

@@ -19,17 +19,17 @@
 
 namespace Doctrine\ORM\Mapping;
 
-use Doctrine\Common\Persistence\Mapping\AbstractClassMetadataFactory;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata as ClassMetadataInterface;
-use Doctrine\Common\Persistence\Mapping\ReflectionService;
-use Doctrine\DBAL\Platforms;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
-use Doctrine\ORM\Events;
-use Doctrine\ORM\Id\BigIntegerIdentityGenerator;
-use Doctrine\ORM\Id\IdentityGenerator;
-use Doctrine\ORM\ORMException;
 use ReflectionException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\EntityManager;
+use Doctrine\DBAL\Platforms;
+use Doctrine\ORM\Events;
+use Doctrine\Common\Persistence\Mapping\ReflectionService;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata as ClassMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\AbstractClassMetadataFactory;
+use Doctrine\ORM\Id\IdentityGenerator;
+use Doctrine\ORM\Id\BigIntegerIdentityGenerator;
+use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 
 /**
  * The ClassMetadataFactory is used to create ClassMetadata objects that contain all the
@@ -78,7 +78,6 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
     protected function initialize()
     {
         $this->driver = $this->em->getConfiguration()->getMetadataDriverImpl();
-        $this->targetPlatform = $this->em->getConnection()->getDatabasePlatform();
         $this->evm = $this->em->getEventManager();
         $this->initialized = true;
     }
@@ -103,7 +102,7 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
             $class->setLifecycleCallbacks($parent->lifecycleCallbacks);
             $class->setChangeTrackingPolicy($parent->changeTrackingPolicy);
 
-            if (!empty($parent->customGeneratorDefinition)) {
+            if ( ! empty($parent->customGeneratorDefinition)) {
                 $class->setCustomGeneratorDefinition($parent->customGeneratorDefinition);
             }
 
@@ -166,7 +165,7 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
 
         $class->setParentClasses($nonSuperclassParents);
 
-        if ($class->isRootEntity() && !$class->isInheritanceTypeNone() && !$class->discriminatorMap) {
+        if ( $class->isRootEntity() && ! $class->isInheritanceTypeNone() && ! $class->discriminatorMap) {
             $this->addDefaultDiscriminatorMap($class);
         }
 
@@ -181,7 +180,7 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
     /**
      * Validate runtime metadata is correctly defined.
      *
-     * @param ClassMetadata $class
+     * @param ClassMetadata               $class
      * @param ClassMetadataInterface|null $parent
      *
      * @return void
@@ -190,7 +189,7 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
      */
     protected function validateRuntimeMetadata($class, $parent)
     {
-        if (!$class->reflClass) {
+        if ( ! $class->reflClass ) {
             // only validate if there is a reflection class instance
             return;
         }
@@ -200,12 +199,12 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
         $class->validateLifecycleCallbacks($this->getReflectionService());
 
         // verify inheritance
-        if (!$class->isMappedSuperclass && !$class->isInheritanceTypeNone()) {
-            if (!$parent) {
+        if ( ! $class->isMappedSuperclass && !$class->isInheritanceTypeNone()) {
+            if ( ! $parent) {
                 if (count($class->discriminatorMap) == 0) {
                     throw MappingException::missingDiscriminatorMap($class->name);
                 }
-                if (!$class->discriminatorColumn) {
+                if ( ! $class->discriminatorColumn) {
                     throw MappingException::missingDiscriminatorColumn($class->name);
                 }
             } else if ($parent && !$class->reflClass->isAbstract() && !in_array($class->name, array_values($class->discriminatorMap))) {
@@ -294,10 +293,10 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
     private function addInheritedFields(ClassMetadata $subClass, ClassMetadata $parentClass)
     {
         foreach ($parentClass->fieldMappings as $mapping) {
-            if (!isset($mapping['inherited']) && !$parentClass->isMappedSuperclass) {
+            if ( ! isset($mapping['inherited']) && ! $parentClass->isMappedSuperclass) {
                 $mapping['inherited'] = $parentClass->name;
             }
-            if (!isset($mapping['declared'])) {
+            if ( ! isset($mapping['declared'])) {
                 $mapping['declared'] = $parentClass->name;
             }
             $subClass->addInheritedFieldMapping($mapping);
@@ -328,10 +327,10 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
             }
 
             //$subclassMapping = $mapping;
-            if (!isset($mapping['inherited']) && !$parentClass->isMappedSuperclass) {
+            if ( ! isset($mapping['inherited']) && ! $parentClass->isMappedSuperclass) {
                 $mapping['inherited'] = $parentClass->name;
             }
-            if (!isset($mapping['declared'])) {
+            if ( ! isset($mapping['declared'])) {
                 $mapping['declared'] = $parentClass->name;
             }
             $subClass->addInheritedAssociationMapping($mapping);
@@ -351,9 +350,9 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
     private function addInheritedNamedQueries(ClassMetadata $subClass, ClassMetadata $parentClass)
     {
         foreach ($parentClass->namedQueries as $name => $query) {
-            if (!isset ($subClass->namedQueries[$name])) {
+            if ( ! isset ($subClass->namedQueries[$name])) {
                 $subClass->addNamedQuery(array(
-                    'name' => $query['name'],
+                    'name'  => $query['name'],
                     'query' => $query['query']
                 ));
             }
@@ -373,13 +372,13 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
     private function addInheritedNamedNativeQueries(ClassMetadata $subClass, ClassMetadata $parentClass)
     {
         foreach ($parentClass->namedNativeQueries as $name => $query) {
-            if (!isset ($subClass->namedNativeQueries[$name])) {
+            if ( ! isset ($subClass->namedNativeQueries[$name])) {
                 $subClass->addNamedNativeQuery(array(
-                    'name' => $query['name'],
-                    'query' => $query['query'],
-                    'isSelfClass' => $query['isSelfClass'],
-                    'resultSetMapping' => $query['resultSetMapping'],
-                    'resultClass' => $query['isSelfClass'] ? $subClass->name : $query['resultClass'],
+                    'name'              => $query['name'],
+                    'query'             => $query['query'],
+                    'isSelfClass'       => $query['isSelfClass'],
+                    'resultSetMapping'  => $query['resultSetMapping'],
+                    'resultClass'       => $query['isSelfClass'] ? $subClass->name : $query['resultClass'],
                 ));
             }
         }
@@ -398,21 +397,21 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
     private function addInheritedSqlResultSetMappings(ClassMetadata $subClass, ClassMetadata $parentClass)
     {
         foreach ($parentClass->sqlResultSetMappings as $name => $mapping) {
-            if (!isset ($subClass->sqlResultSetMappings[$name])) {
+            if ( ! isset ($subClass->sqlResultSetMappings[$name])) {
                 $entities = array();
                 foreach ($mapping['entities'] as $entity) {
                     $entities[] = array(
-                        'fields' => $entity['fields'],
-                        'isSelfClass' => $entity['isSelfClass'],
-                        'discriminatorColumn' => $entity['discriminatorColumn'],
-                        'entityClass' => $entity['isSelfClass'] ? $subClass->name : $entity['entityClass'],
+                        'fields'                => $entity['fields'],
+                        'isSelfClass'           => $entity['isSelfClass'],
+                        'discriminatorColumn'   => $entity['discriminatorColumn'],
+                        'entityClass'           => $entity['isSelfClass'] ? $subClass->name : $entity['entityClass'],
                     );
                 }
 
                 $subClass->addSqlResultSetMapping(array(
-                    'name' => $mapping['name'],
-                    'columns' => $mapping['columns'],
-                    'entities' => $entities,
+                    'name'          => $mapping['name'],
+                    'columns'       => $mapping['columns'],
+                    'entities'      => $entities,
                 ));
             }
         }
@@ -432,9 +431,9 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
     {
         $idGenType = $class->generatorType;
         if ($idGenType == ClassMetadata::GENERATOR_TYPE_AUTO) {
-            if ($this->targetPlatform->prefersSequences()) {
+            if ($this->getTargetPlatform()->prefersSequences()) {
                 $class->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_SEQUENCE);
-            } else if ($this->targetPlatform->prefersIdentityColumns()) {
+            } else if ($this->getTargetPlatform()->prefersIdentityColumns()) {
                 $class->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_IDENTITY);
             } else {
                 $class->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_TABLE);
@@ -448,21 +447,25 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
                 // <table>_<column>_seq in PostgreSQL for SERIAL columns.
                 // Not pretty but necessary and the simplest solution that currently works.
                 $sequenceName = null;
-                $fieldName = $class->identifier ? $class->getSingleIdentifierFieldName() : null;
+                $fieldName    = $class->identifier ? $class->getSingleIdentifierFieldName() : null;
 
-                if ($this->targetPlatform instanceof Platforms\PostgreSQLPlatform) {
-                    $columnName = $class->getSingleIdentifierColumnName();
-                    $quoted = isset($class->fieldMappings[$fieldName]['quoted']) || isset($class->table['quoted']);
-                    $sequenceName = $class->getTableName() . '_' . $columnName . '_seq';
-                    $definition = array(
-                        'sequenceName' => $this->targetPlatform->fixSchemaElementName($sequenceName)
+                if ($this->getTargetPlatform() instanceof Platforms\PostgreSQLPlatform) {
+                    $columnName     = $class->getSingleIdentifierColumnName();
+                    $quoted         = isset($class->fieldMappings[$fieldName]['quoted']) || isset($class->table['quoted']);
+                    $sequenceName   = $class->getTableName() . '_' . $columnName . '_seq';
+                    $definition     = array(
+                        'sequenceName' => $this->getTargetPlatform()->fixSchemaElementName($sequenceName)
                     );
 
                     if ($quoted) {
                         $definition['quoted'] = true;
                     }
 
-                    $sequenceName = $this->em->getConfiguration()->getQuoteStrategy()->getSequenceName($definition, $class, $this->targetPlatform);
+                    $sequenceName = $this
+                        ->em
+                        ->getConfiguration()
+                        ->getQuoteStrategy()
+                        ->getSequenceName($definition, $class, $this->getTargetPlatform());
                 }
 
                 $generator = ($fieldName && $class->fieldMappings[$fieldName]['type'] === 'bigint')
@@ -477,15 +480,15 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
                 // If there is no sequence definition yet, create a default definition
                 $definition = $class->sequenceGeneratorDefinition;
 
-                if (!$definition) {
-                    $fieldName = $class->getSingleIdentifierFieldName();
-                    $columnName = $class->getSingleIdentifierColumnName();
-                    $quoted = isset($class->fieldMappings[$fieldName]['quoted']) || isset($class->table['quoted']);
-                    $sequenceName = $class->getTableName() . '_' . $columnName . '_seq';
-                    $definition = array(
-                        'sequenceName' => $this->targetPlatform->fixSchemaElementName($sequenceName),
-                        'allocationSize' => 1,
-                        'initialValue' => 1,
+                if ( ! $definition) {
+                    $fieldName      = $class->getSingleIdentifierFieldName();
+                    $columnName     = $class->getSingleIdentifierColumnName();
+                    $quoted         = isset($class->fieldMappings[$fieldName]['quoted']) || isset($class->table['quoted']);
+                    $sequenceName   = $class->getTableName() . '_' . $columnName . '_seq';
+                    $definition     = array(
+                        'sequenceName'      => $this->getTargetPlatform()->fixSchemaElementName($sequenceName),
+                        'allocationSize'    => 1,
+                        'initialValue'      => 1,
                     );
 
                     if ($quoted) {
@@ -496,7 +499,7 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
                 }
 
                 $sequenceGenerator = new \Doctrine\ORM\Id\SequenceGenerator(
-                    $this->em->getConfiguration()->getQuoteStrategy()->getSequenceName($definition, $class, $this->targetPlatform),
+                    $this->em->getConfiguration()->getQuoteStrategy()->getSequenceName($definition, $class, $this->getTargetPlatform()),
                     $definition['allocationSize']
                 );
                 $class->setIdGenerator($sequenceGenerator);
@@ -516,7 +519,7 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
 
             case ClassMetadata::GENERATOR_TYPE_CUSTOM:
                 $definition = $class->customGeneratorDefinition;
-                if (!class_exists($definition['class'])) {
+                if ( ! class_exists($definition['class'])) {
                     throw new ORMException("Can't instantiate custom generator : " .
                         $definition['class']);
                 }
@@ -568,5 +571,17 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
     protected function isEntity(ClassMetadataInterface $class)
     {
         return isset($class->isMappedSuperclass) && $class->isMappedSuperclass === false;
+    }
+
+    /**
+     * @return Platforms\AbstractPlatform
+     */
+    private function getTargetPlatform()
+    {
+        if (!$this->targetPlatform) {
+            $this->targetPlatform = $this->em->getConnection()->getDatabasePlatform();
+        }
+
+        return $this->targetPlatform;
     }
 }

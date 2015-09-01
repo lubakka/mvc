@@ -8,8 +8,17 @@
 
 namespace Lubakka;
 
+/**
+ * Class Helpers
+ * @package Lubakka
+ */
 class Helpers {
 
+    /**
+     * @param $array
+     *
+     * @return object
+     */
     public static function toObject($array)
     {
         if (is_array($array)) {

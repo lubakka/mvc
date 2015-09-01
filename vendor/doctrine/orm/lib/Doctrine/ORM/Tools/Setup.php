@@ -19,9 +19,9 @@
 
 namespace Doctrine\ORM\Tools;
 
-use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\ClassLoader;
+use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
@@ -57,11 +57,11 @@ class Setup
     /**
      * Creates a configuration with an annotation metadata driver.
      *
-     * @param array $paths
+     * @param array   $paths
      * @param boolean $isDevMode
-     * @param string $proxyDir
-     * @param Cache $cache
-     * @param bool $useSimpleAnnotationReader
+     * @param string  $proxyDir
+     * @param Cache   $cache
+     * @param bool    $useSimpleAnnotationReader
      *
      * @return Configuration
      */
@@ -76,10 +76,10 @@ class Setup
     /**
      * Creates a configuration with a xml metadata driver.
      *
-     * @param array $paths
+     * @param array   $paths
      * @param boolean $isDevMode
-     * @param string $proxyDir
-     * @param Cache $cache
+     * @param string  $proxyDir
+     * @param Cache   $cache
      *
      * @return Configuration
      */
@@ -94,10 +94,10 @@ class Setup
     /**
      * Creates a configuration with a yaml metadata driver.
      *
-     * @param array $paths
+     * @param array   $paths
      * @param boolean $isDevMode
-     * @param string $proxyDir
-     * @param Cache $cache
+     * @param string  $proxyDir
+     * @param Cache   $cache
      *
      * @return Configuration
      */
@@ -112,9 +112,9 @@ class Setup
     /**
      * Creates a configuration without a metadata driver.
      *
-     * @param bool $isDevMode
+     * @param bool   $isDevMode
      * @param string $proxyDir
-     * @param Cache $cache
+     * @param Cache  $cache
      *
      * @return Configuration
      */

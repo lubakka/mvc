@@ -21,6 +21,7 @@ namespace Doctrine\ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\QueryExpressionVisitor;
 
@@ -58,13 +59,13 @@ class QueryBuilder
      */
     private $_dqlParts = array(
         'distinct' => false,
-        'select' => array(),
-        'from' => array(),
-        'join' => array(),
-        'set' => array(),
-        'where' => null,
+        'select'  => array(),
+        'from'    => array(),
+        'join'    => array(),
+        'set'     => array(),
+        'where'   => null,
         'groupBy' => array(),
-        'having' => null,
+        'having'  => null,
         'orderBy' => array()
     );
 
@@ -214,7 +215,7 @@ class QueryBuilder
         }
 
         $this->_state = self::STATE_CLEAN;
-        $this->_dql = $dql;
+        $this->_dql   = $dql;
 
         return $dql;
     }
@@ -245,7 +246,7 @@ class QueryBuilder
     /**
      * Finds the root entity alias of the joined entity.
      *
-     * @param string $alias The alias of the new join entity
+     * @param string $alias       The alias of the new join entity
      * @param string $parentAlias The parent entity alias of the join relationship
      *
      * @return string
@@ -312,8 +313,8 @@ class QueryBuilder
         foreach ($this->_dqlParts['from'] as &$fromClause) {
             if (is_string($fromClause)) {
                 $spacePos = strrpos($fromClause, ' ');
-                $from = substr($fromClause, 0, $spacePos);
-                $alias = substr($fromClause, $spacePos + 1);
+                $from     = substr($fromClause, 0, $spacePos);
+                $alias    = substr($fromClause, $spacePos + 1);
 
                 $fromClause = new Query\Expr\From($from, $alias);
             }
@@ -345,8 +346,8 @@ class QueryBuilder
         foreach ($this->_dqlParts['from'] as &$fromClause) {
             if (is_string($fromClause)) {
                 $spacePos = strrpos($fromClause, ' ');
-                $from = substr($fromClause, 0, $spacePos);
-                $alias = substr($fromClause, $spacePos + 1);
+                $from     = substr($fromClause, 0, $spacePos);
+                $alias    = substr($fromClause, $spacePos + 1);
 
                 $fromClause = new Query\Expr\From($from, $alias);
             }
@@ -368,16 +369,17 @@ class QueryBuilder
      *         ->setParameter('user_id', 1);
      * </code>
      *
-     * @param string|integer $key The parameter position or name.
-     * @param mixed $value The parameter value.
-     * @param string|null $type PDO::PARAM_* or \Doctrine\DBAL\Types\Type::* constant
+     * @param string|integer $key   The parameter position or name.
+     * @param mixed          $value The parameter value.
+     * @param string|null    $type  PDO::PARAM_* or \Doctrine\DBAL\Types\Type::* constant
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
     public function setParameter($key, $value, $type = null)
     {
         $filteredParameters = $this->parameters->filter(
-            function ($parameter) use ($key) {
+            function ($parameter) use ($key)
+            {
                 // Must not be identical because of string to integer conversion
                 return ($key == $parameter->getName());
             }
@@ -455,7 +457,8 @@ class QueryBuilder
     public function getParameter($key)
     {
         $filteredParameters = $this->parameters->filter(
-            function ($parameter) use ($key) {
+            function ($parameter) use ($key)
+            {
                 // Must not be identical because of string to integer conversion
                 return ($key == $parameter->getName());
             }
@@ -520,9 +523,9 @@ class QueryBuilder
      * The available parts are: 'select', 'from', 'join', 'set', 'where',
      * 'groupBy', 'having' and 'orderBy'.
      *
-     * @param string $dqlPartName
+     * @param string    $dqlPartName
      * @param Expr\Base $dqlPart
-     * @param bool $append
+     * @param bool      $append
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
@@ -530,7 +533,7 @@ class QueryBuilder
     {
         if ($append && ($dqlPartName === "where" || $dqlPartName === "having")) {
             throw new \InvalidArgumentException(
-                "Using \$append = true does not have an effect with 'where' or 'having' " .
+                "Using \$append = true does not have an effect with 'where' or 'having' ".
                 "parts. See QueryBuilder#andWhere() for an example for correct usage."
             );
         }
@@ -612,7 +615,7 @@ class QueryBuilder
      */
     public function distinct($flag = true)
     {
-        $this->_dqlParts['distinct'] = (bool)$flag;
+        $this->_dqlParts['distinct'] = (bool) $flag;
 
         return $this;
     }
@@ -657,7 +660,7 @@ class QueryBuilder
      * </code>
      *
      * @param string $delete The class/type whose instances are subject to the deletion.
-     * @param string $alias The class/type alias used in the constructed query.
+     * @param string $alias  The class/type alias used in the constructed query.
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
@@ -665,7 +668,7 @@ class QueryBuilder
     {
         $this->_type = self::DELETE;
 
-        if (!$delete) {
+        if ( ! $delete) {
             return $this;
         }
 
@@ -684,7 +687,7 @@ class QueryBuilder
      * </code>
      *
      * @param string $update The class/type whose instances are subject to the update.
-     * @param string $alias The class/type alias used in the constructed query.
+     * @param string $alias  The class/type alias used in the constructed query.
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
@@ -692,7 +695,7 @@ class QueryBuilder
     {
         $this->_type = self::UPDATE;
 
-        if (!$update) {
+        if ( ! $update) {
             return $this;
         }
 
@@ -709,8 +712,8 @@ class QueryBuilder
      *         ->from('User', 'u')
      * </code>
      *
-     * @param string $from The class name.
-     * @param string $alias The alias of the class.
+     * @param string $from    The class name.
+     * @param string $alias   The alias of the class.
      * @param string $indexBy The index for the from.
      *
      * @return QueryBuilder This QueryBuilder instance.
@@ -734,11 +737,11 @@ class QueryBuilder
      *         ->join('u.Phonenumbers', 'p', Expr\Join::WITH, 'p.is_primary = 1');
      * </code>
      *
-     * @param string $join The relationship to join.
-     * @param string $alias The alias of the join.
+     * @param string      $join          The relationship to join.
+     * @param string      $alias         The alias of the join.
      * @param string|null $conditionType The condition type constant. Either ON or WITH.
-     * @param string|null $condition The condition for the join.
-     * @param string|null $indexBy The index for the join.
+     * @param string|null $condition     The condition for the join.
+     * @param string|null $indexBy       The index for the join.
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
@@ -760,11 +763,11 @@ class QueryBuilder
      *         ->from('User', 'u')
      *         ->innerJoin('u.Phonenumbers', 'p', Expr\Join::WITH, 'p.is_primary = 1');
      *
-     * @param string $join The relationship to join.
-     * @param string $alias The alias of the join.
+     * @param string      $join          The relationship to join.
+     * @param string      $alias         The alias of the join.
      * @param string|null $conditionType The condition type constant. Either ON or WITH.
-     * @param string|null $condition The condition for the join.
-     * @param string|null $indexBy The index for the join.
+     * @param string|null $condition     The condition for the join.
+     * @param string|null $indexBy       The index for the join.
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
@@ -795,11 +798,11 @@ class QueryBuilder
      *         ->leftJoin('u.Phonenumbers', 'p', Expr\Join::WITH, 'p.is_primary = 1');
      * </code>
      *
-     * @param string $join The relationship to join.
-     * @param string $alias The alias of the join.
+     * @param string      $join          The relationship to join.
+     * @param string      $alias         The alias of the join.
      * @param string|null $conditionType The condition type constant. Either ON or WITH.
-     * @param string|null $condition The condition for the join.
-     * @param string|null $indexBy The index for the join.
+     * @param string|null $condition     The condition for the join.
+     * @param string|null $indexBy       The index for the join.
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
@@ -826,7 +829,7 @@ class QueryBuilder
      *         ->where('u.id = ?');
      * </code>
      *
-     * @param string $key The key/field to set.
+     * @param string $key   The key/field to set.
      * @param string $value The value, expression, placeholder, etc.
      *
      * @return QueryBuilder This QueryBuilder instance.
@@ -864,7 +867,7 @@ class QueryBuilder
      */
     public function where($predicates)
     {
-        if (!(func_num_args() == 1 && $predicates instanceof Expr\Composite)) {
+        if ( ! (func_num_args() == 1 && $predicates instanceof Expr\Composite)) {
             $predicates = new Expr\Andx(func_get_args());
         }
 
@@ -891,7 +894,7 @@ class QueryBuilder
      */
     public function andWhere($where)
     {
-        $args = func_get_args();
+        $args  = func_get_args();
         $where = $this->getDQLPart('where');
 
         if ($where instanceof Expr\Andx) {
@@ -924,7 +927,7 @@ class QueryBuilder
      */
     public function orWhere($where)
     {
-        $args = func_get_args();
+        $args  = func_get_args();
         $where = $this->getDqlPart('where');
 
         if ($where instanceof Expr\Orx) {
@@ -987,7 +990,7 @@ class QueryBuilder
      */
     public function having($having)
     {
-        if (!(func_num_args() == 1 && ($having instanceof Expr\Andx || $having instanceof Expr\Orx))) {
+        if ( ! (func_num_args() == 1 && ($having instanceof Expr\Andx || $having instanceof Expr\Orx))) {
             $having = new Expr\Andx(func_get_args());
         }
 
@@ -1004,7 +1007,7 @@ class QueryBuilder
      */
     public function andHaving($having)
     {
-        $args = func_get_args();
+        $args   = func_get_args();
         $having = $this->getDqlPart('having');
 
         if ($having instanceof Expr\Andx) {
@@ -1027,7 +1030,7 @@ class QueryBuilder
      */
     public function orHaving($having)
     {
-        $args = func_get_args();
+        $args   = func_get_args();
         $having = $this->getDqlPart('having');
 
         if ($having instanceof Expr\Orx) {
@@ -1044,8 +1047,8 @@ class QueryBuilder
      * Specifies an ordering for the query results.
      * Replaces any previously specified orderings, if any.
      *
-     * @param string|Expr\OrderBy $sort The ordering expression.
-     * @param string $order The ordering direction.
+     * @param string|Expr\OrderBy $sort  The ordering expression.
+     * @param string              $order The ordering direction.
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
@@ -1059,8 +1062,8 @@ class QueryBuilder
     /**
      * Adds an ordering to the query results.
      *
-     * @param string|Expr\OrderBy $sort The ordering expression.
-     * @param string $order The ordering direction.
+     * @param string|Expr\OrderBy $sort  The ordering expression.
+     * @param string              $order The ordering direction.
      *
      * @return QueryBuilder This QueryBuilder instance.
      */
@@ -1142,10 +1145,10 @@ class QueryBuilder
      */
     private function _getDQLForDelete()
     {
-        return 'DELETE'
-        . $this->_getReducedDQLQueryPart('from', array('pre' => ' ', 'separator' => ', '))
-        . $this->_getReducedDQLQueryPart('where', array('pre' => ' WHERE '))
-        . $this->_getReducedDQLQueryPart('orderBy', array('pre' => ' ORDER BY ', 'separator' => ', '));
+         return 'DELETE'
+              . $this->_getReducedDQLQueryPart('from', array('pre' => ' ', 'separator' => ', '))
+              . $this->_getReducedDQLQueryPart('where', array('pre' => ' WHERE '))
+              . $this->_getReducedDQLQueryPart('orderBy', array('pre' => ' ORDER BY ', 'separator' => ', '));
     }
 
     /**
@@ -1153,11 +1156,11 @@ class QueryBuilder
      */
     private function _getDQLForUpdate()
     {
-        return 'UPDATE'
-        . $this->_getReducedDQLQueryPart('from', array('pre' => ' ', 'separator' => ', '))
-        . $this->_getReducedDQLQueryPart('set', array('pre' => ' SET ', 'separator' => ', '))
-        . $this->_getReducedDQLQueryPart('where', array('pre' => ' WHERE '))
-        . $this->_getReducedDQLQueryPart('orderBy', array('pre' => ' ORDER BY ', 'separator' => ', '));
+         return 'UPDATE'
+              . $this->_getReducedDQLQueryPart('from', array('pre' => ' ', 'separator' => ', '))
+              . $this->_getReducedDQLQueryPart('set', array('pre' => ' SET ', 'separator' => ', '))
+              . $this->_getReducedDQLQueryPart('where', array('pre' => ' WHERE '))
+              . $this->_getReducedDQLQueryPart('orderBy', array('pre' => ' ORDER BY ', 'separator' => ', '));
     }
 
     /**
@@ -1166,23 +1169,23 @@ class QueryBuilder
     private function _getDQLForSelect()
     {
         $dql = 'SELECT'
-            . ($this->_dqlParts['distinct'] === true ? ' DISTINCT' : '')
-            . $this->_getReducedDQLQueryPart('select', array('pre' => ' ', 'separator' => ', '));
+             . ($this->_dqlParts['distinct']===true ? ' DISTINCT' : '')
+             . $this->_getReducedDQLQueryPart('select', array('pre' => ' ', 'separator' => ', '));
 
-        $fromParts = $this->getDQLPart('from');
-        $joinParts = $this->getDQLPart('join');
+        $fromParts   = $this->getDQLPart('from');
+        $joinParts   = $this->getDQLPart('join');
         $fromClauses = array();
 
         // Loop through all FROM clauses
-        if (!empty($fromParts)) {
+        if ( ! empty($fromParts)) {
             $dql .= ' FROM ';
 
             foreach ($fromParts as $from) {
-                $fromClause = (string)$from;
+                $fromClause = (string) $from;
 
                 if ($from instanceof Expr\From && isset($joinParts[$from->getAlias()])) {
                     foreach ($joinParts[$from->getAlias()] as $join) {
-                        $fromClause .= ' ' . ((string)$join);
+                        $fromClause .= ' ' . ((string) $join);
                     }
                 }
 
@@ -1191,17 +1194,17 @@ class QueryBuilder
         }
 
         $dql .= implode(', ', $fromClauses)
-            . $this->_getReducedDQLQueryPart('where', array('pre' => ' WHERE '))
-            . $this->_getReducedDQLQueryPart('groupBy', array('pre' => ' GROUP BY ', 'separator' => ', '))
-            . $this->_getReducedDQLQueryPart('having', array('pre' => ' HAVING '))
-            . $this->_getReducedDQLQueryPart('orderBy', array('pre' => ' ORDER BY ', 'separator' => ', '));
+              . $this->_getReducedDQLQueryPart('where', array('pre' => ' WHERE '))
+              . $this->_getReducedDQLQueryPart('groupBy', array('pre' => ' GROUP BY ', 'separator' => ', '))
+              . $this->_getReducedDQLQueryPart('having', array('pre' => ' HAVING '))
+              . $this->_getReducedDQLQueryPart('orderBy', array('pre' => ' ORDER BY ', 'separator' => ', '));
 
         return $dql;
     }
 
     /**
      * @param string $queryPartName
-     * @param array $options
+     * @param array  $options
      *
      * @return string
      */
@@ -1214,8 +1217,8 @@ class QueryBuilder
         }
 
         return (isset($options['pre']) ? $options['pre'] : '')
-        . (is_array($queryPart) ? implode($options['separator'], $queryPart) : $queryPart)
-        . (isset($options['post']) ? $options['post'] : '');
+             . (is_array($queryPart) ? implode($options['separator'], $queryPart) : $queryPart)
+             . (isset($options['post']) ? $options['post'] : '');
     }
 
     /**
@@ -1248,7 +1251,7 @@ class QueryBuilder
     public function resetDQLPart($part)
     {
         $this->_dqlParts[$part] = is_array($this->_dqlParts[$part]) ? array() : null;
-        $this->_state = self::STATE_DIRTY;
+        $this->_state           = self::STATE_DIRTY;
 
         return $this;
     }

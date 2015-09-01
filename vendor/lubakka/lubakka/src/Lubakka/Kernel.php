@@ -10,8 +10,15 @@ namespace Lubakka;
 
 use Lubakka\Exception\FrontControllerException;
 
+/**
+ * Class Kernel
+ * @package Lubakka
+ */
 class Kernel
 {
+    /**
+     * @var
+     */
     private $request;
 
     /**
@@ -19,21 +26,65 @@ class Kernel
      */
     protected $modules = array();
 
+    /**
+     * @var
+     */
     protected $bundleMap;
+    /**
+     * @var
+     */
     protected $container;
+    /**
+     * @var mixed
+     */
     protected $rootDir;
+    /**
+     * @var string
+     */
     protected $environment;
+    /**
+     * @var bool
+     */
     protected $debug;
+    /**
+     * @var bool
+     */
     protected $booted = false;
+    /**
+     * @var mixed
+     */
     protected $name;
+    /**
+     * @var mixed
+     */
     protected $startTime;
 
+    /**
+     *
+     */
     const VERSION = '1.0.1';
+    /**
+     *
+     */
     const VERSION_ID = '10001';
+    /**
+     *
+     */
     const MAJOR_VERSION = '1';
+    /**
+     *
+     */
     const MINOR_VERSION = '0';
+    /**
+     *
+     */
     const RELEASE_VERSION = '1';
+    /**
+     *
+     */
     const EXTRA_VERSION = '';
+
+    private $inst = null;
 
     /**
      * Constructor.
@@ -46,7 +97,7 @@ class Kernel
     public function __construct($environment, $debug)
     {
         $this->environment = $environment;
-        $this->debug = (bool) $debug;
+        $this->debug = (bool)$debug;
         $this->rootDir = $this->getRootDir();
         $this->name = $this->getName();
 
@@ -104,9 +155,12 @@ class Kernel
         return $this->rootDir;
     }
 
+    /**
+     * @param $kernel
+     */
     public function run($kernel)
     {
-        @ini_set ( 'default_charset', 'UTF-8' );
+        @ini_set('default_charset', 'UTF-8');
         try {
             new FrontController($this->getRequest(), $kernel);
             //Container::getContainer();
@@ -125,6 +179,8 @@ class Kernel
 
     /**
      * @param mixed $request
+     *
+     * @return $this
      */
     public function setRequest($request)
     {
@@ -133,7 +189,11 @@ class Kernel
         return $this;
     }
 
-    public function registerModules(){
-
+    /**
+     *
+     */
+    public function registerModules()
+    {
+        return $this->modules;
     }
 } 

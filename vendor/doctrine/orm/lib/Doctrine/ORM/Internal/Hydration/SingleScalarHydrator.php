@@ -19,8 +19,8 @@
 
 namespace Doctrine\ORM\Internal\Hydration;
 
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * Hydrator that hydrates a single scalar value from the result set.
@@ -36,7 +36,7 @@ class SingleScalarHydrator extends AbstractHydrator
      */
     protected function hydrateAllData()
     {
-        $data = $this->_stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $data    = $this->_stmt->fetchAll(\PDO::FETCH_ASSOC);
         $numRows = count($data);
 
         if ($numRows === 0) {
@@ -47,7 +47,7 @@ class SingleScalarHydrator extends AbstractHydrator
             throw new NonUniqueResultException();
         }
 
-        $cache = array();
+        $cache  = array();
         $result = $this->gatherScalarRowData($data[key($data)], $cache);
 
         return array_shift($result);

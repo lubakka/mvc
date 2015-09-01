@@ -19,14 +19,14 @@
 
 namespace Doctrine\ORM\Tools\Console\Command;
 
-use Doctrine\ORM\Tools\Console\MetadataFilter;
-use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
-use Doctrine\ORM\Tools\EntityGenerator;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Doctrine\ORM\Tools\Console\MetadataFilter;
+use Doctrine\ORM\Tools\EntityGenerator;
+use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Command to generate entity classes and method stubs from your mapping information.
@@ -46,43 +46,43 @@ class GenerateEntitiesCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('orm:generate-entities')
-            ->setAliases(array('orm:generate:entities'))
-            ->setDescription('Generate entity classes and method stubs from your mapping information.')
-            ->setDefinition(array(
-                new InputOption(
-                    'filter', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                    'A string pattern used to match entities that should be processed.'
-                ),
-                new InputArgument(
-                    'dest-path', InputArgument::REQUIRED, 'The path to generate your entity classes.'
-                ),
-                new InputOption(
-                    'generate-annotations', null, InputOption::VALUE_OPTIONAL,
-                    'Flag to define if generator should generate annotation metadata on entities.', false
-                ),
-                new InputOption(
-                    'generate-methods', null, InputOption::VALUE_OPTIONAL,
-                    'Flag to define if generator should generate stub methods on entities.', true
-                ),
-                new InputOption(
-                    'regenerate-entities', null, InputOption::VALUE_OPTIONAL,
-                    'Flag to define if generator should regenerate entity if it exists.', false
-                ),
-                new InputOption(
-                    'update-entities', null, InputOption::VALUE_OPTIONAL,
-                    'Flag to define if generator should only update entity if it exists.', true
-                ),
-                new InputOption(
-                    'extend', null, InputOption::VALUE_OPTIONAL,
-                    'Defines a base class to be extended by generated entity classes.'
-                ),
-                new InputOption(
-                    'num-spaces', null, InputOption::VALUE_OPTIONAL,
-                    'Defines the number of indentation spaces', 4
-                )
-            ))
-            ->setHelp(<<<EOT
+        ->setName('orm:generate-entities')
+        ->setAliases(array('orm:generate:entities'))
+        ->setDescription('Generate entity classes and method stubs from your mapping information.')
+        ->setDefinition(array(
+            new InputOption(
+                'filter', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'A string pattern used to match entities that should be processed.'
+            ),
+            new InputArgument(
+                'dest-path', InputArgument::REQUIRED, 'The path to generate your entity classes.'
+            ),
+            new InputOption(
+                'generate-annotations', null, InputOption::VALUE_OPTIONAL,
+                'Flag to define if generator should generate annotation metadata on entities.', false
+            ),
+            new InputOption(
+                'generate-methods', null, InputOption::VALUE_OPTIONAL,
+                'Flag to define if generator should generate stub methods on entities.', true
+            ),
+            new InputOption(
+                'regenerate-entities', null, InputOption::VALUE_OPTIONAL,
+                'Flag to define if generator should regenerate entity if it exists.', false
+            ),
+            new InputOption(
+                'update-entities', null, InputOption::VALUE_OPTIONAL,
+                'Flag to define if generator should only update entity if it exists.', true
+            ),
+            new InputOption(
+                'extend', null, InputOption::VALUE_OPTIONAL,
+                'Defines a base class to be extended by generated entity classes.'
+            ),
+            new InputOption(
+                'num-spaces', null, InputOption::VALUE_OPTIONAL,
+                'Defines the number of indentation spaces', 4
+            )
+        ))
+        ->setHelp(<<<EOT
 Generate entity classes and method stubs from your mapping information.
 
 If you use the <comment>--update-entities</comment> or <comment>--regenerate-entities</comment> flags your existing
@@ -102,7 +102,7 @@ child classes for you correctly, because it doesn't know which
 class is supposed to extend which. You have to adjust the entity
 code manually for inheritance to work!
 EOT
-            );
+        );
     }
 
     /**
@@ -120,13 +120,13 @@ EOT
         // Process destination directory
         $destPath = realpath($input->getArgument('dest-path'));
 
-        if (!file_exists($destPath)) {
+        if ( ! file_exists($destPath)) {
             throw new \InvalidArgumentException(
                 sprintf("Entities destination directory '<info>%s</info>' does not exist.", $input->getArgument('dest-path'))
             );
         }
 
-        if (!is_writable($destPath)) {
+        if ( ! is_writable($destPath)) {
             throw new \InvalidArgumentException(
                 sprintf("Entities destination directory '<info>%s</info>' does not have write permissions.", $destPath)
             );

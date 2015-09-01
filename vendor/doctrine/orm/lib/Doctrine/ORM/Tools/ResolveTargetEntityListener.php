@@ -43,7 +43,7 @@ class ResolveTargetEntityListener
      *
      * @param string $originalEntity
      * @param string $newEntity
-     * @param array $mapping
+     * @param array  $mapping
      *
      * @return void
      */
@@ -73,7 +73,7 @@ class ResolveTargetEntityListener
 
     /**
      * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadata
-     * @param array $mapping
+     * @param array                                   $mapping
      *
      * @return void
      */

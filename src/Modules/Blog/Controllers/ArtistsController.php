@@ -11,10 +11,19 @@ namespace Modules\Blog\Controllers;
 use Doctrine\ORM\EntityManager;
 use Lubakka\Controllers\MasterController;
 use Lubakka\View\View;
-use Modules\Blog\Entities\Artists\Artists;
+use Entities\Artists\Artists;
 
+/**
+ * Class ArtistsController
+ * @package Modules\Blog\Controllers
+ */
 class ArtistsController extends MasterController {
 
+    /**
+     * @param $id
+     *
+     * @throws \Exception
+     */
     public function indexAction($id){
 
         //$em = $this->get('doctrine');
@@ -30,18 +39,25 @@ class ArtistsController extends MasterController {
 //        $e->flush();
 
         //return View::layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artists));
-        $return = $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artists));
+        $return = $this->render('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artists));
         return $return;
     }
-    
+
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
     public function viewAction($id) {
         $em = $this->get('doctrine');
 
         /** @var $e EntityManager */
         $e = $em->getEm();
 
-        $artist = $e->getRepository('src\Entities\Artists\Artists')->find($id);
+        $artist = $e->getRepository('Entities\Artists\Artists')->find($id);
 
-        return $this->layout('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artist));
+        var_dump($artist);exit;
+
+        return $this->render('@Artists:Artists/index', array('d' => 'test', 'id' => $id, 'artists' => $artist));
     }
 } 

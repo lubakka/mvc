@@ -19,10 +19,10 @@
 
 namespace Doctrine\ORM\Tools\Console\Command;
 
-use Doctrine\ORM\Tools\SchemaValidator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Doctrine\ORM\Tools\SchemaValidator;
 
 /**
  * Command to validate that the current mapping is valid.
@@ -43,12 +43,12 @@ class ValidateSchemaCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('orm:validate-schema')
-            ->setDescription('Validate the mapping files.')
-            ->setHelp(<<<EOT
+        ->setName('orm:validate-schema')
+        ->setDescription('Validate the mapping files.')
+        ->setHelp(<<<EOT
 'Validate that the mapping files are correct and in sync with the database.'
 EOT
-            );
+        );
     }
 
     /**

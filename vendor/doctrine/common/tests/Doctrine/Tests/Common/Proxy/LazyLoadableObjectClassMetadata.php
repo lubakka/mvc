@@ -19,8 +19,8 @@
 
 namespace Doctrine\Tests\Common\Proxy;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use ReflectionClass;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * Class metadata test asset for @see LazyLoadableObject
@@ -39,7 +39,7 @@ class LazyLoadableObjectClassMetadata implements ClassMetadata
      * @var array
      */
     protected $identifier = array(
-        'publicIdentifierField' => true,
+        'publicIdentifierField'    => true,
         'protectedIdentifierField' => true,
     );
 
@@ -47,9 +47,9 @@ class LazyLoadableObjectClassMetadata implements ClassMetadata
      * @var array
      */
     protected $fields = array(
-        'publicIdentifierField' => true,
+        'publicIdentifierField'    => true,
         'protectedIdentifierField' => true,
-        'publicPersistentField' => true,
+        'publicPersistentField'    => true,
         'protectedPersistentField' => true,
     );
 
@@ -57,8 +57,8 @@ class LazyLoadableObjectClassMetadata implements ClassMetadata
      * @var array
      */
     protected $associations = array(
-        'publicAssociation' => true,
-        'protectedAssociation' => true,
+        'publicAssociation'        => true,
+        'protectedAssociation'     => true,
     );
 
     /**

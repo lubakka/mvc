@@ -63,7 +63,7 @@ class ChainCache extends CacheProvider
                 $value = $cacheProvider->doFetch($id);
 
                 // We populate all the previous cache layers (that are assumed to be faster)
-                for ($subKey = $key - 1; $subKey >= 0; $subKey--) {
+                for ($subKey = $key - 1 ; $subKey >= 0 ; $subKey--) {
                     $this->cacheProviders[$subKey]->doSave($id, $value);
                 }
 
@@ -107,10 +107,10 @@ class ChainCache extends CacheProvider
      */
     protected function doDelete($id)
     {
-        $deleted = false;
+        $deleted = true;
 
         foreach ($this->cacheProviders as $cacheProvider) {
-            $deleted = $deleted || $cacheProvider->doDelete($id);
+            $deleted = $cacheProvider->doDelete($id) && $deleted;
         }
 
         return $deleted;

@@ -28,33 +28,33 @@ class MappingException extends \Exception
 {
     /**
      * @param string $className
-     * @param array $namespaces
+     * @param array  $namespaces
      *
-     * @return MappingException
+     * @return self
      */
     public static function classNotFoundInNamespaces($className, $namespaces)
     {
-        return new self("The class '" . $className . "' was not found in the " .
+        return new self("The class '" . $className . "' was not found in the ".
             "chain configured namespaces " . implode(", ", $namespaces));
     }
 
     /**
-     * @return MappingException
+     * @return self
      */
     public static function pathRequired()
     {
-        return new self("Specifying the paths to your entities is required " .
+        return new self("Specifying the paths to your entities is required ".
             "in the AnnotationDriver to retrieve all class names.");
     }
 
     /**
      * @param string|null $path
      *
-     * @return MappingException
+     * @return self
      */
     public static function fileMappingDriversRequireConfiguredDirectoryPath($path = null)
     {
-        if (!empty($path)) {
+        if ( ! empty($path)) {
             $path = '[' . $path . ']';
         }
 
@@ -68,7 +68,7 @@ class MappingException extends \Exception
      * @param string $entityName
      * @param string $fileName
      *
-     * @return MappingException
+     * @return self
      */
     public static function mappingFileNotFound($entityName, $fileName)
     {
@@ -79,7 +79,7 @@ class MappingException extends \Exception
      * @param string $entityName
      * @param string $fileName
      *
-     * @return MappingException
+     * @return self
      */
     public static function invalidMappingFile($entityName, $fileName)
     {
@@ -89,7 +89,7 @@ class MappingException extends \Exception
     /**
      * @param string $className
      *
-     * @return \Doctrine\Common\Persistence\Mapping\MappingException
+     * @return self
      */
     public static function nonExistingClass($className)
     {

@@ -81,8 +81,7 @@ class TokenParser
             $this->pointer++;
             if ($this->tokens[$i][0] === T_WHITESPACE ||
                 $this->tokens[$i][0] === T_COMMENT ||
-                ($docCommentIsComment && $this->tokens[$i][0] === T_DOC_COMMENT)
-            ) {
+                ($docCommentIsComment && $this->tokens[$i][0] === T_DOC_COMMENT)) {
 
                 continue;
             }

@@ -19,22 +19,24 @@
 
 namespace Doctrine\ORM;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\Persistence\ObjectManagerAware;
-use Doctrine\Common\PropertyChangedListener;
-use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\ListenersInvoker;
-use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\Event\PostFlushEventArgs;
-use Doctrine\ORM\Event\PreFlushEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Proxy\Proxy;
 use Exception;
 use InvalidArgumentException;
 use UnexpectedValueException;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\Common\PropertyChangedListener;
+use Doctrine\Common\Persistence\ObjectManagerAware;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Proxy\Proxy;
+
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Event\PreFlushEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
+use Doctrine\ORM\Event\ListenersInvoker;
 
 /**
  * The UnitOfWork is responsible for tracking changes to objects during an
@@ -259,8 +261,8 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function __construct(EntityManager $em)
     {
-        $this->em = $em;
-        $this->evm = $em->getEventManager();
+        $this->em               = $em;
+        $this->evm              = $em->getEventManager();
         $this->listenersInvoker = new ListenersInvoker($em);
     }
 
@@ -301,13 +303,12 @@ class UnitOfWork implements PropertyChangedListener
             }
         }
 
-        if (!($this->entityInsertions ||
-            $this->entityDeletions ||
-            $this->entityUpdates ||
-            $this->collectionUpdates ||
-            $this->collectionDeletions ||
-            $this->orphanRemovals)
-        ) {
+        if ( ! ($this->entityInsertions ||
+                $this->entityDeletions ||
+                $this->entityUpdates ||
+                $this->collectionUpdates ||
+                $this->collectionDeletions ||
+                $this->orphanRemovals)) {
             $this->dispatchOnFlushEvent();
             $this->dispatchPostFlushEvent();
 
@@ -440,14 +441,14 @@ class UnitOfWork implements PropertyChangedListener
         }
 
         // Ignore uninitialized proxy objects
-        if ($entity instanceof Proxy && !$entity->__isInitialized__) {
+        if ($entity instanceof Proxy && ! $entity->__isInitialized__) {
             return;
         }
 
         // Only MANAGED entities that are NOT SCHEDULED FOR INSERTION are processed here.
         $oid = spl_object_hash($entity);
 
-        if (!isset($this->entityInsertions[$oid]) && isset($this->entityStates[$oid])) {
+        if ( ! isset($this->entityInsertions[$oid]) && isset($this->entityStates[$oid])) {
             $this->computeChangeSet($class, $entity);
         }
     }
@@ -525,7 +526,7 @@ class UnitOfWork implements PropertyChangedListener
             return;
         }
 
-        if (!$class->isInheritanceTypeNone()) {
+        if ( ! $class->isInheritanceTypeNone()) {
             $class = $this->em->getClassMetadata(get_class($entity));
         }
 
@@ -550,7 +551,7 @@ class UnitOfWork implements PropertyChangedListener
                 }
 
                 // If $value is not a Collection then use an ArrayCollection.
-                if (!$value instanceof Collection) {
+                if ( ! $value instanceof Collection) {
                     $value = new ArrayCollection($value);
                 }
 
@@ -561,7 +562,7 @@ class UnitOfWork implements PropertyChangedListener
                     $this->em, $this->em->getClassMetadata($assoc['targetEntity']), $value
                 );
                 $value->setOwner($entity, $assoc);
-                $value->setDirty(!$value->isEmpty());
+                $value->setDirty( ! $value->isEmpty());
 
                 $class->reflFields[$name]->setValue($entity, $value);
 
@@ -570,19 +571,19 @@ class UnitOfWork implements PropertyChangedListener
                 continue;
             }
 
-            if ((!$class->isIdentifier($name) || !$class->isIdGeneratorIdentity()) && ($name !== $class->versionField)) {
+            if (( ! $class->isIdentifier($name) || ! $class->isIdGeneratorIdentity()) && ($name !== $class->versionField)) {
                 $actualData[$name] = $value;
             }
         }
 
-        if (!isset($this->originalEntityData[$oid])) {
+        if ( ! isset($this->originalEntityData[$oid])) {
             // Entity is either NEW or MANAGED but not yet fully persisted (only has an id).
             // These result in an INSERT.
             $this->originalEntityData[$oid] = $actualData;
             $changeSet = array();
 
             foreach ($actualData as $propName => $actualValue) {
-                if (!isset($class->associationMappings[$propName])) {
+                if ( ! isset($class->associationMappings[$propName])) {
                     $changeSet[$propName] = array(null, $actualValue);
 
                     continue;
@@ -599,15 +600,15 @@ class UnitOfWork implements PropertyChangedListener
         } else {
             // Entity is "fully" MANAGED: it was already fully persisted before
             // and we have a copy of the original data
-            $originalData = $this->originalEntityData[$oid];
+            $originalData           = $this->originalEntityData[$oid];
             $isChangeTrackingNotify = $class->isChangeTrackingNotify();
-            $changeSet = ($isChangeTrackingNotify && isset($this->entityChangeSets[$oid]))
+            $changeSet              = ($isChangeTrackingNotify && isset($this->entityChangeSets[$oid]))
                 ? $this->entityChangeSets[$oid]
                 : array();
 
             foreach ($actualData as $propName => $actualValue) {
                 // skip field, its a partially omitted one!
-                if (!(isset($originalData[$propName]) || array_key_exists($propName, $originalData))) {
+                if ( ! (isset($originalData[$propName]) || array_key_exists($propName, $originalData))) {
                     continue;
                 }
 
@@ -619,7 +620,7 @@ class UnitOfWork implements PropertyChangedListener
                 }
 
                 // if regular field
-                if (!isset($class->associationMappings[$propName])) {
+                if ( ! isset($class->associationMappings[$propName])) {
                     if ($isChangeTrackingNotify) {
                         continue;
                     }
@@ -674,9 +675,9 @@ class UnitOfWork implements PropertyChangedListener
             }
 
             if ($changeSet) {
-                $this->entityChangeSets[$oid] = $changeSet;
+                $this->entityChangeSets[$oid]   = $changeSet;
                 $this->originalEntityData[$oid] = $actualData;
-                $this->entityUpdates[$oid] = $entity;
+                $this->entityUpdates[$oid]      = $entity;
             }
         }
 
@@ -688,11 +689,10 @@ class UnitOfWork implements PropertyChangedListener
                     $assoc['isOwningSide'] &&
                     $assoc['type'] == ClassMetadata::MANY_TO_MANY &&
                     $val instanceof PersistentCollection &&
-                    $val->isDirty()
-                ) {
-                    $this->entityChangeSets[$oid] = array();
+                    $val->isDirty()) {
+                    $this->entityChangeSets[$oid]   = array();
                     $this->originalEntityData[$oid] = $actualData;
-                    $this->entityUpdates[$oid] = $entity;
+                    $this->entityUpdates[$oid]      = $entity;
                 }
             }
         }
@@ -737,14 +737,14 @@ class UnitOfWork implements PropertyChangedListener
 
             foreach ($entitiesToProcess as $entity) {
                 // Ignore uninitialized proxy objects
-                if ($entity instanceof Proxy && !$entity->__isInitialized__) {
+                if ($entity instanceof Proxy && ! $entity->__isInitialized__) {
                     continue;
                 }
 
                 // Only MANAGED entities that are NOT SCHEDULED FOR INSERTION are processed here.
                 $oid = spl_object_hash($entity);
 
-                if (!isset($this->entityInsertions[$oid]) && isset($this->entityStates[$oid])) {
+                if ( ! isset($this->entityInsertions[$oid]) && isset($this->entityStates[$oid])) {
                     $this->computeChangeSet($class, $entity);
                 }
             }
@@ -764,7 +764,7 @@ class UnitOfWork implements PropertyChangedListener
      */
     private function computeAssociationChanges($assoc, $value)
     {
-        if ($value instanceof Proxy && !$value->__isInitialized__) {
+        if ($value instanceof Proxy && ! $value->__isInitialized__) {
             return;
         }
 
@@ -782,12 +782,12 @@ class UnitOfWork implements PropertyChangedListener
         // for transient (new) entities, recursively. ("Persistence by reachability")
         // Unwrap. Uninitialized collections will simply be empty.
         $unwrappedValue = ($assoc['type'] & ClassMetadata::TO_ONE) ? array($value) : $value->unwrap();
-        $targetClass = $this->em->getClassMetadata($assoc['targetEntity']);
+        $targetClass    = $this->em->getClassMetadata($assoc['targetEntity']);
 
         foreach ($unwrappedValue as $key => $entry) {
             $state = $this->getEntityState($entry, self::STATE_NEW);
 
-            if (!($entry instanceof $assoc['targetEntity'])) {
+            if ( ! ($entry instanceof $assoc['targetEntity'])) {
                 throw new ORMException(
                     sprintf(
                         'Found entity of type %s on association %s#%s, but expecting %s',
@@ -801,7 +801,7 @@ class UnitOfWork implements PropertyChangedListener
 
             switch ($state) {
                 case self::STATE_NEW:
-                    if (!$assoc['isCascadePersist']) {
+                    if ( ! $assoc['isCascadePersist']) {
                         throw ORMInvalidArgumentException::newEntityFoundThroughRelationship($assoc, $entry);
                     }
 
@@ -832,13 +832,13 @@ class UnitOfWork implements PropertyChangedListener
 
     /**
      * @param \Doctrine\ORM\Mapping\ClassMetadata $class
-     * @param object $entity
+     * @param object        $entity
      *
      * @return void
      */
     private function persistNew($class, $entity)
     {
-        $oid = spl_object_hash($entity);
+        $oid    = spl_object_hash($entity);
         $invoke = $this->listenersInvoker->getSubscribedSystems($class, Events::prePersist);
 
         if ($invoke !== ListenersInvoker::INVOKE_NONE) {
@@ -847,10 +847,10 @@ class UnitOfWork implements PropertyChangedListener
 
         $idGen = $class->idGenerator;
 
-        if (!$idGen->isPostInsertGenerator()) {
+        if ( ! $idGen->isPostInsertGenerator()) {
             $idValue = $idGen->generate($this->em, $entity);
 
-            if (!$idGen instanceof \Doctrine\ORM\Id\AssignedGenerator) {
+            if ( ! $idGen instanceof \Doctrine\ORM\Id\AssignedGenerator) {
                 $idValue = array($class->identifier[0] => $idValue);
 
                 $class->setIdentifierValues($entity, $idValue);
@@ -875,8 +875,8 @@ class UnitOfWork implements PropertyChangedListener
      *
      * @ignore
      *
-     * @param ClassMetadata $class The class descriptor of the entity.
-     * @param object $entity The entity for which to (re)calculate the change set.
+     * @param ClassMetadata $class  The class descriptor of the entity.
+     * @param object        $entity The entity for which to (re)calculate the change set.
      *
      * @return void
      *
@@ -886,7 +886,7 @@ class UnitOfWork implements PropertyChangedListener
     {
         $oid = spl_object_hash($entity);
 
-        if (!isset($this->entityStates[$oid]) || $this->entityStates[$oid] != self::STATE_MANAGED) {
+        if ( ! isset($this->entityStates[$oid]) || $this->entityStates[$oid] != self::STATE_MANAGED) {
             throw ORMInvalidArgumentException::entityNotManaged($entity);
         }
 
@@ -895,22 +895,21 @@ class UnitOfWork implements PropertyChangedListener
             return;
         }
 
-        if (!$class->isInheritanceTypeNone()) {
+        if ( ! $class->isInheritanceTypeNone()) {
             $class = $this->em->getClassMetadata(get_class($entity));
         }
 
         $actualData = array();
 
         foreach ($class->reflFields as $name => $refProp) {
-            if ((!$class->isIdentifier($name) || !$class->isIdGeneratorIdentity())
+            if (( ! $class->isIdentifier($name) || ! $class->isIdGeneratorIdentity())
                 && ($name !== $class->versionField)
-                && !$class->isCollectionValuedAssociation($name)
-            ) {
+                && ! $class->isCollectionValuedAssociation($name)) {
                 $actualData[$name] = $refProp->getValue($entity);
             }
         }
 
-        if (!isset($this->originalEntityData[$oid])) {
+        if ( ! isset($this->originalEntityData[$oid])) {
             throw new \RuntimeException('Cannot call recomputeSingleEntityChangeSet before computeChangeSet on an entity.');
         }
 
@@ -928,9 +927,9 @@ class UnitOfWork implements PropertyChangedListener
         if ($changeSet) {
             if (isset($this->entityChangeSets[$oid])) {
                 $this->entityChangeSets[$oid] = array_merge($this->entityChangeSets[$oid], $changeSet);
-            } else if (!isset($this->entityInsertions[$oid])) {
+            } else if ( ! isset($this->entityInsertions[$oid])) {
                 $this->entityChangeSets[$oid] = $changeSet;
-                $this->entityUpdates[$oid] = $entity;
+                $this->entityUpdates[$oid]    = $entity;
             }
             $this->originalEntityData[$oid] = $actualData;
         }
@@ -945,10 +944,10 @@ class UnitOfWork implements PropertyChangedListener
      */
     private function executeInserts($class)
     {
-        $entities = array();
-        $className = $class->name;
-        $persister = $this->getEntityPersister($className);
-        $invoke = $this->listenersInvoker->getSubscribedSystems($class, Events::postPersist);
+        $entities   = array();
+        $className  = $class->name;
+        $persister  = $this->getEntityPersister($className);
+        $invoke     = $this->listenersInvoker->getSubscribedSystems($class, Events::postPersist);
 
         foreach ($this->entityInsertions as $oid => $entity) {
             if ($this->em->getClassMetadata(get_class($entity))->name !== $className) {
@@ -969,7 +968,7 @@ class UnitOfWork implements PropertyChangedListener
         if ($postInsertIds) {
             // Persister returned post-insert IDs
             foreach ($postInsertIds as $id => $entity) {
-                $oid = spl_object_hash($entity);
+                $oid     = spl_object_hash($entity);
                 $idField = $class->identifier[0];
 
                 $class->reflFields[$idField]->setValue($entity, $id);
@@ -996,10 +995,10 @@ class UnitOfWork implements PropertyChangedListener
      */
     private function executeUpdates($class)
     {
-        $className = $class->name;
-        $persister = $this->getEntityPersister($className);
-        $preUpdateInvoke = $this->listenersInvoker->getSubscribedSystems($class, Events::preUpdate);
-        $postUpdateInvoke = $this->listenersInvoker->getSubscribedSystems($class, Events::postUpdate);
+        $className          = $class->name;
+        $persister          = $this->getEntityPersister($className);
+        $preUpdateInvoke    = $this->listenersInvoker->getSubscribedSystems($class, Events::preUpdate);
+        $postUpdateInvoke   = $this->listenersInvoker->getSubscribedSystems($class, Events::postUpdate);
 
         foreach ($this->entityUpdates as $oid => $entity) {
             if ($this->em->getClassMetadata(get_class($entity))->name !== $className) {
@@ -1011,7 +1010,7 @@ class UnitOfWork implements PropertyChangedListener
                 $this->recomputeSingleEntityChangeSet($class, $entity);
             }
 
-            if (!empty($this->entityChangeSets[$oid])) {
+            if ( ! empty($this->entityChangeSets[$oid])) {
                 $persister->update($entity);
             }
 
@@ -1032,9 +1031,9 @@ class UnitOfWork implements PropertyChangedListener
      */
     private function executeDeletions($class)
     {
-        $className = $class->name;
-        $persister = $this->getEntityPersister($className);
-        $invoke = $this->listenersInvoker->getSubscribedSystems($class, Events::postRemove);
+        $className  = $class->name;
+        $persister  = $this->getEntityPersister($className);
+        $invoke     = $this->listenersInvoker->getSubscribedSystems($class, Events::postRemove);
 
         foreach ($this->entityDeletions as $oid => $entity) {
             if ($this->em->getClassMetadata(get_class($entity))->name !== $className) {
@@ -1053,7 +1052,7 @@ class UnitOfWork implements PropertyChangedListener
             // Entity with this $oid after deletion treated as NEW, even if the $oid
             // is obtained by a new entity because the old one went out of scope.
             //$this->entityStates[$oid] = self::STATE_NEW;
-            if (!$class->isIdentifierNatural()) {
+            if ( ! $class->isIdentifierNatural()) {
                 $class->reflFields[$class->identifier[0]]->setValue($entity, null);
             }
 
@@ -1101,13 +1100,13 @@ class UnitOfWork implements PropertyChangedListener
         // Calculate dependencies for new nodes
         while ($class = array_pop($newNodes)) {
             foreach ($class->associationMappings as $assoc) {
-                if (!($assoc['isOwningSide'] && $assoc['type'] & ClassMetadata::TO_ONE)) {
+                if ( ! ($assoc['isOwningSide'] && $assoc['type'] & ClassMetadata::TO_ONE)) {
                     continue;
                 }
 
                 $targetClass = $this->em->getClassMetadata($assoc['targetEntity']);
 
-                if (!$calc->hasClass($targetClass->name)) {
+                if ( ! $calc->hasClass($targetClass->name)) {
                     $calc->addClass($targetClass);
 
                     $newNodes[] = $targetClass;
@@ -1116,14 +1115,14 @@ class UnitOfWork implements PropertyChangedListener
                 $calc->addDependency($targetClass, $class);
 
                 // If the target class has mapped subclasses, these share the same dependency.
-                if (!$targetClass->subClasses) {
+                if ( ! $targetClass->subClasses) {
                     continue;
                 }
 
                 foreach ($targetClass->subClasses as $subClassName) {
                     $targetSubClass = $this->em->getClassMetadata($subClassName);
 
-                    if (!$calc->hasClass($subClassName)) {
+                    if ( ! $calc->hasClass($subClassName)) {
                         $calc->addClass($targetSubClass);
 
                         $newNodes[] = $targetSubClass;
@@ -1159,7 +1158,7 @@ class UnitOfWork implements PropertyChangedListener
         if (isset($this->entityDeletions[$oid])) {
             throw ORMInvalidArgumentException::scheduleInsertForRemovedEntity($entity);
         }
-        if (isset($this->originalEntityData[$oid]) && !isset($this->entityInsertions[$oid])) {
+        if (isset($this->originalEntityData[$oid]) && ! isset($this->entityInsertions[$oid])) {
             throw ORMInvalidArgumentException::scheduleInsertForManagedEntity($entity);
         }
 
@@ -1203,7 +1202,7 @@ class UnitOfWork implements PropertyChangedListener
     {
         $oid = spl_object_hash($entity);
 
-        if (!isset($this->entityIdentifiers[$oid])) {
+        if ( ! isset($this->entityIdentifiers[$oid])) {
             throw ORMInvalidArgumentException::entityHasNoIdentity($entity, "scheduling for update");
         }
 
@@ -1211,7 +1210,7 @@ class UnitOfWork implements PropertyChangedListener
             throw ORMInvalidArgumentException::entityIsRemoved($entity, "schedule for update");
         }
 
-        if (!isset($this->entityUpdates[$oid]) && !isset($this->entityInsertions[$oid])) {
+        if ( ! isset($this->entityUpdates[$oid]) && ! isset($this->entityInsertions[$oid])) {
             $this->entityUpdates[$oid] = $entity;
         }
     }
@@ -1225,14 +1224,14 @@ class UnitOfWork implements PropertyChangedListener
      *
      * @ignore
      *
-     * @param object $entity The entity for which to schedule an extra update.
-     * @param array $changeset The changeset of the entity (what to update).
+     * @param object $entity    The entity for which to schedule an extra update.
+     * @param array  $changeset The changeset of the entity (what to update).
      *
      * @return void
      */
     public function scheduleExtraUpdate($entity, array $changeset)
     {
-        $oid = spl_object_hash($entity);
+        $oid         = spl_object_hash($entity);
         $extraUpdate = array($entity, $changeset);
 
         if (isset($this->extraUpdates[$oid])) {
@@ -1294,7 +1293,7 @@ class UnitOfWork implements PropertyChangedListener
             return; // entity has not been persisted yet, so nothing more to do.
         }
 
-        if (!$this->isInIdentityMap($entity)) {
+        if ( ! $this->isInIdentityMap($entity)) {
             return;
         }
 
@@ -1304,9 +1303,9 @@ class UnitOfWork implements PropertyChangedListener
             unset($this->entityUpdates[$oid]);
         }
 
-        if (!isset($this->entityDeletions[$oid])) {
+        if ( ! isset($this->entityDeletions[$oid])) {
             $this->entityDeletions[$oid] = $entity;
-            $this->entityStates[$oid] = self::STATE_REMOVED;
+            $this->entityStates[$oid]    = self::STATE_REMOVED;
         }
     }
 
@@ -1335,8 +1334,8 @@ class UnitOfWork implements PropertyChangedListener
         $oid = spl_object_hash($entity);
 
         return isset($this->entityInsertions[$oid])
-        || isset($this->entityUpdates[$oid])
-        || isset($this->entityDeletions[$oid]);
+            || isset($this->entityUpdates[$oid])
+            || isset($this->entityDeletions[$oid]);
     }
 
     /**
@@ -1347,7 +1346,7 @@ class UnitOfWork implements PropertyChangedListener
      *
      * @ignore
      *
-     * @param object $entity The entity to register.
+     * @param object $entity  The entity to register.
      *
      * @return boolean TRUE if the registration was successful, FALSE if the identity of
      *                 the entity in question is already managed.
@@ -1357,7 +1356,7 @@ class UnitOfWork implements PropertyChangedListener
     public function addToIdentityMap($entity)
     {
         $classMetadata = $this->em->getClassMetadata(get_class($entity));
-        $idHash = implode(' ', $this->entityIdentifiers[spl_object_hash($entity)]);
+        $idHash        = implode(' ', $this->entityIdentifiers[spl_object_hash($entity)]);
 
         if ($idHash === '') {
             throw ORMInvalidArgumentException::entityWithoutIdentity($classMetadata->name, $entity);
@@ -1377,7 +1376,7 @@ class UnitOfWork implements PropertyChangedListener
     /**
      * Gets the state of an entity with regard to the current unit of work.
      *
-     * @param object $entity
+     * @param object   $entity
      * @param int|null $assume The state to assume if the state is not yet known (not MANAGED or REMOVED).
      *                         This parameter can be set to improve performance of entity state detection
      *                         by potentially avoiding a database lookup if the distinction between NEW and DETACHED
@@ -1402,9 +1401,9 @@ class UnitOfWork implements PropertyChangedListener
         // the UoW does not hold references to such objects and the object hash can be reused.
         // More generally because the state may "change" between NEW/DETACHED without the UoW being aware of it.
         $class = $this->em->getClassMetadata(get_class($entity));
-        $id = $class->getIdentifierValues($entity);
+        $id    = $class->getIdentifierValues($entity);
 
-        if (!$id) {
+        if ( ! $id) {
             return self::STATE_NEW;
         }
 
@@ -1433,7 +1432,7 @@ class UnitOfWork implements PropertyChangedListener
 
                 return self::STATE_NEW;
 
-            case (!$class->idGenerator->isPostInsertGenerator()):
+            case ( ! $class->idGenerator->isPostInsertGenerator()):
                 // if we have a pre insert generator we can't be sure that having an id
                 // really means that the entity exists. We have to verify this through
                 // the last resort: a db lookup
@@ -1470,9 +1469,9 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function removeFromIdentityMap($entity)
     {
-        $oid = spl_object_hash($entity);
+        $oid           = spl_object_hash($entity);
         $classMetadata = $this->em->getClassMetadata(get_class($entity));
-        $idHash = implode(' ', $this->entityIdentifiers[$oid]);
+        $idHash        = implode(' ', $this->entityIdentifiers[$oid]);
 
         if ($idHash === '') {
             throw ORMInvalidArgumentException::entityHasNoIdentity($entity, "remove from identity map");
@@ -1540,12 +1539,12 @@ class UnitOfWork implements PropertyChangedListener
     {
         $oid = spl_object_hash($entity);
 
-        if (!isset($this->entityIdentifiers[$oid])) {
+        if ( ! isset($this->entityIdentifiers[$oid])) {
             return false;
         }
 
         $classMetadata = $this->em->getClassMetadata(get_class($entity));
-        $idHash = implode(' ', $this->entityIdentifiers[$oid]);
+        $idHash        = implode(' ', $this->entityIdentifiers[$oid]);
 
         if ($idHash === '') {
             return false;
@@ -1590,8 +1589,8 @@ class UnitOfWork implements PropertyChangedListener
      * This method is internally called during persist() cascades as it tracks
      * the already visited entities to prevent infinite recursions.
      *
-     * @param object $entity The entity to persist.
-     * @param array $visited The already visited entities.
+     * @param object $entity  The entity to persist.
+     * @param array  $visited The already visited entities.
      *
      * @return void
      *
@@ -1631,6 +1630,7 @@ class UnitOfWork implements PropertyChangedListener
             case self::STATE_REMOVED:
                 // Entity becomes managed again
                 unset($this->entityDeletions[$oid]);
+                $this->addToIdentityMap($entity);
 
                 $this->entityStates[$oid] = self::STATE_MANAGED;
                 break;
@@ -1666,8 +1666,8 @@ class UnitOfWork implements PropertyChangedListener
      * This method is internally called during delete() cascades as it tracks
      * the already visited entities to prevent infinite recursions.
      *
-     * @param object $entity The entity to delete.
-     * @param array $visited The map of the already visited entities.
+     * @param object $entity  The entity to delete.
+     * @param array  $visited The map of the already visited entities.
      *
      * @return void
      *
@@ -1688,7 +1688,7 @@ class UnitOfWork implements PropertyChangedListener
         // can cause problems when a lazy proxy has to be initialized for the cascade operation.
         $this->cascadeRemove($entity, $visited);
 
-        $class = $this->em->getClassMetadata(get_class($entity));
+        $class       = $this->em->getClassMetadata(get_class($entity));
         $entityState = $this->getEntityState($entity);
 
         switch ($entityState) {
@@ -1748,7 +1748,7 @@ class UnitOfWork implements PropertyChangedListener
         foreach ($id as $idField => $idValue) {
             if (isset($class->associationMappings[$idField])) {
                 $targetClassMetadata = $this->em->getClassMetadata($class->associationMappings[$idField]['targetEntity']);
-                $associatedId = $this->getEntityIdentifier($idValue);
+                $associatedId        = $this->getEntityIdentifier($idValue);
 
                 $flatId[$idField] = $associatedId[$targetClassMetadata->identifier[0]];
             } else {
@@ -1762,10 +1762,10 @@ class UnitOfWork implements PropertyChangedListener
     /**
      * Executes a merge operation on an entity.
      *
-     * @param object $entity
-     * @param array $visited
+     * @param object      $entity
+     * @param array       $visited
      * @param object|null $prevManagedCopy
-     * @param array|null $assoc
+     * @param array|null  $assoc
      *
      * @return object The managed copy of the entity.
      *
@@ -1793,7 +1793,7 @@ class UnitOfWork implements PropertyChangedListener
         $managedCopy = $entity;
 
         if ($this->getEntityState($entity, self::STATE_DETACHED) !== self::STATE_MANAGED) {
-            if ($entity instanceof Proxy && !$entity->__isInitialized()) {
+            if ($entity instanceof Proxy && ! $entity->__isInitialized()) {
                 $this->em->getProxyFactory()->resetUninitializedProxy($entity);
                 $entity->__load();
             }
@@ -1802,7 +1802,7 @@ class UnitOfWork implements PropertyChangedListener
             $id = $class->getIdentifierValues($entity);
 
             // If there is no ID, it is actually NEW.
-            if (!$id) {
+            if ( ! $id) {
                 $managedCopy = $this->newInstance($class);
 
                 $this->persistNew($class, $managedCopy);
@@ -1826,7 +1826,7 @@ class UnitOfWork implements PropertyChangedListener
                 if ($managedCopy === null) {
                     // If the identifier is ASSIGNED, it is NEW, otherwise an error
                     // since the managed entity was not found.
-                    if (!$class->isIdentifierNatural()) {
+                    if ( ! $class->isIdentifierNatural()) {
                         throw new EntityNotFoundException;
                     }
 
@@ -1835,16 +1835,16 @@ class UnitOfWork implements PropertyChangedListener
 
                     $this->persistNew($class, $managedCopy);
                 } else {
-                    if ($managedCopy instanceof Proxy && !$managedCopy->__isInitialized__) {
+                    if ($managedCopy instanceof Proxy && ! $managedCopy->__isInitialized__) {
                         $managedCopy->__load();
                     }
                 }
             }
 
             if ($class->isVersioned) {
-                $reflField = $class->reflFields[$class->versionField];
+                $reflField          = $class->reflFields[$class->versionField];
                 $managedCopyVersion = $reflField->getValue($managedCopy);
-                $entityVersion = $reflField->getValue($entity);
+                $entityVersion      = $reflField->getValue($entity);
 
                 // Throw exception if versions don't match.
                 if ($managedCopyVersion != $entityVersion) {
@@ -1856,8 +1856,8 @@ class UnitOfWork implements PropertyChangedListener
             foreach ($class->reflClass->getProperties() as $prop) {
                 $name = $prop->name;
                 $prop->setAccessible(true);
-                if (!isset($class->associationMappings[$name])) {
-                    if (!$class->isIdentifier($name)) {
+                if ( ! isset($class->associationMappings[$name])) {
+                    if ( ! $class->isIdentifier($name)) {
                         $prop->setValue($managedCopy, $prop->getValue($entity));
                     }
                 } else {
@@ -1869,7 +1869,7 @@ class UnitOfWork implements PropertyChangedListener
                         } else if ($other instanceof Proxy && !$other->__isInitialized__) {
                             // do not merge fields marked lazy that have not been fetched.
                             continue;
-                        } else if (!$assoc2['isCascadeMerge']) {
+                        } else if ( ! $assoc2['isCascadeMerge']) {
                             if ($this->getEntityState($other) === self::STATE_DETACHED) {
                                 $targetClass = $this->em->getClassMetadata($assoc2['targetEntity']);
                                 $relatedId = $targetClass->getIdentifierValues($other);
@@ -1895,9 +1895,9 @@ class UnitOfWork implements PropertyChangedListener
                         $managedCol = $prop->getValue($managedCopy);
                         if (!$managedCol) {
                             $managedCol = new PersistentCollection($this->em,
-                                $this->em->getClassMetadata($assoc2['targetEntity']),
-                                new ArrayCollection
-                            );
+                                    $this->em->getClassMetadata($assoc2['targetEntity']),
+                                    new ArrayCollection
+                                    );
                             $managedCol->setOwner($managedCopy, $assoc2);
                             $prop->setValue($managedCopy, $managedCol);
                             $this->originalEntityData[$oid][$name] = $managedCol;
@@ -1970,8 +1970,8 @@ class UnitOfWork implements PropertyChangedListener
     /**
      * Executes a detach operation on the given entity.
      *
-     * @param object $entity
-     * @param array $visited
+     * @param object  $entity
+     * @param array   $visited
      * @param boolean $noCascade if true, don't cascade detach operation.
      *
      * @return void
@@ -2006,7 +2006,7 @@ class UnitOfWork implements PropertyChangedListener
                 return;
         }
 
-        if (!$noCascade) {
+        if ( ! $noCascade) {
             $this->cascadeDetach($entity, $visited);
         }
     }
@@ -2031,8 +2031,8 @@ class UnitOfWork implements PropertyChangedListener
     /**
      * Executes a refresh operation on an entity.
      *
-     * @param object $entity The entity to refresh.
-     * @param array $visited The already visited entities during cascades.
+     * @param object $entity  The entity to refresh.
+     * @param array  $visited The already visited entities during cascades.
      *
      * @return void
      *
@@ -2066,7 +2066,7 @@ class UnitOfWork implements PropertyChangedListener
      * Cascades a refresh operation to associated entities.
      *
      * @param object $entity
-     * @param array $visited
+     * @param array  $visited
      *
      * @return void
      */
@@ -2076,9 +2076,7 @@ class UnitOfWork implements PropertyChangedListener
 
         $associationMappings = array_filter(
             $class->associationMappings,
-            function ($assoc) {
-                return $assoc['isCascadeRefresh'];
-            }
+            function ($assoc) { return $assoc['isCascadeRefresh']; }
         );
 
         foreach ($associationMappings as $assoc) {
@@ -2088,7 +2086,7 @@ class UnitOfWork implements PropertyChangedListener
                 case ($relatedEntities instanceof PersistentCollection):
                     // Unwrap so that foreach() does not initialize
                     $relatedEntities = $relatedEntities->unwrap();
-                // break; is commented intentionally!
+                    // break; is commented intentionally!
 
                 case ($relatedEntities instanceof Collection):
                 case (is_array($relatedEntities)):
@@ -2111,7 +2109,7 @@ class UnitOfWork implements PropertyChangedListener
      * Cascades a detach operation to associated entities.
      *
      * @param object $entity
-     * @param array $visited
+     * @param array  $visited
      *
      * @return void
      */
@@ -2121,9 +2119,7 @@ class UnitOfWork implements PropertyChangedListener
 
         $associationMappings = array_filter(
             $class->associationMappings,
-            function ($assoc) {
-                return $assoc['isCascadeDetach'];
-            }
+            function ($assoc) { return $assoc['isCascadeDetach']; }
         );
 
         foreach ($associationMappings as $assoc) {
@@ -2133,7 +2129,7 @@ class UnitOfWork implements PropertyChangedListener
                 case ($relatedEntities instanceof PersistentCollection):
                     // Unwrap so that foreach() does not initialize
                     $relatedEntities = $relatedEntities->unwrap();
-                // break; is commented intentionally!
+                    // break; is commented intentionally!
 
                 case ($relatedEntities instanceof Collection):
                 case (is_array($relatedEntities)):
@@ -2157,7 +2153,7 @@ class UnitOfWork implements PropertyChangedListener
      *
      * @param object $entity
      * @param object $managedCopy
-     * @param array $visited
+     * @param array  $visited
      *
      * @return void
      */
@@ -2167,9 +2163,7 @@ class UnitOfWork implements PropertyChangedListener
 
         $associationMappings = array_filter(
             $class->associationMappings,
-            function ($assoc) {
-                return $assoc['isCascadeMerge'];
-            }
+            function ($assoc) { return $assoc['isCascadeMerge']; }
         );
 
         foreach ($associationMappings as $assoc) {
@@ -2198,7 +2192,7 @@ class UnitOfWork implements PropertyChangedListener
      * Cascades the save operation to associated entities.
      *
      * @param object $entity
-     * @param array $visited
+     * @param array  $visited
      *
      * @return void
      */
@@ -2208,9 +2202,7 @@ class UnitOfWork implements PropertyChangedListener
 
         $associationMappings = array_filter(
             $class->associationMappings,
-            function ($assoc) {
-                return $assoc['isCascadePersist'];
-            }
+            function ($assoc) { return $assoc['isCascadePersist']; }
         );
 
         foreach ($associationMappings as $assoc) {
@@ -2220,7 +2212,7 @@ class UnitOfWork implements PropertyChangedListener
                 case ($relatedEntities instanceof PersistentCollection):
                     // Unwrap so that foreach() does not initialize
                     $relatedEntities = $relatedEntities->unwrap();
-                // break; is commented intentionally!
+                    // break; is commented intentionally!
 
                 case ($relatedEntities instanceof Collection):
                 case (is_array($relatedEntities)):
@@ -2243,7 +2235,7 @@ class UnitOfWork implements PropertyChangedListener
      * Cascades the delete operation to associated entities.
      *
      * @param object $entity
-     * @param array $visited
+     * @param array  $visited
      *
      * @return void
      */
@@ -2253,9 +2245,7 @@ class UnitOfWork implements PropertyChangedListener
 
         $associationMappings = array_filter(
             $class->associationMappings,
-            function ($assoc) {
-                return $assoc['isCascadeRemove'];
-            }
+            function ($assoc) { return $assoc['isCascadeRemove']; }
         );
 
         $entitiesToCascade = array();
@@ -2294,8 +2284,8 @@ class UnitOfWork implements PropertyChangedListener
      * Acquire a lock on the given entity.
      *
      * @param object $entity
-     * @param int $lockMode
-     * @param int $lockVersion
+     * @param int    $lockMode
+     * @param int    $lockVersion
      *
      * @return void
      *
@@ -2317,12 +2307,16 @@ class UnitOfWork implements PropertyChangedListener
 
         switch ($lockMode) {
             case \Doctrine\DBAL\LockMode::OPTIMISTIC;
-                if (!$class->isVersioned) {
+                if ( ! $class->isVersioned) {
                     throw OptimisticLockException::notVersioned($class->name);
                 }
 
                 if ($lockVersion === null) {
                     return;
+                }
+
+                if ($entity instanceof Proxy && !$entity->__isInitialized__) {
+                    $entity->__load();
                 }
 
                 $entityVersion = $class->reflFields[$class->versionField]->getValue($entity);
@@ -2482,8 +2476,8 @@ class UnitOfWork implements PropertyChangedListener
      * @ignore
      *
      * @param string $className The name of the entity class.
-     * @param array $data The data for the entity.
-     * @param array $hints Any hints to account for during reconstitution/lookup of the entity.
+     * @param array  $data      The data for the entity.
+     * @param array  $hints     Any hints to account for during reconstitution/lookup of the entity.
      *
      * @return object The managed entity instance.
      *
@@ -2536,7 +2530,7 @@ class UnitOfWork implements PropertyChangedListener
                 return $unmanagedProxy;
             }
 
-            if ($entity instanceof Proxy && !$entity->__isInitialized()) {
+            if ($entity instanceof Proxy && ! $entity->__isInitialized()) {
                 $entity->__setInitialized(true);
 
                 $overrideLocalValues = true;
@@ -2554,7 +2548,7 @@ class UnitOfWork implements PropertyChangedListener
                 $overrideLocalValues = isset($hints[Query::HINT_REFRESH]);
 
                 // If only a specific entity is set to refresh, check that it's the one
-                if (isset($hints[Query::HINT_REFRESH_ENTITY])) {
+                if(isset($hints[Query::HINT_REFRESH_ENTITY])) {
                     $overrideLocalValues = $hints[Query::HINT_REFRESH_ENTITY] === $entity;
                 }
 
@@ -2569,10 +2563,10 @@ class UnitOfWork implements PropertyChangedListener
             }
         } else {
             $entity = $this->newInstance($class);
-            $oid = spl_object_hash($entity);
+            $oid    = spl_object_hash($entity);
 
-            $this->entityIdentifiers[$oid] = $id;
-            $this->entityStates[$oid] = self::STATE_MANAGED;
+            $this->entityIdentifiers[$oid]  = $id;
+            $this->entityStates[$oid]       = self::STATE_MANAGED;
             $this->originalEntityData[$oid] = $data;
 
             $this->identityMap[$class->rootEntityName][$idHash] = $entity;
@@ -2584,7 +2578,7 @@ class UnitOfWork implements PropertyChangedListener
             $overrideLocalValues = true;
         }
 
-        if (!$overrideLocalValues) {
+        if ( ! $overrideLocalValues) {
             return $entity;
         }
 
@@ -2597,7 +2591,7 @@ class UnitOfWork implements PropertyChangedListener
         // Loading the entity right here, if its in the eager loading map get rid of it there.
         unset($this->eagerLoadingEntities[$class->rootEntityName][$idHash]);
 
-        if (isset($this->eagerLoadingEntities[$class->rootEntityName]) && !$this->eagerLoadingEntities[$class->rootEntityName]) {
+        if (isset($this->eagerLoadingEntities[$class->rootEntityName]) && ! $this->eagerLoadingEntities[$class->rootEntityName]) {
             unset($this->eagerLoadingEntities[$class->rootEntityName]);
         }
 
@@ -2616,7 +2610,7 @@ class UnitOfWork implements PropertyChangedListener
 
             switch (true) {
                 case ($assoc['type'] & ClassMetadata::TO_ONE):
-                    if (!$assoc['isOwningSide']) {
+                    if ( ! $assoc['isOwningSide']) {
                         // Inverse side of x-to-one can never be lazy
                         $class->reflFields[$field]->setValue($entity, $this->getEntityPersister($assoc['targetEntity'])->loadOneToOneEntity($assoc, $entity));
 
@@ -2638,7 +2632,7 @@ class UnitOfWork implements PropertyChangedListener
                         }
                     }
 
-                    if (!$associatedId) {
+                    if ( ! $associatedId) {
                         // Foreign key is NULL
                         $class->reflFields[$field]->setValue($entity, null);
                         $this->originalEntityData[$oid][$field] = null;
@@ -2646,7 +2640,7 @@ class UnitOfWork implements PropertyChangedListener
                         continue;
                     }
 
-                    if (!isset($hints['fetchMode'][$class->name][$field])) {
+                    if ( ! isset($hints['fetchMode'][$class->name][$field])) {
                         $hints['fetchMode'][$class->name][$field] = $assoc['fetch'];
                     }
 
@@ -2667,8 +2661,7 @@ class UnitOfWork implements PropertyChangedListener
                                 isset($hints[self::HINT_DEFEREAGERLOAD]) &&
                                 !$targetClass->isIdentifierComposite &&
                                 $newValue instanceof Proxy &&
-                                $newValue->__isInitialized__ === false
-                            ) {
+                                $newValue->__isInitialized__ === false) {
 
                                 $this->eagerLoadingEntities[$targetClass->rootEntityName][$relatedIdHash] = current($associatedId);
                             }
@@ -2690,7 +2683,7 @@ class UnitOfWork implements PropertyChangedListener
                                     break;
 
                                 // Deferred eager load only works for single identifier classes
-                                case (isset($hints[self::HINT_DEFEREAGERLOAD]) && !$targetClass->isIdentifierComposite):
+                                case (isset($hints[self::HINT_DEFEREAGERLOAD]) && ! $targetClass->isIdentifierComposite):
                                     // TODO: Is there a faster approach?
                                     $this->eagerLoadingEntities[$targetClass->rootEntityName][$relatedIdHash] = current($associatedId);
 
@@ -2710,7 +2703,7 @@ class UnitOfWork implements PropertyChangedListener
 
                             if (
                                 $newValue instanceof NotifyPropertyChanged &&
-                                (!$newValue instanceof Proxy || $newValue->__isInitialized())
+                                ( ! $newValue instanceof Proxy || $newValue->__isInitialized())
                             ) {
                                 $newValue->addPropertyChangedListener($this);
                             }
@@ -2764,16 +2757,16 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function triggerEagerLoads()
     {
-        if (!$this->eagerLoadingEntities) {
+        if ( ! $this->eagerLoadingEntities) {
             return;
         }
 
         // avoid infinite recursion
-        $eagerLoadingEntities = $this->eagerLoadingEntities;
+        $eagerLoadingEntities       = $this->eagerLoadingEntities;
         $this->eagerLoadingEntities = array();
 
         foreach ($eagerLoadingEntities as $entityName => $ids) {
-            if (!$ids) {
+            if ( ! $ids) {
                 continue;
             }
 
@@ -2796,7 +2789,7 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function loadCollection(PersistentCollection $collection)
     {
-        $assoc = $collection->getMapping();
+        $assoc     = $collection->getMapping();
         $persister = $this->getEntityPersister($assoc['targetEntity']);
 
         switch ($assoc['type']) {
@@ -2845,7 +2838,7 @@ class UnitOfWork implements PropertyChangedListener
      * @ignore
      *
      * @param object $entity
-     * @param array $data
+     * @param array  $data
      *
      * @return void
      */
@@ -2862,7 +2855,7 @@ class UnitOfWork implements PropertyChangedListener
      *
      * @param string $oid
      * @param string $property
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return void
      */
@@ -2909,12 +2902,12 @@ class UnitOfWork implements PropertyChangedListener
 
         return isset($values[$class->identifier[0]]) ? $values[$class->identifier[0]] : null;
     }
-
+ 
     /**
      * Tries to find an entity with the given identifier in the identity map of
      * this UnitOfWork.
      *
-     * @param mixed $id The entity identifier to look for.
+     * @param mixed  $id            The entity identifier to look for.
      * @param string $rootClassName The name of the root class of the mapped entity hierarchy.
      *
      * @return object|bool Returns the entity with the specified identifier if it exists in
@@ -2922,7 +2915,7 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function tryGetById($id, $rootClassName)
     {
-        $idHash = implode(' ', (array)$id);
+        $idHash = implode(' ', (array) $id);
 
         if (isset($this->identityMap[$rootClassName][$idHash])) {
             return $this->identityMap[$rootClassName][$idHash];
@@ -2954,7 +2947,7 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function hasPendingInsertions()
     {
-        return !empty($this->entityInsertions);
+        return ! empty($this->entityInsertions);
     }
 
     /**
@@ -2965,9 +2958,7 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function size()
     {
-        $countArray = array_map(function ($item) {
-            return count($item);
-        }, $this->identityMap);
+        $countArray = array_map(function ($item) { return count($item); }, $this->identityMap);
 
         return array_sum($countArray);
     }
@@ -3044,8 +3035,8 @@ class UnitOfWork implements PropertyChangedListener
      * Registers an entity as managed.
      *
      * @param object $entity The entity.
-     * @param array $id The identifier values.
-     * @param array $data The original entity data.
+     * @param array  $id     The identifier values.
+     * @param array  $data   The original entity data.
      *
      * @return void
      */
@@ -3053,13 +3044,13 @@ class UnitOfWork implements PropertyChangedListener
     {
         $oid = spl_object_hash($entity);
 
-        $this->entityIdentifiers[$oid] = $id;
-        $this->entityStates[$oid] = self::STATE_MANAGED;
+        $this->entityIdentifiers[$oid]  = $id;
+        $this->entityStates[$oid]       = self::STATE_MANAGED;
         $this->originalEntityData[$oid] = $data;
 
         $this->addToIdentityMap($entity);
 
-        if ($entity instanceof NotifyPropertyChanged && (!$entity instanceof Proxy || $entity->__isInitialized())) {
+        if ($entity instanceof NotifyPropertyChanged && ( ! $entity instanceof Proxy || $entity->__isInitialized())) {
             $entity->addPropertyChangedListener($this);
         }
     }
@@ -3082,28 +3073,28 @@ class UnitOfWork implements PropertyChangedListener
     /**
      * Notifies this UnitOfWork of a property change in an entity.
      *
-     * @param object $entity The entity that owns the property.
+     * @param object $entity       The entity that owns the property.
      * @param string $propertyName The name of the property that changed.
-     * @param mixed $oldValue The old value of the property.
-     * @param mixed $newValue The new value of the property.
+     * @param mixed  $oldValue     The old value of the property.
+     * @param mixed  $newValue     The new value of the property.
      *
      * @return void
      */
     public function propertyChanged($entity, $propertyName, $oldValue, $newValue)
     {
-        $oid = spl_object_hash($entity);
+        $oid   = spl_object_hash($entity);
         $class = $this->em->getClassMetadata(get_class($entity));
 
         $isAssocField = isset($class->associationMappings[$propertyName]);
 
-        if (!$isAssocField && !isset($class->fieldMappings[$propertyName])) {
+        if ( ! $isAssocField && ! isset($class->fieldMappings[$propertyName])) {
             return; // ignore non-persistent fields
         }
 
         // Update changeset and mark entity for synchronization
         $this->entityChangeSets[$oid][$propertyName] = array($oldValue, $newValue);
 
-        if (!isset($this->scheduledForDirtyCheck[$class->rootEntityName][$oid])) {
+        if ( ! isset($this->scheduledForDirtyCheck[$class->rootEntityName][$oid])) {
             $this->scheduleForDirtyCheck($entity);
         }
     }
@@ -3187,7 +3178,7 @@ class UnitOfWork implements PropertyChangedListener
      */
     private static function objToStr($obj)
     {
-        return method_exists($obj, '__toString') ? (string)$obj : get_class($obj) . '@' . spl_object_hash($obj);
+        return method_exists($obj, '__toString') ? (string)$obj : get_class($obj).'@'.spl_object_hash($obj);
     }
 
     /**
@@ -3204,7 +3195,7 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function markReadOnly($object)
     {
-        if (!is_object($object) || !$this->isInIdentityMap($object)) {
+        if ( ! is_object($object) || ! $this->isInIdentityMap($object)) {
             throw ORMInvalidArgumentException::readOnlyRequiresManagedEntity($object);
         }
 
@@ -3222,7 +3213,7 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function isReadOnly($object)
     {
-        if (!is_object($object)) {
+        if ( ! is_object($object)) {
             throw ORMInvalidArgumentException::readOnlyRequiresManagedEntity($object);
         }
 

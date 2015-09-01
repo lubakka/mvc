@@ -7,12 +7,22 @@
  */
 namespace Modules\Blog;
 
+/**
+ * Class BlogModule
+ * @package Modules\Blog
+ */
 class BlogModule {
 
+    /**
+     * @return string
+     */
     public function getNameSpace(){
         return __NAMESPACE__;
     }
 
+    /**
+     * @return string
+     */
     public function getClassName(){
         return __CLASS__;
     }

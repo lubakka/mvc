@@ -2,8 +2,8 @@
 
 namespace Doctrine\Tests\Common\Persistence;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectManagerDecorator;
+use Doctrine\Common\Persistence\ObjectManager;
 
 class NullObjectManagerDecorator extends ObjectManagerDecorator
 {
@@ -31,7 +31,7 @@ class ObjectManagerDecoratorTest extends \PHPUnit_Framework_TestCase
         $methods = array();
         foreach ($class->getMethods() as $method) {
             if ($method->getNumberOfRequiredParameters() === 0) {
-                $methods[] = array($method->getName(), array());
+               $methods[] = array($method->getName(), array());
             } elseif ($method->getNumberOfRequiredParameters() > 0) {
                 $methods[] = array($method->getName(), array_fill(0, $method->getNumberOfRequiredParameters(), 'req') ?: array());
             }

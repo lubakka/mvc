@@ -19,15 +19,15 @@
 
 namespace Doctrine\ORM\Query\AST\Functions;
 
-use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
  * "TRIM" "(" [["LEADING" | "TRAILING" | "BOTH"] [char] "FROM"] StringPrimary ")"
  *
- *
+ * 
  * @link    www.doctrine-project.org
  * @since   2.0
  * @author  Guilherme Blanco <guilhermeblanco@hotmail.com>
@@ -67,10 +67,10 @@ class TrimFunction extends FunctionNode
      */
     public function getSql(SqlWalker $sqlWalker)
     {
-        $stringPrimary = $sqlWalker->walkStringPrimary($this->stringPrimary);
-        $platform = $sqlWalker->getConnection()->getDatabasePlatform();
-        $trimMode = $this->getTrimMode();
-        $trimChar = ($this->trimChar !== false)
+        $stringPrimary  = $sqlWalker->walkStringPrimary($this->stringPrimary);
+        $platform       = $sqlWalker->getConnection()->getDatabasePlatform();
+        $trimMode       = $this->getTrimMode();
+        $trimChar       = ($this->trimChar !== false)
             ? $sqlWalker->getConnection()->quote($this->trimChar)
             : false;
 

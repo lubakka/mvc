@@ -19,11 +19,12 @@
 
 namespace Doctrine\ORM\Persisters;
 
-use Doctrine\Common\Collections\Expr\Comparison;
-use Doctrine\Common\Collections\Expr\CompositeExpression;
-use Doctrine\Common\Collections\Expr\ExpressionVisitor;
-use Doctrine\Common\Collections\Expr\Value;
 use Doctrine\ORM\Mapping\ClassMetadata;
+
+use Doctrine\Common\Collections\Expr\ExpressionVisitor;
+use Doctrine\Common\Collections\Expr\Comparison;
+use Doctrine\Common\Collections\Expr\Value;
+use Doctrine\Common\Collections\Expr\CompositeExpression;
 
 /**
  * Visit Expressions and generate SQL WHERE conditions from them.
@@ -66,9 +67,8 @@ class SqlExpressionVisitor extends ExpressionVisitor
 
         if (isset($this->classMetadata->associationMappings[$field]) &&
             $value !== null &&
-            !is_object($value) &&
-            !in_array($comparison->getOperator(), array(Comparison::IN, Comparison::NIN))
-        ) {
+            ! is_object($value) &&
+            ! in_array($comparison->getOperator(), array(Comparison::IN, Comparison::NIN))) {
 
             throw PersisterException::matchingAssocationFieldRequiresObject($this->classMetadata->name, $field);
         }
@@ -93,7 +93,7 @@ class SqlExpressionVisitor extends ExpressionVisitor
             $expressionList[] = $this->dispatch($child);
         }
 
-        switch ($expr->getType()) {
+        switch($expr->getType()) {
             case CompositeExpression::TYPE_AND:
                 return '(' . implode(' AND ', $expressionList) . ')';
 

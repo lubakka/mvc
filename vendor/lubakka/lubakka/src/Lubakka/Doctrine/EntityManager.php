@@ -13,36 +13,63 @@ use Doctrine\ORM\Tools\Setup;
 use Lubakka\Service\Container;
 
 
+/**
+ * Class EntityManager
+ * @package Lubakka\Doctrine
+ */
 class EntityManager
 {
 
+    /**
+     * @var null
+     */
     static $instance = null;
 
+    /**
+     * @var bool
+     */
     private $isDevMode;
 
+    /**
+     * @var array
+     */
     private $config = array();
 
+    /**
+     * @var array
+     */
     private $conn = array();
 
+    /**
+     * @var string
+     */
     private $driver = 'pdo_mysql';
 
+    /**
+     * @var
+     */
     private $em;
 
+    /**
+     *
+     */
     public function __construct()
     {
-        $this->isDevMode = false;
+        $this->isDevMode = true;
         $this->setConn();
         $this->init();
     }
 
+    /**
+     * @throws \Doctrine\ORM\ORMException
+     */
     public function init()
     {
         $vendorDir = Container::getContainer()->getPathRoot();
 
-        $config = Setup::createXMLMetadataConfiguration(array($vendorDir . 'doctrine'), self::getIsDevMode());
+        $config = Setup::createXMLMetadataConfiguration(array(realpath($vendorDir . 'doctrine')), self::getIsDevMode());
 
-        $conn = $this->getConn();
-        $this->em = Entity::create($conn, $config);
+        $this->em = Entity::create($this->getConn(), $config);
     }
 
     /**
@@ -55,6 +82,8 @@ class EntityManager
 
     /**
      * @param boolean $isDevMode
+     *
+     * @return $this
      */
     public function setIsDevMode($isDevMode)
     {
@@ -73,6 +102,8 @@ class EntityManager
 
     /**
      * @param array $conn
+     *
+     * @return $this
      */
     public function setConn(array $conn = array())
     {
@@ -80,7 +111,7 @@ class EntityManager
             'driver' => $this->getDriver(),
             'user' => 'root',
             'password' => '',
-            'dbname' => '',
+            'dbname' => 'test',
             'host' => 'localhost'
         );
         $conn = Container::getContainer()->getParameters();
@@ -91,6 +122,9 @@ class EntityManager
         return $this;
     }
 
+    /**
+     * @return static
+     */
     public static function getEntityManager()
     {
         if (null == self::$instance) {
@@ -109,6 +143,8 @@ class EntityManager
 
     /**
      * @param array $config
+     *
+     * @return $this
      */
     public function setConfig($config)
     {
@@ -127,6 +163,8 @@ class EntityManager
 
     /**
      * @param string $driver
+     *
+     * @return $this
      */
     public function setDriver($driver)
     {

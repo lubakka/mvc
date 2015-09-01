@@ -56,7 +56,7 @@ class FieldBuilder
 
     /**
      * @param ClassMetadataBuilder $builder
-     * @param array $mapping
+     * @param array                $mapping
      */
     public function __construct(ClassMetadataBuilder $builder, array $mapping)
     {
@@ -179,8 +179,8 @@ class FieldBuilder
      * Sets Sequence Generator.
      *
      * @param string $sequenceName
-     * @param int $allocationSize
-     * @param int $initialValue
+     * @param int    $allocationSize
+     * @param int    $initialValue
      *
      * @return FieldBuilder
      */

@@ -18,8 +18,8 @@
  */
 namespace Doctrine\ORM\Event;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\EventArgs;
 
 /**
  * Provides event arguments for the postFlush event.

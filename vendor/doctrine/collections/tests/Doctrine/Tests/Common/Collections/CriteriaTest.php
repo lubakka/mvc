@@ -1,4 +1,5 @@
 <?php
+
 namespace Doctrine\Tests\Common\Collections;
 
 use Doctrine\Common\Collections\Criteria;
@@ -11,12 +12,12 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
     {
         $criteria = Criteria::create();
 
-        $this->assertInstanceOf("Doctrine\Common\Collections\Criteria", $criteria);
+        $this->assertInstanceOf('Doctrine\Common\Collections\Criteria', $criteria);
     }
 
     public function testConstructor()
     {
-        $expr = new Comparison("field", "=", "value");
+        $expr     = new Comparison("field", "=", "value");
         $criteria = new Criteria($expr, array("foo" => "ASC"), 10, 20);
 
         $this->assertSame($expr, $criteria->getWhereExpression());
@@ -27,7 +28,7 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
 
     public function testWhere()
     {
-        $expr = new Comparison("field", "=", "value");
+        $expr     = new Comparison("field", "=", "value");
         $criteria = new Criteria();
 
         $criteria->where($expr);
@@ -37,7 +38,7 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
 
     public function testAndWhere()
     {
-        $expr = new Comparison("field", "=", "value");
+        $expr     = new Comparison("field", "=", "value");
         $criteria = new Criteria();
 
         $criteria->where($expr);
@@ -53,7 +54,7 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
 
     public function testOrWhere()
     {
-        $expr = new Comparison("field", "=", "value");
+        $expr     = new Comparison("field", "=", "value");
         $criteria = new Criteria();
 
         $criteria->where($expr);

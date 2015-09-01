@@ -19,10 +19,10 @@
 namespace Doctrine\ORM\Tools\Pagination;
 
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\Query\AST\PathExpression;
-use Doctrine\ORM\Query\AST\SelectExpression;
-use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\TreeWalkerAdapter;
+use Doctrine\ORM\Query\AST\SelectStatement;
+use Doctrine\ORM\Query\AST\SelectExpression;
+use Doctrine\ORM\Query\AST\PathExpression;
 
 /**
  * Replaces the selectClause of the AST with a SELECT DISTINCT root.id equivalent.

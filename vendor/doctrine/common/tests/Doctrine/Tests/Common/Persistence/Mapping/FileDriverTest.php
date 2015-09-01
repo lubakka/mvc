@@ -2,9 +2,9 @@
 
 namespace Doctrine\Tests\Common\Persistence\Mapping;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\Mapping\Driver\FileDriver;
 use Doctrine\Tests\DoctrineTestCase;
+use Doctrine\Common\Persistence\Mapping\Driver\FileDriver;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 class FileDriverTest extends DoctrineTestCase
 {
@@ -32,9 +32,9 @@ class FileDriverTest extends DoctrineTestCase
     {
         $locator = $this->newLocator();
         $locator->expects($this->once())
-            ->method('findMappingFile')
-            ->with($this->equalTo('stdClass'))
-            ->will($this->returnValue(__DIR__ . '/_files/stdClass.yml'));
+                ->method('findMappingFile')
+                ->with($this->equalTo('stdClass'))
+                ->will($this->returnValue(__DIR__ . '/_files/stdClass.yml'));
 
         $driver = new TestFileDriver($locator);
 
@@ -55,9 +55,9 @@ class FileDriverTest extends DoctrineTestCase
     {
         $locator = $this->newLocator();
         $locator->expects($this->any())
-            ->method('getAllClassNames')
-            ->with($this->equalTo(null))
-            ->will($this->returnValue(array('stdClass')));
+                ->method('getAllClassNames')
+                ->with($this->equalTo(null))
+                ->will($this->returnValue(array('stdClass')));
         $driver = new TestFileDriver($locator);
 
         $classNames = $driver->getAllClassNames();
@@ -69,9 +69,9 @@ class FileDriverTest extends DoctrineTestCase
     {
         $locator = $this->newLocator();
         $locator->expects($this->any())
-            ->method('getAllClassNames')
-            ->with($this->equalTo('global'))
-            ->will($this->returnValue(array('stdClass')));
+                ->method('getAllClassNames')
+                ->with($this->equalTo('global'))
+                ->will($this->returnValue(array('stdClass')));
         $driver = new TestFileDriver($locator);
         $driver->setGlobalBasename("global");
 
@@ -84,9 +84,9 @@ class FileDriverTest extends DoctrineTestCase
     {
         $locator = $this->newLocator();
         $locator->expects($this->once())
-            ->method('fileExists')
-            ->with($this->equalTo('stdClass'))
-            ->will($this->returnValue(true));
+                ->method('fileExists')
+                ->with($this->equalTo('stdClass'))
+                ->will($this->returnValue( true ));
 
         $driver = new TestFileDriver($locator);
         $driver->setGlobalBasename("global");
@@ -100,9 +100,9 @@ class FileDriverTest extends DoctrineTestCase
     {
         $locator = $this->newLocator();
         $locator->expects($this->once())
-            ->method('fileExists')
-            ->with($this->equalTo('stdClass2'))
-            ->will($this->returnValue(false));
+                ->method('fileExists')
+                ->with($this->equalTo('stdClass2'))
+                ->will($this->returnValue( false ));
 
         $driver = new TestFileDriver($locator);
 

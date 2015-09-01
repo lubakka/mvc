@@ -1,6 +1,7 @@
 <?php
 
 namespace Lubakka;
+
 use Lubakka\VendorInterface\IRouter;
 
 /**
@@ -11,15 +12,32 @@ use Lubakka\VendorInterface\IRouter;
 class Router implements IRouter
 {
 
+    /**
+     * @var array|bool|mixed
+     */
     private $routers = array();
+    /**
+     * @var array
+     */
     private $router = array();
+    /**
+     * @var
+     */
     private $path;
 
+    /**
+     *
+     */
     protected function __construct()
     {
         $this->routers = $this->fetchFileArray('router');
     }
 
+    /**
+     * @param $file
+     *
+     * @return bool|mixed
+     */
     private function fetchFileArray($file)
     {
         if (!empty($file)) {
@@ -29,6 +47,9 @@ class Router implements IRouter
         return false;
     }
 
+    /**
+     * @return static
+     */
     public static function getInstance()
     {
         static $instance = null;
@@ -39,17 +60,23 @@ class Router implements IRouter
         return $instance;
     }
 
+    /**
+     * @return object
+     */
     public function getRouterPath()
     {
         foreach ($this->getRouters() as $name) {
             foreach ($name as $key => $value) {
-                    $this->path[$key] = $value['route'];
+                $this->path[$key] = $value['route'];
             }
         }
 
         return Helpers::toObject($this->path);
     }
 
+    /**
+     * @return object
+     */
     public function getRouters()
     {
         foreach ($this->routers as $routes) {
@@ -67,6 +94,8 @@ class Router implements IRouter
      * Set Router from other file
      *
      * @param string $file
+     *
+     * @return $this
      */
     public function setRouters($file)
     {
@@ -75,6 +104,9 @@ class Router implements IRouter
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getRouterConfig()
     {
         $helper = Helpers::toObject($this->routers);
@@ -82,17 +114,19 @@ class Router implements IRouter
         return $helper->routers['router'];
     }
 
+    /**
+     *
+     */
     public function isRouters()
     {
 
     }
 
+    /**
+     * @return $this
+     */
     public function getRoute()
     {
         return $this;
     }
-
-    /*public function fetch(){
-
-    }*/
 }

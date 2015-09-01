@@ -2,9 +2,9 @@
 
 namespace Doctrine\Tests\Common\Persistence;
 
+use Doctrine\Common\Persistence\PersistentObject;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\ReflectionService;
-use Doctrine\Common\Persistence\PersistentObject;
 
 /**
  * @group DDC-1448
@@ -20,7 +20,7 @@ class PersistentObjectTest extends \Doctrine\Tests\DoctrineTestCase
         $this->cm = new TestObjectMetadata;
         $this->om = $this->getMock('Doctrine\Common\Persistence\ObjectManager');
         $this->om->expects($this->any())->method('getClassMetadata')
-            ->will($this->returnValue($this->cm));
+                 ->will($this->returnValue($this->cm));
         $this->object = new TestObject;
         PersistentObject::setObjectManager($this->om);
         $this->object->injectObjectManager($this->om, $this->cm);

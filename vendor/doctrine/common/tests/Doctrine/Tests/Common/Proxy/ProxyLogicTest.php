@@ -19,10 +19,10 @@
 
 namespace Doctrine\Tests\Common\Proxy;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Proxy\Exception\UnexpectedValueException;
-use Doctrine\Common\Proxy\Proxy;
 use Doctrine\Common\Proxy\ProxyGenerator;
+use Doctrine\Common\Proxy\Proxy;
+use Doctrine\Common\Proxy\Exception\UnexpectedValueException;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -62,9 +62,9 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->proxyLoader = $loader = $this->getMock('stdClass', array('load'), array(), '', false);
-        $this->initializerCallbackMock = $this->getMock('stdClass', array('__invoke'));
-        $identifier = $this->identifier;
+        $this->proxyLoader = $loader      = $this->getMock('stdClass', array('load'), array(), '', false);
+        $this->initializerCallbackMock    = $this->getMock('stdClass', array('__invoke'));
+        $identifier                       = $this->identifier;
         $this->lazyLoadableObjectMetadata = $metadata = new LazyLoadableObjectClassMetadata();
 
         // emulating what should happen in a proxy factory
@@ -325,14 +325,14 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
             ->expects($this->exactly(2))
             ->method('load')
             ->with(array(
-                'publicIdentifierField' => 'publicIdentifierFieldValue',
+                'publicIdentifierField'    => 'publicIdentifierFieldValue',
                 'protectedIdentifierField' => 'protectedIdentifierFieldValue',
             ))
             ->will($this->returnCallback(function () {
                 $blueprint = new LazyLoadableObject();
                 $blueprint->publicPersistentField = 'checked-persistent-field';
-                $blueprint->publicAssociation = 'checked-association-field';
-                $blueprint->publicTransientField = 'checked-transient-field';
+                $blueprint->publicAssociation     = 'checked-association-field';
+                $blueprint->publicTransientField  = 'checked-transient-field';
 
                 return $blueprint;
             }));
@@ -443,8 +443,8 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
         $this->lazyObject->__setInitializer($this->getSuggestedInitializerImplementation());
         $this->lazyObject->__load();
 
-        $serialized = serialize($this->lazyObject);
-        $reflClass = $this->lazyLoadableObjectMetadata->getReflectionClass();
+        $serialized   = serialize($this->lazyObject);
+        $reflClass    = $this->lazyLoadableObjectMetadata->getReflectionClass();
         /* @var $unserialized LazyLoadableObject|Proxy */
         $unserialized = unserialize($serialized);
 
@@ -591,14 +591,69 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
         $this->assertSame('newPersistentFieldValue', $this->lazyObject->publicPersistentField);
     }
 
+    public function testCallingVariadicMethodCausesLazyLoading()
+    {
+        if (PHP_VERSION_ID < 50600) {
+            $this->markTestSkipped('Test applies only to PHP 5.6+');
+        }
+
+        $proxyClassName = 'Doctrine\Tests\Common\ProxyProxy\__CG__\Doctrine\Tests\Common\Proxy\VariadicTypeHintClass';
+
+        /* @var $metadata \Doctrine\Common\Persistence\Mapping\ClassMetadata|\PHPUnit_Framework_MockObject_MockObject */
+        $metadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+
+        $metadata
+            ->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('Doctrine\Tests\Common\Proxy\VariadicTypeHintClass'));
+        $metadata
+            ->expects($this->any())
+            ->method('getReflectionClass')
+            ->will($this->returnValue(new \ReflectionClass('Doctrine\Tests\Common\Proxy\VariadicTypeHintClass')));
+
+        // creating the proxy class
+        if (!class_exists($proxyClassName, false)) {
+            $proxyGenerator = new ProxyGenerator(__DIR__ . '/generated', __NAMESPACE__ . 'Proxy', true);
+            $proxyGenerator->generateProxyClass($metadata);
+            require_once $proxyGenerator->getProxyFileName($metadata->getName());
+        }
+
+        /* @var $invocationMock callable|\PHPUnit_Framework_MockObject_MockObject */
+        $invocationMock = $this->getMock('stdClass', array('__invoke'));
+
+        /* @var $lazyObject \Doctrine\Tests\Common\Proxy\VariadicTypeHintClass */
+        $lazyObject = new $proxyClassName(
+            function ($proxy, $method, $parameters) use ($invocationMock) {
+                $invocationMock($proxy, $method, $parameters);
+            },
+            function () {}
+        );
+
+        $invocationMock
+            ->expects($this->at(0))
+            ->method('__invoke')
+            ->with($lazyObject, 'addType', array(array('type1', 'type2')));
+        $invocationMock
+            ->expects($this->at(1))
+            ->method('__invoke')
+            ->with($lazyObject, 'addTypeWithMultipleParameters', array('foo', 'bar', array('baz1', 'baz2')));
+
+        $lazyObject->addType('type1', 'type2');
+        $this->assertSame(array('type1', 'type2'), $lazyObject->types);
+
+        $lazyObject->addTypeWithMultipleParameters('foo', 'bar', 'baz1', 'baz2');
+        $this->assertSame('foo', $lazyObject->foo);
+        $this->assertSame('bar', $lazyObject->bar);
+        $this->assertSame(array('baz1', 'baz2'), $lazyObject->baz);
+    }
+
     /**
      * Converts a given callable into a closure
      *
      * @param  callable $callable
      * @return \Closure
      */
-    public function getClosure($callable)
-    {
+    public function getClosure($callable) {
         return function () use ($callable) {
             call_user_func_array($callable, func_get_args());
         };
@@ -617,10 +672,9 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
         $expectedCallCount = 0,
         array $callParamsMatch = null,
         \Closure $callbackClosure = null
-    )
-    {
+    ) {
         if (!$expectedCallCount) {
-            $invocationCountMatcher = $this->exactly((int)$expectedCallCount);
+            $invocationCountMatcher = $this->exactly((int) $expectedCallCount);
         } else {
             $invocationCountMatcher = $expectedCallCount < 0 ? $this->any() : $this->exactly($expectedCallCount);
         }
@@ -647,7 +701,7 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
     public function setProxyValue($property, $value)
     {
         $reflectionProperty = new \ReflectionProperty($this->lazyObject, $property);
-        $initializer = $this->lazyObject->__getInitializer();
+        $initializer        = $this->lazyObject->__getInitializer();
 
         // disabling initializer since setting `publicPersistentField` triggers `__set`/`__get`
         $this->lazyObject->__setInitializer(null);
@@ -663,7 +717,7 @@ class ProxyLogicTest extends PHPUnit_Framework_TestCase
      */
     protected function getSuggestedInitializerImplementation()
     {
-        $loader = $this->proxyLoader;
+        $loader     = $this->proxyLoader;
         $identifier = $this->identifier;
 
         return function (LazyLoadableObject $proxy) use ($loader, $identifier) {

@@ -13,11 +13,11 @@
 
 namespace Doctrine\ORM\Tools\Pagination;
 
-use Doctrine\ORM\Query\AST\AggregateExpression;
-use Doctrine\ORM\Query\AST\PathExpression;
-use Doctrine\ORM\Query\AST\SelectExpression;
-use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\TreeWalkerAdapter;
+use Doctrine\ORM\Query\AST\SelectStatement;
+use Doctrine\ORM\Query\AST\SelectExpression;
+use Doctrine\ORM\Query\AST\PathExpression;
+use Doctrine\ORM\Query\AST\AggregateExpression;
 
 /**
  * Replaces the selectClause of the AST with a COUNT statement.
@@ -54,7 +54,8 @@ class CountWalker extends TreeWalkerAdapter
         foreach ($this->_getQueryComponents() as $dqlAlias => $qComp) {
             $isParent = array_key_exists('parent', $qComp)
                 && $qComp['parent'] === null
-                && $qComp['nestingLevel'] == 0;
+                && $qComp['nestingLevel'] == 0
+            ;
             if ($isParent) {
                 $rootComponents[] = array($dqlAlias => $qComp);
             }
@@ -62,9 +63,9 @@ class CountWalker extends TreeWalkerAdapter
         if (count($rootComponents) > 1) {
             throw new \RuntimeException("Cannot count query which selects two FROM components, cannot make distinction");
         }
-        $root = reset($rootComponents);
-        $parentName = key($root);
-        $parent = current($root);
+        $root                = reset($rootComponents);
+        $parentName          = key($root);
+        $parent              = current($root);
         $identifierFieldName = $parent['metadata']->getSingleIdentifierFieldName();
 
         $pathType = PathExpression::TYPE_STATE_FIELD;

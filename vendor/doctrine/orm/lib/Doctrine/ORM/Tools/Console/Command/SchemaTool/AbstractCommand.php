@@ -19,10 +19,10 @@
 
 namespace Doctrine\ORM\Tools\Console\Command\SchemaTool;
 
-use Doctrine\ORM\Tools\SchemaTool;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Command\Command;
+use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * Base class for CreateCommand, DropCommand and UpdateCommand.
@@ -37,10 +37,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractCommand extends Command
 {
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param SchemaTool $schemaTool
-     * @param array $metadatas
+     * @param SchemaTool      $schemaTool
+     * @param array           $metadatas
      *
      * @return null|int Null or 0 if everything went fine, or an error code.
      */
@@ -58,7 +58,7 @@ abstract class AbstractCommand extends Command
 
         $metadatas = $em->getMetadataFactory()->getAllMetadata();
 
-        if (!empty($metadatas)) {
+        if ( ! empty($metadatas)) {
             // Create SchemaTool
             $tool = new SchemaTool($em);
 

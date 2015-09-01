@@ -2,8 +2,8 @@
 
 namespace Doctrine\Tests\Common\Persistence\Mapping;
 
-use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 use Doctrine\Tests\DoctrineTestCase;
+use Doctrine\Common\Persistence\Mapping\Driver\StaticPHPDriver;
 
 class StaticPHPDriverTest extends DoctrineTestCase
 {

@@ -8,23 +8,66 @@
 
 namespace Lubakka\Service;
 
+/**
+ * Class Container
+ * @package Lubakka\Service
+ */
 class Container implements \ArrayAccess
 {
 
+    /**
+     * @var array
+     */
     protected $services = array();
+    /**
+     * @var string
+     */
     private $path = ROOT_DIR;
+    /**
+     * @var string
+     */
     private $pathService = '../conf/service/';
+    /**
+     * @var string
+     */
     private $pathRoot = '../conf/';
+    /**
+     * @var string
+     */
     private $fileService = 'service.xml';
+    /**
+     * @var \SimpleXMLElement
+     */
     private $xmlService;
+    /**
+     * @var string
+     */
     private $pathParameters = '../conf/service/';
+    /**
+     * @var string
+     */
     private $fileParameters = 'parameters.xml';
+    /**
+     * @var \SimpleXMLElement
+     */
     private $xmlParameter;
+    /**
+     * @var
+     */
     private $parameters;
+    /**
+     * @var string
+     */
     private $namespace = 'Lubakka';
 
+    /**
+     * @var array
+     */
     private $container = array();
 
+    /**
+     *
+     */
     private function __construct()
     {
         $xmlFileService = file_get_contents(realpath($this->path . $this->pathService . $this->fileService));
@@ -38,6 +81,9 @@ class Container implements \ArrayAccess
 
     }
 
+    /**
+     * @param \SimpleXMLElement $xml
+     */
     private function setParameters(\SimpleXMLElement $xml)
     {
         $param = array();
@@ -59,6 +105,13 @@ class Container implements \ArrayAccess
         $this->parameters = $param;
     }
 
+    /**
+     * @param $xmlNode
+     * @param $attr_name
+     * @param $attr_value
+     *
+     * @return mixed
+     */
     private function query_attribute($xmlNode, $attr_name, $attr_value)
     {
         foreach ($xmlNode as $node) {
@@ -69,6 +122,9 @@ class Container implements \ArrayAccess
         }
     }
 
+    /**
+     * @param \SimpleXMLElement $xml
+     */
     private function setServices(\SimpleXMLElement $xml)
     {
         $service = array();
@@ -85,6 +141,12 @@ class Container implements \ArrayAccess
         $this->services = $service;
     }
 
+    /**
+     * @param       $str
+     * @param array $noStrip
+     *
+     * @return mixed|string
+     */
     public static function camelCase($str, array $noStrip = [])
     {
         // non-alpha and non-numeric characters become spaces
@@ -98,6 +160,9 @@ class Container implements \ArrayAccess
         return $str;
     }
 
+    /**
+     * @return static
+     */
     public static function getContainer()
     {
         static $instance = null;
@@ -107,11 +172,19 @@ class Container implements \ArrayAccess
         return $instance;
     }
 
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
     public function getServices($id)
     {
         return new $this->services[$id];
     }
 
+    /**
+     * @return mixed
+     */
     public function getParameters()
     {
         return $this->parameters;
@@ -127,6 +200,8 @@ class Container implements \ArrayAccess
 
     /**
      * @param string $fileService
+     *
+     * @return $this
      */
     public function setFileService($fileService)
     {
@@ -145,6 +220,8 @@ class Container implements \ArrayAccess
 
     /**
      * @param string $pathParameters
+     *
+     * @return $this
      */
     public function setPathParameters($pathParameters)
     {
@@ -163,6 +240,8 @@ class Container implements \ArrayAccess
 
     /**
      * @param string $pathService
+     *
+     * @return $this
      */
     public function setPathService($pathService)
     {
@@ -180,6 +259,8 @@ class Container implements \ArrayAccess
 
     /**
      * @param string $fileParameters
+     *
+     * @return $this
      */
     public function setFileParameters($fileParameters)
     {
@@ -202,6 +283,8 @@ class Container implements \ArrayAccess
      * Namespace for where is call service
      *
      * @param string $namespace
+     *
+     * @return $this
      */
     public function setNamespace($namespace)
     {

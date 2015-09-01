@@ -8,14 +8,22 @@
 
 namespace Lubakka\Doctrine;
 
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Lubakka\Doctrine\EntityManager;
 
+/**
+ * Class Config
+ * @package Lubakka\Doctrine
+ */
 class Config
 {
 
 
+    /**
+     *
+     */
     function __construct()
     {
-        return \Doctrine\ORM\Tools\Console\ConsoleRunner::createHelperSet(EntityManager::getEntityManager());
+        return ConsoleRunner::createHelperSet(EntityManager::getEntityManager());
     }
 }

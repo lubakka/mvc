@@ -3,8 +3,8 @@
 namespace Doctrine\Tests\Common\Persistence\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\Driver\AnnotationDriver;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
 {

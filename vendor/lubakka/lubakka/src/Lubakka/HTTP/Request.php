@@ -72,7 +72,7 @@ class Request
         $this->format = null;
     }
 
-    public static function createFromGolobal()
+    public static function createFromGlobals()
     {
         static $instance = null;
         if (null == $instance) {
@@ -91,6 +91,8 @@ class Request
 
     /**
      * @param mixed $request
+     *
+     * @return $this
      */
     public function setRequest($request)
     {

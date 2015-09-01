@@ -60,6 +60,11 @@ class FrontController extends FrontControllerException
 
     /**
      * Constructor for FrontController
+     *
+     * @param Request $request
+     * @param int     $kernel
+     *
+     * @throws FrontControllerException
      */
     public function __construct(Request $request, $kernel)
     {
@@ -84,7 +89,7 @@ class FrontController extends FrontControllerException
 
         if ($this->isMasterController($components)) {
             $this->method = (isset($components[1]) ? $components[1] : $this->method);
-            $controller_class = 'Lubakka\Controllers\\' . ucfirst($this->controller) . 'Controller';
+            $controller_class = __NAMESPACE__ . '\Controllers\\' . ucfirst($this->controller) . 'Controller';
             $method = $this->method;
         } else {
             if (!array_key_exists($components[0], $this->router)) {
@@ -143,9 +148,13 @@ class FrontController extends FrontControllerException
             }
         }
 
-        $this->run($controller_class, $method);
+        return $this->run($controller_class, $method);
     }
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     private function getRequest()
     {
         $uri = $this->request->getServer()->get('REQUEST_URI');
@@ -218,6 +227,11 @@ class FrontController extends FrontControllerException
         return $scName;
     }
 
+    /**
+     * @param $elem
+     *
+     * @return array|string
+     */
     private function clean($elem)
     {
         if (!is_array($elem)) {
@@ -258,12 +272,12 @@ class FrontController extends FrontControllerException
         if (empty($controller_class)) {
             throw new \Exception("This route is not in router.php config");
         } else {
-            foreach ($this->router as $key => $path){
-                if (strtolower($this->controller) === $key){
+            foreach ($this->router as $key => $path) {
+                if (strtolower($this->controller) === $key) {
                     $router = $this->router[$key];
-                    foreach ($router as $routKey => $routeValue){
-                        if (true == strpos($routKey, $this->method)){
-                            if (isset($routeValue['controller'])){
+                    foreach ($router as $routKey => $routeValue) {
+                        if (true == strpos($routKey, $this->method)) {
+                            if (isset($routeValue['controller'])) {
                                 $controllerString = $routeValue['controller'];
                                 if ('@' !== $controllerString[0]) {
                                     throw new \Exception(sprintf('A resource name must start with @ ("%s" given).', $view));
@@ -281,7 +295,7 @@ class FrontController extends FrontControllerException
                                 }
 
                                 $namespace = $this->getModules()[mb_substr($module, 0, strpos($module, 'Module'))]->getNameSpace();
-                                $allClass = $namespace.'\\Controllers\\'.$className.'Controller';
+                                $allClass = $namespace . '\\Controllers\\' . $className . 'Controller';
                                 $methodName = $method;
 
                                 $instance = new $allClass();
@@ -293,51 +307,17 @@ class FrontController extends FrontControllerException
                     }
                 }
             }
-
-
-//            foreach($modules as $module){
-//                if (true == strpos($module->getClassName(), "\\")){
-//                    $class = explode("\\", $module->getClassName());
-//
-//
-//                    if (is_array($class)){
-//                        $className = strtolower($class[1]);
-//                    }
-//
-//
-//                    //var_dump($module->getClassName(), $class, $className);
-//                } else {
-//                    throw new InvalidArgumentException("Not found in route '\\'");
-//                }
-//            }
-
-//exit;
-
-//            try {
-//                $instance = new $controller_class();
-//                if (!$instance instanceof MasterController) {
-//                    throw new MasterControllerException("Controller is not instance of 'MasterController'");
-//                }
-//
-//                if (method_exists($instance, $method)) {
-//                    call_user_func_array(array($instance, $method), $this->param);
-//                    if (!$instance instanceof MasterController){
-//                        throw new \Exception(sprintf("Controller %s must returnet value", $instance));
-//                    }
-//                } else {
-//                    call_user_func_array(array($instance, 'index'), array(''));
-//                    if (!$instance instanceof MasterController){
-//                        throw new \Exception(sprintf("Controller %s must returnet value", $instance));
-//                    }
-//                }
-//            } catch (\Exception $e) {
-//                echo $e->getMessage();
-//            }
         }
     }
 
-    private function getModules(){
-        return $this->kernel->registerModules();
+    /**
+     *
+     */
+    private function getModules()
+    {
+        if (isset($this->kernel)) {
+            return $this->kernel->registerModules();
+        }
     }
 
     /**
@@ -345,7 +325,9 @@ class FrontController extends FrontControllerException
      */
     public function getController()
     {
-        return $this->controller;
+        if (isset($this->controller)) {
+            return $this->controller;
+        }
     }
 
 }

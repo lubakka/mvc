@@ -19,9 +19,9 @@
 
 namespace Doctrine\ORM\Mapping\Builder;
 
-use Doctrine\ORM\Events;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\MappingException;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Events;
 
 /**
  * Builder for entity listeners.
@@ -35,21 +35,21 @@ class EntityListenerBuilder
      * @var array Hash-map to handle event names.
      */
     static private $events = array(
-        Events::preRemove => true,
-        Events::postRemove => true,
-        Events::prePersist => true,
+        Events::preRemove   => true,
+        Events::postRemove  => true,
+        Events::prePersist  => true,
         Events::postPersist => true,
-        Events::preUpdate => true,
-        Events::postUpdate => true,
-        Events::postLoad => true,
-        Events::preFlush => true
+        Events::preUpdate   => true,
+        Events::postUpdate  => true,
+        Events::postLoad    => true,
+        Events::preFlush    => true
     );
 
     /**
      * Lookup the entity class to find methods that match to event lifecycle names
      *
-     * @param \Doctrine\ORM\Mapping\ClassMetadata $metadata The entity metadata.
-     * @param string $className The listener class name.
+     * @param \Doctrine\ORM\Mapping\ClassMetadata $metadata     The entity metadata.
+     * @param string $className                                 The listener class name.
      *
      * @throws \Doctrine\ORM\Mapping\MappingException           When the listener class not found.
      */
@@ -57,12 +57,12 @@ class EntityListenerBuilder
     {
         $class = $metadata->fullyQualifiedClassName($className);
 
-        if (!class_exists($class)) {
+        if ( ! class_exists($class)) {
             throw MappingException::entityListenerClassNotFound($class, $className);
         }
 
         foreach (get_class_methods($class) as $method) {
-            if (!isset(self::$events[$method])) {
+            if ( ! isset(self::$events[$method])) {
                 continue;
             }
 

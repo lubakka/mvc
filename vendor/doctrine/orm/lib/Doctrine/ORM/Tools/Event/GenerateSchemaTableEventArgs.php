@@ -19,9 +19,9 @@
 namespace Doctrine\ORM\Tools\Event;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
-use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * Event Args used for the Events::postGenerateSchemaTable event.
@@ -50,8 +50,8 @@ class GenerateSchemaTableEventArgs extends EventArgs
 
     /**
      * @param ClassMetadata $classMetadata
-     * @param Schema $schema
-     * @param Table $classTable
+     * @param Schema        $schema
+     * @param Table         $classTable
      */
     public function __construct(ClassMetadata $classMetadata, Schema $schema, Table $classTable)
     {

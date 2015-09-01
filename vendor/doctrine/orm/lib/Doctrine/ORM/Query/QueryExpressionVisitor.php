@@ -20,10 +20,14 @@
 namespace Doctrine\ORM\Query;
 
 use Doctrine\Common\Collections\ArrayCollection;
+
+use Doctrine\Common\Collections\Expr\ExpressionVisitor;
 use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\Common\Collections\Expr\CompositeExpression;
-use Doctrine\Common\Collections\Expr\ExpressionVisitor;
 use Doctrine\Common\Collections\Expr\Value;
+
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Parameter;
 
 /**
  * Converts Collection expressions to Query expressions.
@@ -39,7 +43,7 @@ class QueryExpressionVisitor extends ExpressionVisitor
     private static $operatorMap = array(
         Comparison::GT => Expr\Comparison::GT,
         Comparison::GTE => Expr\Comparison::GTE,
-        Comparison::LT => Expr\Comparison::LT,
+        Comparison::LT  => Expr\Comparison::LT,
         Comparison::LTE => Expr\Comparison::LTE
     );
 
@@ -113,7 +117,7 @@ class QueryExpressionVisitor extends ExpressionVisitor
             $expressionList[] = $this->dispatch($child);
         }
 
-        switch ($expr->getType()) {
+        switch($expr->getType()) {
             case CompositeExpression::TYPE_AND:
                 return new Expr\Andx($expressionList);
 

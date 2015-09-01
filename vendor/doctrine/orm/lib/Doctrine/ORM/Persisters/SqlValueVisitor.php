@@ -19,10 +19,10 @@
 
 namespace Doctrine\ORM\Persisters;
 
-use Doctrine\Common\Collections\Expr\Comparison;
-use Doctrine\Common\Collections\Expr\CompositeExpression;
 use Doctrine\Common\Collections\Expr\ExpressionVisitor;
+use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\Common\Collections\Expr\Value;
+use Doctrine\Common\Collections\Expr\CompositeExpression;
 
 /**
  * Extract the values from a criteria/expression
@@ -39,7 +39,7 @@ class SqlValueVisitor extends ExpressionVisitor
     /**
      * @var array
      */
-    private $types = array();
+    private $types  = array();
 
     /**
      * Converts a comparison expression into the target query language output.
@@ -50,9 +50,9 @@ class SqlValueVisitor extends ExpressionVisitor
      */
     public function walkComparison(Comparison $comparison)
     {
-        $value = $this->getValueFromComparison($comparison);
-        $field = $comparison->getField();
-        $operator = $comparison->getOperator();
+        $value          = $this->getValueFromComparison($comparison);
+        $field          = $comparison->getField();
+        $operator       = $comparison->getOperator();
 
         if (($operator === Comparison::EQ || $operator === Comparison::IS) && $value === null) {
             return;
@@ -61,7 +61,7 @@ class SqlValueVisitor extends ExpressionVisitor
         }
 
         $this->values[] = $value;
-        $this->types[] = array($field, $value);
+        $this->types[]  = array($field, $value);
     }
 
     /**

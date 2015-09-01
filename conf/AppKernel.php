@@ -9,18 +9,22 @@
 
 use Modules\Blog\BlogModule;
 use Lubakka\Kernel;
-use Modules\PDF\PDFModule;
 
+/**
+ * Class AppKernel
+ */
 class AppKernel extends Kernel
 {
 
+    /**
+     * @return array
+     */
     public function registerModules()
     {
-        $modules = [
+        $this->modules = [
             'Blog' => new BlogModule(),
-            'PDF' => new PDFModule(),
         ];
 
-        return $modules;
+        return $this->modules;
     }
 }

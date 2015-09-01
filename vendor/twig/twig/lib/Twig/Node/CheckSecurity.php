@@ -31,7 +31,7 @@ class Twig_Node_CheckSecurity extends Twig_Node
     {
         $tags = $filters = $functions = array();
         foreach (array('tags', 'filters', 'functions') as $type) {
-            foreach ($this->{'used' . ucfirst($type)} as $name => $node) {
+            foreach ($this->{'used'.ucfirst($type)} as $name => $node) {
                 if ($node instanceof Twig_Node) {
                     ${$type}[$name] = $node->getLine();
                 } else {
@@ -41,16 +41,16 @@ class Twig_Node_CheckSecurity extends Twig_Node
         }
 
         $compiler
-            ->write("\$tags = ")->repr(array_filter($tags))->raw(";\n")
-            ->write("\$filters = ")->repr(array_filter($filters))->raw(";\n")
-            ->write("\$functions = ")->repr(array_filter($functions))->raw(";\n\n")
+            ->write('$tags = ')->repr(array_filter($tags))->raw(";\n")
+            ->write('$filters = ')->repr(array_filter($filters))->raw(";\n")
+            ->write('$functions = ')->repr(array_filter($functions))->raw(";\n\n")
             ->write("try {\n")
             ->indent()
             ->write("\$this->env->getExtension('sandbox')->checkSecurity(\n")
             ->indent()
-            ->write(!$tags ? "array(),\n" : "array('" . implode("', '", array_keys($tags)) . "'),\n")
-            ->write(!$filters ? "array(),\n" : "array('" . implode("', '", array_keys($filters)) . "'),\n")
-            ->write(!$functions ? "array()\n" : "array('" . implode("', '", array_keys($functions)) . "')\n")
+            ->write(!$tags ? "array(),\n" : "array('".implode("', '", array_keys($tags))."'),\n")
+            ->write(!$filters ? "array(),\n" : "array('".implode("', '", array_keys($filters))."'),\n")
+            ->write(!$functions ? "array()\n" : "array('".implode("', '", array_keys($functions))."')\n")
             ->outdent()
             ->write(");\n")
             ->outdent()
@@ -72,6 +72,7 @@ class Twig_Node_CheckSecurity extends Twig_Node
             ->write("}\n\n")
             ->write("throw \$e;\n")
             ->outdent()
-            ->write("}\n\n");
+            ->write("}\n\n")
+        ;
     }
 }

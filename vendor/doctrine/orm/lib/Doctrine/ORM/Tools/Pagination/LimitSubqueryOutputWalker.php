@@ -14,8 +14,10 @@
 namespace Doctrine\ORM\Tools\Pagination;
 
 use Doctrine\ORM\Query\AST\PathExpression;
-use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\SqlWalker;
+use Doctrine\ORM\Query\AST\SelectStatement;
+use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
+use Doctrine\DBAL\Platforms\OraclePlatform;
 
 /**
  * Wraps the query in order to select root entity IDs for pagination.
@@ -62,9 +64,9 @@ class LimitSubqueryOutputWalker extends SqlWalker
      * because Doctrine\ORM\Query\SqlWalker keeps everything private without
      * accessors.
      *
-     * @param \Doctrine\ORM\Query $query
+     * @param \Doctrine\ORM\Query              $query
      * @param \Doctrine\ORM\Query\ParserResult $parserResult
-     * @param array $queryComponents
+     * @param array                            $queryComponents
      */
     public function __construct($query, $parserResult, array $queryComponents)
     {
@@ -119,8 +121,8 @@ class LimitSubqueryOutputWalker extends SqlWalker
             throw new \RuntimeException("Cannot count query which selects two FROM components, cannot make distinction");
         }
 
-        $rootAlias = $from[0]->rangeVariableDeclaration->aliasIdentificationVariable;
-        $rootClass = $this->queryComponents[$rootAlias]['metadata'];
+        $rootAlias      = $from[0]->rangeVariableDeclaration->aliasIdentificationVariable;
+        $rootClass      = $this->queryComponents[$rootAlias]['metadata'];
         $rootIdentifier = $rootClass->identifier;
 
         // For every identifier, find out the SQL alias by combing through the ResultSetMapping
@@ -179,9 +181,9 @@ class LimitSubqueryOutputWalker extends SqlWalker
      * Generates new SQL for Postgresql or Oracle if necessary.
      *
      * @param SelectStatement $AST
-     * @param array $sqlIdentifier
-     * @param string $innerSql
-     * @param string $sql
+     * @param array           $sqlIdentifier
+     * @param string          $innerSql
+     * @param string          $sql
      *
      * @return void
      */
@@ -189,7 +191,7 @@ class LimitSubqueryOutputWalker extends SqlWalker
     {
         // For every order by, find out the SQL alias by inspecting the ResultSetMapping.
         $sqlOrderColumns = array();
-        $orderBy = array();
+        $orderBy         = array();
         if (isset($AST->orderByClause)) {
             foreach ($AST->orderByClause->orderByItems as $item) {
                 $expression = $item->expression;
@@ -201,7 +203,7 @@ class LimitSubqueryOutputWalker extends SqlWalker
                 foreach ($possibleAliases as $alias) {
                     if (!is_object($expression) || $this->rsm->columnOwnerMap[$alias] == $expression->identificationVariable) {
                         $sqlOrderColumns[] = $alias;
-                        $orderBy[] = $alias . ' ' . $item->type;
+                        $orderBy[]         = $alias . ' ' . $item->type;
                         break;
                     }
                 }

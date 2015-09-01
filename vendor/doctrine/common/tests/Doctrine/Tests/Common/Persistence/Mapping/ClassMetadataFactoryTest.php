@@ -2,11 +2,12 @@
 
 namespace Doctrine\Tests\Common\Persistence\Mapping;
 
-use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\Common\Persistence\Mapping\AbstractClassMetadataFactory;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\Mapping\ReflectionService;
 use Doctrine\Tests\DoctrineTestCase;
+use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
+use Doctrine\Common\Persistence\Mapping\ReflectionService;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\Mapping\AbstractClassMetadataFactory;
+use Doctrine\Common\Cache\ArrayCache;
 
 class ClassMetadataFactoryTest extends DoctrineTestCase
 {
@@ -57,7 +58,7 @@ class ClassMetadataFactoryTest extends DoctrineTestCase
     {
         $metadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
         $cache = new ArrayCache();
-        $cache->save(__NAMESPACE__ . '\ChildEntity$CLASSMETADATA', $metadata);
+        $cache->save(__NAMESPACE__. '\ChildEntity$CLASSMETADATA', $metadata);
 
         $this->cmf->setCacheDriver($cache);
 
@@ -72,15 +73,62 @@ class ClassMetadataFactoryTest extends DoctrineTestCase
 
         $loadedMetadata = $this->cmf->getMetadataFor(__NAMESPACE__ . '\ChildEntity');
 
-        $this->assertSame($loadedMetadata, $cache->fetch(__NAMESPACE__ . '\ChildEntity$CLASSMETADATA'));
+        $this->assertSame($loadedMetadata, $cache->fetch(__NAMESPACE__. '\ChildEntity$CLASSMETADATA'));
     }
 
     public function testGetAliasedMetadata()
     {
-        $loadedMetadata = $this->cmf->getMetadataFor('prefix:ChildEntity');
+        $this->cmf->getMetadataFor('prefix:ChildEntity');
 
         $this->assertTrue($this->cmf->hasMetadataFor(__NAMESPACE__ . '\ChildEntity'));
         $this->assertTrue($this->cmf->hasMetadataFor('prefix:ChildEntity'));
+    }
+
+    /**
+     * @group DCOM-270
+     */
+    public function testGetInvalidAliasedMetadata()
+    {
+        $this->setExpectedException(
+            'Doctrine\Common\Persistence\Mapping\MappingException',
+            'Class \'Doctrine\Tests\Common\Persistence\Mapping\ChildEntity:Foo\' does not exist'
+        );
+
+        $this->cmf->getMetadataFor('prefix:ChildEntity:Foo');
+    }
+
+    /**
+     * @group DCOM-270
+     */
+    public function testClassIsTransient()
+    {
+        $this->assertTrue($this->cmf->isTransient('prefix:ChildEntity:Foo'));
+    }
+
+    public function testWillFallbackOnNotLoadedMetadata()
+    {
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+
+        $this->cmf->fallbackCallback = function () use ($classMetadata) {
+            return $classMetadata;
+        };
+
+        $this->cmf->metadata = null;
+
+        $this->assertSame($classMetadata, $this->cmf->getMetadataFor('Foo'));
+    }
+
+    public function testWillFailOnFallbackFailureWithNotLoadedMetadata()
+    {
+        $this->cmf->fallbackCallback = function () {
+            return null;
+        };
+
+        $this->cmf->metadata = null;
+
+        $this->setExpectedException('Doctrine\Common\Persistence\Mapping\MappingException');
+
+        $this->cmf->getMetadataFor('Foo');
     }
 }
 
@@ -88,6 +136,9 @@ class TestClassMetadataFactory extends AbstractClassMetadataFactory
 {
     public $driver;
     public $metadata;
+
+    /** @var callable|null */
+    public $fallbackCallback;
 
     public function __construct($driver, $metadata)
     {
@@ -119,7 +170,6 @@ class TestClassMetadataFactory extends AbstractClassMetadataFactory
     {
         return $this->driver;
     }
-
     protected function wakeupReflection(ClassMetadata $class, ReflectionService $reflService)
     {
     }
@@ -129,6 +179,20 @@ class TestClassMetadataFactory extends AbstractClassMetadataFactory
     }
 
     protected function isEntity(ClassMetadata $class)
+    {
+        return true;
+    }
+
+    protected function onNotFoundMetadata($className)
+    {
+        if (! $fallback = $this->fallbackCallback) {
+            return null;
+        }
+
+        return $fallback();
+    }
+
+    public function isTransient($class)
     {
         return true;
     }

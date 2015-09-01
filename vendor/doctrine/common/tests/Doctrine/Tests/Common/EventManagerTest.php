@@ -2,8 +2,8 @@
 
 namespace Doctrine\Tests\Common;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
+use Doctrine\Common\EventArgs;
 
 class EventManagerTest extends \Doctrine\Tests\DoctrineTestCase
 {

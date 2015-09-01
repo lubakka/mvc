@@ -6,6 +6,7 @@ namespace Lubakka\View;
 use Exception;
 use Lubakka\Exception\ViewException;
 use Lubakka\HTTP\ParameterBag;
+use Lubakka\Kernel;
 use Lubakka\VendorInterface\IView;
 
 /**
@@ -16,11 +17,32 @@ use Lubakka\VendorInterface\IView;
 class View implements IView
 {
 
+    /**
+     * @var string
+     */
     protected static $layoutsFile = "base.layout.html.twig";
+    /**
+     * @var string
+     */
     private static $view = "../src/View/";
+    /**
+     * @var string
+     */
     private static $layouts = "../layout/main/";
+    /**
+     * @var string
+     */
     private static $cache = "../conf/cache";
 
+    /**
+     * @param        $bundle
+     * @param string $path
+     * @param        $name
+     * @param        $params
+     * @param        $response
+     *
+     * @throws Exception
+     */
     public static function render($bundle, $path = '', $name, $params, $response)
     {
         $app = null;
@@ -30,13 +52,15 @@ class View implements IView
             throw new Exception('Dir not exist');
         }
 
-        $path = realpath($src . $bundle . DS . $path . DS . $name . '.php');
+        $paths = realpath($src . $bundle . DS . $path . DS . $name . '.php');
 
-        if (!is_file($path)) {
-            throw new Exception('File not exist');
+        if (!is_file($paths)) {
+            throw new Exception(sprintf('File not exist %s', $paths ));
         }
 
-        require $path;
+        if (!empty($paths)) {
+            require_once $paths;
+        }
     }
 
     /**
@@ -47,6 +71,15 @@ class View implements IView
         return $this->layout;
     }
 
+    /**
+     * @param        $bundle
+     * @param string $path
+     * @param        $name
+     * @param        $params
+     * @param        $response
+     *
+     * @throws ViewException
+     */
     public static function layout($bundle, $path = '', $name, $params, $response)
     {
         try {

@@ -56,7 +56,7 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
      */
     public function setNamespace($namespace)
     {
-        $this->namespace = (string)$namespace;
+        $this->namespace        = (string) $namespace;
         $this->namespaceVersion = null;
     }
 
@@ -85,8 +85,8 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
     {
         // note: the array_combine() is in place to keep an association between our $keys and the $namespacedKeys
         $namespacedKeys = array_combine($keys, array_map(array($this, 'getNamespacedId'), $keys));
-        $items = $this->doFetchMultiple($namespacedKeys);
-        $foundItems = array();
+        $items          = $this->doFetchMultiple($namespacedKeys);
+        $foundItems     = array();
 
         // no internal array function supports this sort of mapping: needs to be iterative
         // this filters and combines keys in one pass
@@ -145,7 +145,7 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
     public function deleteAll()
     {
         $namespaceCacheKey = $this->getNamespaceCacheKey();
-        $namespaceVersion = $this->getNamespaceVersion() + 1;
+        $namespaceVersion  = $this->getNamespaceVersion() + 1;
 
         $this->namespaceVersion = $namespaceVersion;
 
@@ -161,7 +161,7 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
      */
     private function getNamespacedId($id)
     {
-        $namespaceVersion = $this->getNamespaceVersion();
+        $namespaceVersion  = $this->getNamespaceVersion();
 
         return sprintf('%s[%s][%s]', $this->namespace, $id, $namespaceVersion);
     }
@@ -225,7 +225,7 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
      *
      * @param string $id The id of the cache entry to fetch.
      *
-     * @return string|boolean The cached data or FALSE, if no cache entry exists for the given id.
+     * @return mixed|boolean The cached data or FALSE, if no cache entry exists for the given id.
      */
     abstract protected function doFetch($id);
 
@@ -241,9 +241,9 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
     /**
      * Puts data into the cache.
      *
-     * @param string $id The cache id.
-     * @param string $data The cache entry/data.
-     * @param int $lifeTime The lifetime. If != 0, sets a specific lifetime for this
+     * @param string $id       The cache id.
+     * @param string $data     The cache entry/data.
+     * @param int    $lifeTime The lifetime. If != 0, sets a specific lifetime for this
      *                           cache entry (0 => infinite lifeTime).
      *
      * @return boolean TRUE if the entry was successfully stored in the cache, FALSE otherwise.
@@ -262,7 +262,7 @@ abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, M
     /**
      * Flushes all cache entries.
      *
-     * @return boolean TRUE if the cache entry was successfully deleted, FALSE otherwise.
+     * @return boolean TRUE if the cache entries were successfully flushed, FALSE otherwise.
      */
     abstract protected function doFlush();
 

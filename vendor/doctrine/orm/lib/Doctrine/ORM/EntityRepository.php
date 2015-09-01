@@ -19,12 +19,14 @@
 
 namespace Doctrine\ORM;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Selectable;
-use Doctrine\Common\Persistence\ObjectRepository;
-use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+
+use Doctrine\DBAL\LockMode;
+use Doctrine\Common\Persistence\ObjectRepository;
+
+use Doctrine\Common\Collections\Selectable;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * An EntityRepository serves as a repository for entities with generic as well as
@@ -59,14 +61,14 @@ class EntityRepository implements ObjectRepository, Selectable
     /**
      * Initializes a new <tt>EntityRepository</tt>.
      *
-     * @param EntityManager $em The EntityManager to use.
+     * @param EntityManager         $em    The EntityManager to use.
      * @param Mapping\ClassMetadata $class The class descriptor.
      */
     public function __construct($em, Mapping\ClassMetadata $class)
     {
         $this->_entityName = $class->name;
-        $this->_em = $em;
-        $this->_class = $class;
+        $this->_em         = $em;
+        $this->_class      = $class;
     }
 
     /**
@@ -121,8 +123,8 @@ class EntityRepository implements ObjectRepository, Selectable
      */
     public function createNativeNamedQuery($queryName)
     {
-        $queryMapping = $this->_class->getNamedNativeQuery($queryName);
-        $rsm = new Query\ResultSetMappingBuilder($this->_em);
+        $queryMapping   = $this->_class->getNamedNativeQuery($queryName);
+        $rsm            = new Query\ResultSetMappingBuilder($this->_em);
         $rsm->addNamedNativeQueryMapping($this->_class, $queryMapping);
 
         return $this->_em->createNativeQuery($queryMapping['query'], $rsm);
@@ -141,8 +143,8 @@ class EntityRepository implements ObjectRepository, Selectable
     /**
      * Finds an entity by its primary key / identifier.
      *
-     * @param mixed $id The identifier.
-     * @param int $lockMode The lock mode.
+     * @param mixed    $id          The identifier.
+     * @param int      $lockMode    The lock mode.
      * @param int|null $lockVersion The lock version.
      *
      * @return object|null The entity instance or NULL if the entity can not be found.
@@ -165,10 +167,10 @@ class EntityRepository implements ObjectRepository, Selectable
     /**
      * Finds entities by a set of criteria.
      *
-     * @param array $criteria
+     * @param array      $criteria
      * @param array|null $orderBy
-     * @param int|null $limit
-     * @param int|null $offset
+     * @param int|null   $limit
+     * @param int|null   $offset
      *
      * @return array The objects.
      */
@@ -198,7 +200,7 @@ class EntityRepository implements ObjectRepository, Selectable
      * Adds support for magic finders.
      *
      * @param string $method
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return array|object The found entity/entities.
      *
@@ -222,7 +224,7 @@ class EntityRepository implements ObjectRepository, Selectable
 
             default:
                 throw new \BadMethodCallException(
-                    "Undefined method '$method'. The method name must start with " .
+                    "Undefined method '$method'. The method name must start with ".
                     "either findBy or findOneBy!"
                 );
         }
@@ -252,7 +254,7 @@ class EntityRepository implements ObjectRepository, Selectable
             }
         }
 
-        throw ORMException::invalidFindByCall($this->_entityName, $fieldName, $method . $by);
+        throw ORMException::invalidFindByCall($this->_entityName, $fieldName, $method.$by);
     }
 
     /**

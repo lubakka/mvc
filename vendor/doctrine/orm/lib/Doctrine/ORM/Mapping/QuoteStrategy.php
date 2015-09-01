@@ -19,6 +19,7 @@
 
 namespace Doctrine\ORM\Mapping;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
@@ -32,8 +33,8 @@ interface QuoteStrategy
     /**
      * Gets the (possibly quoted) column name for safe use in an SQL statement.
      *
-     * @param string $fieldName
-     * @param ClassMetadata $class
+     * @param string           $fieldName
+     * @param ClassMetadata    $class
      * @param AbstractPlatform $platform
      *
      * @return string
@@ -43,7 +44,7 @@ interface QuoteStrategy
     /**
      * Gets the (possibly quoted) primary table name for safe use in an SQL statement.
      *
-     * @param ClassMetadata $class
+     * @param ClassMetadata    $class
      * @param AbstractPlatform $platform
      *
      * @return string
@@ -53,8 +54,8 @@ interface QuoteStrategy
     /**
      * Gets the (possibly quoted) sequence name for safe use in an SQL statement.
      *
-     * @param array $definition
-     * @param ClassMetadata $class
+     * @param array            $definition
+     * @param ClassMetadata    $class
      * @param AbstractPlatform $platform
      *
      * @return string
@@ -64,8 +65,8 @@ interface QuoteStrategy
     /**
      * Gets the (possibly quoted) name of the join table.
      *
-     * @param array $association
-     * @param ClassMetadata $class
+     * @param array            $association
+     * @param ClassMetadata    $class
      * @param AbstractPlatform $platform
      *
      * @return string
@@ -75,8 +76,8 @@ interface QuoteStrategy
     /**
      * Gets the (possibly quoted) join column name.
      *
-     * @param array $joinColumn
-     * @param ClassMetadata $class
+     * @param array            $joinColumn
+     * @param ClassMetadata    $class
      * @param AbstractPlatform $platform
      *
      * @return string
@@ -86,8 +87,8 @@ interface QuoteStrategy
     /**
      * Gets the (possibly quoted) join column name.
      *
-     * @param array $joinColumn
-     * @param ClassMetadata $class
+     * @param array            $joinColumn
+     * @param ClassMetadata    $class
      * @param AbstractPlatform $platform
      *
      * @return string
@@ -97,7 +98,7 @@ interface QuoteStrategy
     /**
      * Gets the (possibly quoted) identifier column names for safe use in an SQL statement.
      *
-     * @param ClassMetadata $class
+     * @param ClassMetadata    $class
      * @param AbstractPlatform $platform
      *
      * @return array
@@ -107,9 +108,9 @@ interface QuoteStrategy
     /**
      * Gets the column alias.
      *
-     * @param string $columnName
-     * @param integer $counter
-     * @param AbstractPlatform $platform
+     * @param string             $columnName
+     * @param integer            $counter
+     * @param AbstractPlatform   $platform
      * @param ClassMetadata|null $class
      *
      * @return string

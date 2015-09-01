@@ -19,12 +19,13 @@
 
 namespace Doctrine\ORM\Tools\Console;
 
-use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
-use Doctrine\ORM\Version;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
+use Doctrine\ORM\Version;
+use Doctrine\ORM\EntityManagerInterface;
+
+use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
+use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 
 /**
  * Handles running the Console Tools inside Symfony Console context.
@@ -48,7 +49,7 @@ class ConsoleRunner
     /**
      * Runs console with the given helperset.
      *
-     * @param \Symfony\Component\Console\Helper\HelperSet $helperSet
+     * @param \Symfony\Component\Console\Helper\HelperSet  $helperSet
      * @param \Symfony\Component\Console\Command\Command[] $commands
      *
      * @return void

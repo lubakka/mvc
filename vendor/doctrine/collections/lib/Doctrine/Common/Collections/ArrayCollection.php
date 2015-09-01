@@ -38,7 +38,7 @@ class ArrayCollection implements Collection, Selectable
      *
      * @var array
      */
-    private $_elements;
+    private $elements;
 
     /**
      * Initializes a new ArrayCollection.
@@ -47,7 +47,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function __construct(array $elements = array())
     {
-        $this->_elements = $elements;
+        $this->elements = $elements;
     }
 
     /**
@@ -55,7 +55,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function toArray()
     {
-        return $this->_elements;
+        return $this->elements;
     }
 
     /**
@@ -63,7 +63,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function first()
     {
-        return reset($this->_elements);
+        return reset($this->elements);
     }
 
     /**
@@ -71,7 +71,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function last()
     {
-        return end($this->_elements);
+        return end($this->elements);
     }
 
     /**
@@ -79,7 +79,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function key()
     {
-        return key($this->_elements);
+        return key($this->elements);
     }
 
     /**
@@ -87,7 +87,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function next()
     {
-        return next($this->_elements);
+        return next($this->elements);
     }
 
     /**
@@ -95,7 +95,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function current()
     {
-        return current($this->_elements);
+        return current($this->elements);
     }
 
     /**
@@ -103,14 +103,14 @@ class ArrayCollection implements Collection, Selectable
      */
     public function remove($key)
     {
-        if (isset($this->_elements[$key]) || array_key_exists($key, $this->_elements)) {
-            $removed = $this->_elements[$key];
-            unset($this->_elements[$key]);
-
-            return $removed;
+        if ( ! isset($this->elements[$key]) && ! array_key_exists($key, $this->elements)) {
+            return null;
         }
 
-        return null;
+        $removed = $this->elements[$key];
+        unset($this->elements[$key]);
+
+        return $removed;
     }
 
     /**
@@ -118,15 +118,15 @@ class ArrayCollection implements Collection, Selectable
      */
     public function removeElement($element)
     {
-        $key = array_search($element, $this->_elements, true);
+        $key = array_search($element, $this->elements, true);
 
-        if ($key !== false) {
-            unset($this->_elements[$key]);
-
-            return true;
+        if ($key === false) {
+            return false;
         }
 
-        return false;
+        unset($this->elements[$key]);
+
+        return true;
     }
 
     /**
@@ -156,10 +156,11 @@ class ArrayCollection implements Collection, Selectable
      */
     public function offsetSet($offset, $value)
     {
-        if (!isset($offset)) {
+        if ( ! isset($offset)) {
             return $this->add($value);
         }
-        return $this->set($offset, $value);
+
+        $this->set($offset, $value);
     }
 
     /**
@@ -177,7 +178,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function containsKey($key)
     {
-        return isset($this->_elements[$key]) || array_key_exists($key, $this->_elements);
+        return isset($this->elements[$key]) || array_key_exists($key, $this->elements);
     }
 
     /**
@@ -185,7 +186,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function contains($element)
     {
-        return in_array($element, $this->_elements, true);
+        return in_array($element, $this->elements, true);
     }
 
     /**
@@ -193,11 +194,12 @@ class ArrayCollection implements Collection, Selectable
      */
     public function exists(Closure $p)
     {
-        foreach ($this->_elements as $key => $element) {
+        foreach ($this->elements as $key => $element) {
             if ($p($key, $element)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -206,7 +208,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function indexOf($element)
     {
-        return array_search($element, $this->_elements, true);
+        return array_search($element, $this->elements, true);
     }
 
     /**
@@ -214,10 +216,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function get($key)
     {
-        if (isset($this->_elements[$key])) {
-            return $this->_elements[$key];
-        }
-        return null;
+        return isset($this->elements[$key]) ? $this->elements[$key] : null;
     }
 
     /**
@@ -225,7 +224,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function getKeys()
     {
-        return array_keys($this->_elements);
+        return array_keys($this->elements);
     }
 
     /**
@@ -233,7 +232,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function getValues()
     {
-        return array_values($this->_elements);
+        return array_values($this->elements);
     }
 
     /**
@@ -241,7 +240,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function count()
     {
-        return count($this->_elements);
+        return count($this->elements);
     }
 
     /**
@@ -249,7 +248,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function set($key, $value)
     {
-        $this->_elements[$key] = $value;
+        $this->elements[$key] = $value;
     }
 
     /**
@@ -257,7 +256,8 @@ class ArrayCollection implements Collection, Selectable
      */
     public function add($value)
     {
-        $this->_elements[] = $value;
+        $this->elements[] = $value;
+
         return true;
     }
 
@@ -266,7 +266,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function isEmpty()
     {
-        return !$this->_elements;
+        return empty($this->elements);
     }
 
     /**
@@ -276,7 +276,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->_elements);
+        return new ArrayIterator($this->elements);
     }
 
     /**
@@ -284,7 +284,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function map(Closure $func)
     {
-        return new static(array_map($func, $this->_elements));
+        return new static(array_map($func, $this->elements));
     }
 
     /**
@@ -292,7 +292,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function filter(Closure $p)
     {
-        return new static(array_filter($this->_elements, $p));
+        return new static(array_filter($this->elements, $p));
     }
 
     /**
@@ -300,8 +300,8 @@ class ArrayCollection implements Collection, Selectable
      */
     public function forAll(Closure $p)
     {
-        foreach ($this->_elements as $key => $element) {
-            if (!$p($key, $element)) {
+        foreach ($this->elements as $key => $element) {
+            if ( ! $p($key, $element)) {
                 return false;
             }
         }
@@ -314,15 +314,17 @@ class ArrayCollection implements Collection, Selectable
      */
     public function partition(Closure $p)
     {
-        $coll1 = $coll2 = array();
-        foreach ($this->_elements as $key => $element) {
+        $matches = $noMatches = array();
+
+        foreach ($this->elements as $key => $element) {
             if ($p($key, $element)) {
-                $coll1[$key] = $element;
+                $matches[$key] = $element;
             } else {
-                $coll2[$key] = $element;
+                $noMatches[$key] = $element;
             }
         }
-        return array(new static($coll1), new static($coll2));
+
+        return array(new static($matches), new static($noMatches));
     }
 
     /**
@@ -340,7 +342,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function clear()
     {
-        $this->_elements = array();
+        $this->elements = array();
     }
 
     /**
@@ -348,7 +350,7 @@ class ArrayCollection implements Collection, Selectable
      */
     public function slice($offset, $length = null)
     {
-        return array_slice($this->_elements, $offset, $length, true);
+        return array_slice($this->elements, $offset, $length, true);
     }
 
     /**
@@ -356,22 +358,21 @@ class ArrayCollection implements Collection, Selectable
      */
     public function matching(Criteria $criteria)
     {
-        $expr = $criteria->getWhereExpression();
-        $filtered = $this->_elements;
+        $expr     = $criteria->getWhereExpression();
+        $filtered = $this->elements;
 
         if ($expr) {
-            $visitor = new ClosureExpressionVisitor();
-            $filter = $visitor->dispatch($expr);
+            $visitor  = new ClosureExpressionVisitor();
+            $filter   = $visitor->dispatch($expr);
             $filtered = array_filter($filtered, $filter);
         }
 
         if ($orderings = $criteria->getOrderings()) {
-            $next = null;
             foreach (array_reverse($orderings) as $field => $ordering) {
-                $next = ClosureExpressionVisitor::sortByField($field, $ordering == 'DESC' ? -1 : 1, $next);
+                $next = ClosureExpressionVisitor::sortByField($field, $ordering == Criteria::DESC ? -1 : 1);
             }
 
-            usort($filtered, $next);
+            uasort($filtered, $next);
         }
 
         $offset = $criteria->getFirstResult();

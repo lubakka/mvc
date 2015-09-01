@@ -1,0 +1,29 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: lubakka
+ * Date: 14.06.15
+ * Time: 17:51
+ */
+namespace Modules\Blog;
+
+/**
+ * Class BlogModule
+ * @package Modules\Blog
+ */
+class BlogModule {
+
+    /**
+     * @return string
+     */
+    public function getNameSpace(){
+        return __NAMESPACE__;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassName(){
+        return __CLASS__;
+    }
+}
